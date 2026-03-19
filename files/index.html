@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wheel of Fates — Album Discussion Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #c9973a; --gold-light: #e8c06a; --gold-dim: #7a5a1e;
+  --ink: #f0e6c8; --ink-dim: #9a8a68;
+  --stone: #2a2418; --border: #3d3020; --scroll-bg: #120f07;
+  /* parchment palette — used throughout the main UI */
+  --p-bg:      #d4b87a;
+  --p-bg-dark: #b8955a;
+  --p-bg-mid:  #c8a96e;
+  --p-ink:     #2a1200;
+  --p-ink-mid: #5a3000;
+  --p-ink-dim: #8a6030;
+  --p-border:  #8a6a2a;
+  --p-border-dim: rgba(100,60,10,0.25);
+  --p-gold:    #8a5010;
+  --p-shadow:  rgba(0,0,0,0.35);
+}
+
+body {
+  font-family: 'EB Garamond', serif;
+  min-height: 100vh;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(100,60,10,0.05) 32px, rgba(100,60,10,0.05) 33px),
+    linear-gradient(160deg, #e8d5a0 0%, #d4b87a 25%, #dfc88a 50%, #c8a96e 75%, #d8c080 100%);
+  background-attachment: fixed;
+  color: var(--p-ink);
+}
+.app { display: flex; flex-direction: column; }
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 28px 20px 18px;
+  background: linear-gradient(180deg, #7a5020 0%, #a07838 30%, #c09050 60%, #d4a860 100%);
+  border-bottom: 3px solid #6a4010;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
+  position: relative;
+}
+.header::before,.header::after { content:'⸻✦⸻'; display:block; color:rgba(255,220,140,0.7); font-size:14px; letter-spacing:6px; margin:4px 0; }
+.header::after { margin-bottom: 0; }
+.header h1 { font-family:'Cinzel',serif; font-size:clamp(18px,4vw,30px); font-weight:700; color:#fff8e8; letter-spacing:4px; text-transform:uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+.header .subtitle { font-size:13px; color:rgba(255,230,170,0.8); font-style:italic; margin-top:4px; }
+.round-badge { display:inline-block; font-family:'Cinzel',serif; font-size:11px; color:#fff3d0; border:1px solid rgba(255,220,140,0.5); padding:3px 14px; letter-spacing:2px; margin-top:10px; background: rgba(0,0,0,0.2); }
+
+.main { display:flex; flex-direction:column; align-items:center; padding:24px 16px; gap:28px; }
+
+/* WHEEL */
+.wheel-section { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:480px; }
+.wheel-wrap { position:relative; width:320px; height:320px; flex-shrink:0; }
+canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(0 0 28px rgba(100,60,10,0.5)) drop-shadow(0 4px 16px rgba(0,0,0,0.4)); }
+.wheel-pointer { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:18px; height:18px; background:var(--gold); border-radius:50%; border:3px solid #2a1200; box-shadow:0 0 10px rgba(201,151,58,0.6); z-index:10; pointer-events:none; }
+.wheel-tick { position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:22px solid #8a5010; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4)); z-index:10; }
+.wheel-frame { position:absolute; inset:-8px; border-radius:50%; border:2px solid #8a6030; pointer-events:none; }
+.wheel-frame::before { content:''; position:absolute; inset:5px; border-radius:50%; border:1px solid rgba(100,60,10,0.3); }
+
+.spin-btn {
+  font-family:'Cinzel',serif; font-size:14px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+  background: linear-gradient(180deg, #c09050 0%, #8a5818 100%);
+  border: 1px solid #6a3a08; color: #fff8e8;
+  padding:12px 36px; cursor:pointer; transition:all 0.2s; position:relative;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.spin-btn::before,.spin-btn::after { content:'✦'; position:absolute; top:50%; transform:translateY(-50%); color:rgba(255,220,140,0.7); font-size:10px; }
+.spin-btn::before { left:12px; } .spin-btn::after { right:12px; }
+.spin-btn:hover:not(:disabled) { background: linear-gradient(180deg, #d0a060 0%, #9a6828 100%); box-shadow:0 4px 14px rgba(0,0,0,0.35); }
+.spin-btn:disabled { opacity:0.45; cursor:not-allowed; }
+
+.spin-status { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; color:var(--p-ink-mid); text-align:center; min-height:16px; }
+.spin-status .ready-count { color:var(--p-gold); font-weight:600; }
+
+/* SECTION TITLES */
+.section-title {
+  font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--p-ink-mid); text-align:center; margin-bottom:14px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-title::before,.section-title::after { content:''; flex:1; height:1px; background:var(--p-border-dim); }
+
+/* NOMINEES */
+.nominees-section { width:100%; max-width:740px; }
+.nominees-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+
+/* CARD BASE */
+.nominee-card {
+  background: linear-gradient(160deg, #e8d5a0 0%, #d8c080 50%, #cdb070 100%);
+  border: 1px solid var(--p-border);
+  border-top: 3px solid var(--p-ink-mid);
+  padding:12px 14px; display:flex; flex-direction:column; gap:8px;
+  transition: box-shadow 0.25s, border-color 0.25s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+  position: relative;
+}
+.nominee-card::before {
+  content:'';
+  position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(ellipse at 80% 10%, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+.nominee-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
+
+/* SEALED STATE */
+.nominee-card.sealed {
+  border-color: var(--p-border);
+  box-shadow: 0 2px 12px rgba(100,60,10,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.nominee-card.sealed .field-input { pointer-events:none; opacity:0.8; border-bottom-color:transparent; }
+
+/* CARD HEADER ROW */
+.card-header { display:flex; align-items:center; justify-content:space-between; }
+.nominee-owner { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--p-ink-mid); }
+.sealed-badge { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:var(--p-gold); opacity:0; transform:translateY(-3px); transition:opacity 0.3s,transform 0.3s; pointer-events:none; }
+.nominee-card.sealed .sealed-badge { opacity:1; transform:translateY(0); }
+
+/* ART PREVIEW */
+.art-preview { width:100%; aspect-ratio:1; background:rgba(0,0,0,0.15); border:1px solid var(--p-border-dim); display:flex; align-items:center; justify-content:center; overflow:hidden; transition:border-color 0.3s; }
+.nominee-card.sealed .art-preview { border-color:var(--p-border); }
+.art-preview img { width:100%; height:100%; object-fit:cover; display:block; }
+.art-placeholder { font-size:11px; color:var(--p-ink-dim); font-style:italic; text-align:center; padding:8px; line-height:1.5; }
+.art-loading { font-size:11px; color:var(--p-gold); font-style:italic; }
+.art-error { font-size:10px; color:#8b3a1a; font-style:italic; text-align:center; padding:6px; }
+
+/* FIELDS */
+.field-group { display:flex; flex-direction:column; gap:6px; }
+.field-row { display:flex; flex-direction:column; gap:3px; }
+.field-label { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; color:var(--p-ink-mid); text-transform:uppercase; }
+.field-input { background:none; border:none; border-bottom:1px solid var(--p-border-dim); color:var(--p-ink); font-family:'EB Garamond',serif; font-size:14px; width:100%; padding:3px 0; outline:none; transition:border-color 0.2s; }
+.field-input:focus { border-bottom-color:var(--p-border); }
+.field-input::placeholder { color:var(--p-ink-dim); font-style:italic; }
+
+/* WEIGHT PIPS */
+.weight-row { display:flex; align-items:center; gap:5px; }
+.pip { width:7px; height:7px; border-radius:50%; background:rgba(100,60,10,0.2); transition:background 0.3s; }
+.pip.active { background:var(--p-gold); }
+.weight-label { font-family:'Cinzel',serif; font-size:9px; color:var(--p-ink-dim); letter-spacing:1px; }
+
+/* SEAL / UNLOCK BUTTONS */
+.card-actions { display:flex; gap:6px; margin-top:2px; }
+.seal-btn {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  padding:6px 10px;
+  background: linear-gradient(180deg, #b07030 0%, #7a4810 100%);
+  border: 1px solid #5a3008; color:#fff8e8;
+  cursor:pointer; flex:1;
+  opacity:0; pointer-events:none; transform:translateY(3px);
+  transition:opacity 0.2s,transform 0.2s,background 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.seal-btn.visible { opacity:1; pointer-events:all; transform:translateY(0); }
+.seal-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
+
+.unlock-btn {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; text-transform:uppercase;
+  padding:6px 10px; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.08); color:var(--p-ink-mid);
+  cursor:pointer; transition:all 0.2s;
+  opacity:0; pointer-events:none; width:0; overflow:hidden; padding:0;
+  transition:opacity 0.2s,width 0.2s;
+}
+.nominee-card.sealed .unlock-btn { opacity:1; pointer-events:all; width:auto; padding:6px 10px; }
+.nominee-card.sealed .seal-btn { opacity:0; pointer-events:none; }
+.unlock-btn:hover { border-color:var(--p-border); color:var(--p-ink); background:rgba(0,0,0,0.12); }
+
+/* WINNER OVERLAY */
+.winner-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:100; align-items:center; justify-content:center; padding:20px; }
+.winner-overlay.show { display:flex; }
+.winner-modal {
+  background: linear-gradient(160deg, #e8d5a0 0%, #d4b87a 40%, #dfc880 70%, #c8a96e 100%);
+  border: 2px solid var(--p-border);
+  max-width:500px; width:100%; text-align:center;
+  animation:revealModal 0.5s ease-out; overflow:hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+@keyframes revealModal { from{opacity:0;transform:scale(0.9) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+.winner-art-hero { width:100%; padding-top:56%; position:relative; background:#2a1200; overflow:hidden; }
+.winner-art-hero img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.5) saturate(1.2); }
+.winner-art-no-bg { position:absolute; inset:0; background:linear-gradient(135deg,#3a1a00 0%,#1a0800 100%); }
+.winner-art-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 0%,rgba(20,8,0,0.65) 55%,#c8a96e 100%); }
+.winner-art-title { position:absolute; bottom:0; left:0; right:0; padding:16px 24px 6px; }
+.winner-header-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,220,140,0.8); margin-bottom:6px; }
+.winner-album { font-family:'Cinzel',serif; font-size:clamp(16px,4vw,23px); color:#fff8e8; font-weight:700; line-height:1.2; text-shadow:0 2px 8px rgba(0,0,0,0.6); }
+.winner-artist { font-size:14px; color:rgba(255,220,160,0.85); font-style:italic; margin-top:3px; }
+
+.winner-body { padding:4px 24px 22px; }
+.winner-ornament { color:var(--p-ink-mid); font-size:11px; letter-spacing:8px; margin:8px 0 4px; }
+.winner-champion { font-size:13px; font-style:italic; color:var(--p-ink-mid); margin:4px 0 10px; }
+.winner-lore { font-size:13px; color:var(--p-ink); line-height:1.7; font-style:italic; padding:12px 14px; border-top:1px solid var(--p-border-dim); border-bottom:1px solid var(--p-border-dim); margin:8px 0 14px; text-align:left; }
+.modal-btn {
+  font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  padding:10px 20px;
+  background: linear-gradient(180deg, #b07030 0%, #7a4810 100%);
+  border:1px solid #5a3008; color:#fff8e8;
+  cursor:pointer; transition:all 0.2s; width:100%;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  text-shadow:0 1px 2px rgba(0,0,0,0.4);
+}
+.modal-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
+
+/* SWAP */
+.swap-section {
+  display:none; width:100%; max-width:740px;
+  background: linear-gradient(160deg, #e0cc90 0%, #ccaa60 100%);
+  border:1px solid var(--p-border); border-top:3px solid var(--p-ink-mid);
+  padding:20px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.2);
+}
+.swap-section.show { display:block; }
+.swap-instructions { font-size:13px; font-style:italic; color:var(--p-ink-mid); margin-bottom:16px; line-height:1.7; text-align:center; }
+.swap-actions { display:flex; flex-direction:column; gap:8px; }
+.swap-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border:1px solid var(--p-border-dim); background:rgba(255,255,255,0.1); gap:10px; flex-wrap:wrap; }
+.swap-row-name { flex:1; font-size:14px; font-style:italic; min-width:100px; color:var(--p-ink); }
+.swap-row-owner { font-family:'Cinzel',serif; font-size:10px; color:var(--p-ink-mid); letter-spacing:1px; min-width:60px; }
+.swap-row-weight { font-size:12px; color:var(--p-ink-dim); min-width:50px; text-align:right; }
+.swap-toggle { display:flex; gap:4px; flex-wrap:wrap; }
+.swap-btn { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; padding:5px 10px; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.06); color:var(--p-ink-mid); cursor:pointer; transition:all 0.15s; }
+.swap-btn.selected { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.12); font-weight:600; }
+.swap-done-btn {
+  font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;
+  padding:12px 24px;
+  background: linear-gradient(180deg, #b07030 0%, #7a4810 100%);
+  border:1px solid #5a3008; color:#fff8e8;
+  cursor:pointer; margin-top:16px; width:100%; transition:all 0.2s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  text-shadow:0 1px 2px rgba(0,0,0,0.4);
+}
+.swap-done-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
+
+/* CHRONICLE */
+.chronicle-section { width:100%; max-width:740px; padding-bottom:32px; }
+.chronicle-scroll {
+  background: linear-gradient(180deg, #dcc878 0%, #c8aa58 100%);
+  border:1px solid var(--p-border); border-top:3px solid var(--p-ink-mid);
+  max-height:320px; overflow-y:auto;
+  box-shadow:0 2px 12px rgba(0,0,0,0.2);
+}
+.chronicle-scroll::-webkit-scrollbar { width:5px; }
+.chronicle-scroll::-webkit-scrollbar-track { background:rgba(0,0,0,0.05); }
+.chronicle-scroll::-webkit-scrollbar-thumb { background:var(--p-border); border-radius:2px; }
+.chronicle-entry { padding:12px 16px; border-bottom:1px solid var(--p-border-dim); animation:fadeIn 0.6s ease-out; display:flex; gap:12px; align-items:flex-start; }
+.chronicle-entry:last-child { border-bottom:none; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.chronicle-thumb { width:42px; height:42px; flex-shrink:0; background:rgba(0,0,0,0.15); border:1px solid var(--p-border-dim); overflow:hidden; }
+.chronicle-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.chronicle-round { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--p-ink-mid); margin-bottom:3px; }
+.chronicle-text { font-size:13px; font-style:italic; color:var(--p-ink); line-height:1.6; }
+.chronicle-album { color:var(--p-gold); font-style:normal; font-weight:600; }
+.empty-chronicle { padding:28px; text-align:center; font-style:italic; font-size:13px; color:var(--p-ink-dim); }
+
+/* ── SCROLL OF LORE ─────────────────────────────────── */
+.scroll-tab {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.scroll-tab-body {
+  background: linear-gradient(135deg, #c8a96e 0%, #e8d5a0 40%, #d4b87a 70%, #b8955a 100%);
+  border: 1px solid #8a6a2a;
+  border-right: none;
+  width: 28px;
+  padding: 14px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  box-shadow: -3px 0 12px rgba(0,0,0,0.5), inset 1px 0 3px rgba(255,255,255,0.15);
+  border-radius: 6px 0 0 6px;
+  transition: width 0.2s;
+}
+.scroll-tab-body:hover { background: linear-gradient(135deg, #d4b87a 0%, #f0e0b0 40%, #e0c88a 70%, #c4a060 100%); }
+.scroll-tab-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #5a3a0a;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  text-transform: uppercase;
+  user-select: none;
+}
+.scroll-tab-icon { font-size: 14px; color: #7a4a0a; }
+/* rolled ends on tab */
+.scroll-tab-roll {
+  width: 28px;
+  height: 10px;
+  background: linear-gradient(to bottom, #a07840, #c8a96e);
+  border: 1px solid #7a5a20;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  box-shadow: -2px 0 6px rgba(0,0,0,0.4);
+}
+
+/* FULL SCROLL PANEL */
+.scroll-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 340px;
+  z-index: 199;
+  transform: translateX(100%);
+  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+.scroll-panel.open {
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.scroll-panel-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 28px,
+      rgba(139,100,40,0.06) 28px,
+      rgba(139,100,40,0.06) 29px
+    ),
+    linear-gradient(160deg, #e8d5a0 0%, #d4b87a 25%, #e0c88a 50%, #c8a96e 75%, #d8c08a 100%);
+  border-left: 3px solid #8a6030;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.7), inset 2px 0 8px rgba(255,255,255,0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Aged paper texture overlays */
+.scroll-panel-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(100,60,0,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(80,40,0,0.15) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(60,30,0,0.08) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Top rolled edge */
+.scroll-roll-top {
+  height: 22px;
+  background: linear-gradient(to bottom, #7a5020, #b8884a, #d4a860, #c09050);
+  border-bottom: 2px solid #6a4010;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.scroll-roll-top::after {
+  content: '';
+  position: absolute;
+  inset: 3px 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+/* Bottom rolled edge */
+.scroll-roll-bottom {
+  height: 22px;
+  background: linear-gradient(to top, #7a5020, #b8884a, #d4a860, #c09050);
+  border-top: 2px solid #6a4010;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.4), inset 0 -1px 3px rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px 20px;
+  position: relative;
+  z-index: 2;
+}
+.scroll-content::-webkit-scrollbar { width: 4px; }
+.scroll-content::-webkit-scrollbar-track { background: transparent; }
+.scroll-content::-webkit-scrollbar-thumb { background: rgba(100,60,10,0.3); border-radius: 2px; }
+
+.scroll-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3a1e00;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.scroll-subtitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: #6a4010;
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+.scroll-divider {
+  text-align: center;
+  color: #8a5a20;
+  font-size: 13px;
+  letter-spacing: 6px;
+  margin: 12px 0;
+}
+.scroll-section-head {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #5a3000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 16px 0 6px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(100,60,10,0.25);
+}
+.scroll-section-head:first-of-type { margin-top: 4px; }
+.scroll-body {
+  font-family: 'EB Garamond', serif;
+  font-size: 13.5px;
+  color: #2a1200;
+  line-height: 1.75;
+}
+.scroll-body p { margin-bottom: 10px; }
+.scroll-body strong { font-weight: 600; color: #3a1800; }
+.scroll-body em { font-style: italic; color: #5a3010; }
+.scroll-close {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6a4010;
+  text-align: center;
+  margin-top: 14px;
+  cursor: pointer;
+  padding: 6px;
+  border: 1px solid rgba(100,60,10,0.3);
+  transition: background 0.2s;
+}
+.scroll-close:hover { background: rgba(100,60,10,0.08); }
+
+/* Overlay behind scroll */
+.scroll-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 198;
+  background: rgba(0,0,0,0);
+  pointer-events: none;
+  transition: background 0.45s;
+}
+.scroll-overlay.open {
+  background: rgba(0,0,0,0.35);
+  pointer-events: all;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>The Wheel of Fates</h1>
+    <div class="subtitle">Album Discussion Club — Tournament of the Listening Throne</div>
+    <div class="round-badge" id="round-display">Round I</div>
+  </div>
+  <div class="main">
+    <div class="wheel-section">
+      <div class="wheel-wrap">
+        <div class="wheel-frame"></div>
+        <div class="wheel-tick"></div>
+        <canvas id="wheel" width="640" height="640"></canvas>
+        <div class="wheel-pointer"></div>
+      </div>
+      <div class="spin-status" id="spin-status"></div>
+      <button class="spin-btn" id="spin-btn" onclick="spinWheel()" disabled>Decree the Fates</button>
+    </div>
+
+    <div class="nominees-section">
+      <div class="section-title">The Six Champions</div>
+      <div class="nominees-grid" id="nominees-grid"></div>
+    </div>
+
+    <div class="swap-section" id="swap-section">
+      <div class="section-title">After the Tournament</div>
+      <div class="swap-instructions" id="swap-instructions"></div>
+      <div class="swap-actions" id="swap-actions"></div>
+      <button class="swap-done-btn" onclick="finalizeSwaps()">✦ Seal the New Roster ✦</button>
+    </div>
+
+    <div class="chronicle-section">
+      <div class="section-title">The Chronicle of Battles</div>
+      <div class="chronicle-scroll" id="chronicle">
+        <div class="empty-chronicle">The chronicle awaits its first tale...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="winner-overlay" id="winner-overlay">
+  <div class="winner-modal">
+    <div class="winner-art-hero">
+      <div class="winner-art-no-bg" id="winner-no-bg"></div>
+      <img id="winner-art-img" src="" alt="" style="display:none">
+      <div class="winner-art-overlay"></div>
+      <div class="winner-art-title">
+        <div class="winner-header-label">The Wheel Has Spoken</div>
+        <div class="winner-album" id="winner-album-name"></div>
+        <div class="winner-artist" id="winner-artist-name"></div>
+      </div>
+    </div>
+    <div class="winner-body">
+      <div class="winner-ornament">✦ ✦ ✦</div>
+      <div class="winner-champion" id="winner-champion-name"></div>
+      <div class="winner-lore" id="winner-lore"></div>
+      <button class="modal-btn" onclick="closeWinner()">Accept the Decree &amp; Prepare the Roster</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS=[['#2a1f0e','#c9973a'],['#0e1a2a','#4a8fc9'],['#1a0e0e','#c94a4a'],['#0e2a1a','#4ac97a'],['#1a0e2a','#8a4ac9'],['#2a1a0e','#c97a4a']];
+
+const LORE=[
+  (a,c,r)=>r>=3?`Lo, after ${r} tourneys of patient vigil, the ancient standard of <span class="chronicle-album">${a}</span> — borne by the steadfast ${c} — was at last thrust skyward by the Wheel's decree.`
+    :r===2?`In the fullness of time, <span class="chronicle-album">${a}</span> — a veteran of one prior tourney — answered ${c}'s faith and claimed the Listening Throne.`
+    :`Fresh to the lists, <span class="chronicle-album">${a}</span>, champion of ${c}, rode boldly into battle and emerged victorious in its very first tourney.`,
+  (a,c,r)=>r>=3?`The chroniclers note with reverence: <span class="chronicle-album">${a}</span> had endured ${r} assemblies without being called. At last the Wheel turned its golden face upon ${c}'s offering.`
+    :`The Wheel of Fates, turning as it has since time immemorial, bestowed its favour upon <span class="chronicle-album">${a}</span>. ${c} stands triumphant.`,
+];
+
+const SAVED_KEY='wheelOfFates_v3';
+
+function defaultNominees(){
+  return[
+    {artist:'',album:'',owner:'Baxter',weight:1,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Chris', weight:1,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Erik',  weight:1,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Baxter',weight:1,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Chris', weight:1,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Erik',  weight:1,artUrl:null,sealed:false},
+  ];
+}
+
+function loadState(){
+  try{ const s=JSON.parse(localStorage.getItem(SAVED_KEY)); if(s) return s; }catch(e){}
+  return null;
+}
+function saveState(){
+  try{
+    localStorage.setItem(SAVED_KEY,JSON.stringify({
+      round:state.round,
+      nominees:state.nominees.map(n=>({...n,artUrl:null})),
+      chronicle:state.chronicle,
+    }));
+  }catch(e){}
+}
+
+let state=loadState()||{round:1,nominees:defaultNominees(),chronicle:[]};
+// artUrl is always session-only; sealed state persists
+state.nominees.forEach(n=>{ n.artUrl=null; if(n.sealed===undefined) n.sealed=false; });
+
+let spinning=false, lastWinner=null, swapDecisions={};
+const artCache={}, imgCache={}, artTimers={};
+
+// ── ART FETCH via iTunes Search API ─────────────────────────────────────────
+// iTunes is explicitly CORS-open, works from file:// with no API key needed.
+// Returns { url, canonicalArtist, canonicalAlbum } or null
+async function fetchArtUrl(artist,album){
+  const key=(artist+'|||'+album).toLowerCase();
+  if(key in artCache) return artCache[key];
+  try{
+    const q=encodeURIComponent(`release:"${album}" AND artist:"${artist}"`);
+    const res=await fetch(
+      `https://musicbrainz.org/ws/2/release/?query=${q}&limit=10&fmt=json`,
+      {headers:{'User-Agent':'WheelOfFates/1.0'}}
+    );
+    if(!res.ok){ artCache[key]=null; return null; }
+    const data=await res.json();
+    for(const rel of(data.releases||[])){
+      const caa=rel['cover-art-archive'];
+      // Accept any truthy indicator that front art exists
+      if(!caa || !(caa.front || caa.artwork || caa.count>0)) continue;
+      const canonicalArtist=rel['artist-credit']?.[0]?.artist?.name||null;
+      const canonicalAlbum=rel.title||null;
+      const url=`https://coverartarchive.org/release/${rel.id}/front-250`;
+      const result={url,canonicalArtist,canonicalAlbum};
+      artCache[key]=result;
+      return result;
+    }
+    // Fallback: if no release had cover-art-archive flag, try the first release anyway
+    const first=data.releases?.[0];
+    if(first){
+      const url=`https://coverartarchive.org/release/${first.id}/front-250`;
+      const result={
+        url,
+        canonicalArtist:first['artist-credit']?.[0]?.artist?.name||null,
+        canonicalAlbum:first.title||null,
+      };
+      artCache[key]=result;
+      return result;
+    }
+  }catch(e){ console.error('[WheelOfFates] fetchArtUrl error',e); }
+  artCache[key]=null;
+  return null;
+}
+
+function scheduleArtFetch(idx){
+  clearTimeout(artTimers[idx]);
+  if(state.nominees[idx].sealed) return;
+  // Show loading indicator immediately so user knows something will happen
+  setArtPreview(idx,'<span class="art-loading">Seeking cover…</span>');
+  artTimers[idx]=setTimeout(()=>doArtFetch(idx),1200);
+}
+
+async function doArtFetch(idx){
+  const n=state.nominees[idx];
+  if(!n.artist||!n.album||n.sealed) return;
+  console.log(`[WheelOfFates] Fetching art for: "${n.artist}" / "${n.album}"`);
+  const result=await fetchArtUrl(n.artist,n.album);
+  console.log(`[WheelOfFates] Result for idx ${idx}:`, result);
+  // Don't apply if card was sealed or cleared while fetching
+  if(state.nominees[idx].sealed) return;
+  const url=result?.url||null;
+  n.artUrl=url;
+  if(result?.canonicalArtist) n.canonicalArtist=result.canonicalArtist;
+  if(result?.canonicalAlbum)  n.canonicalAlbum=result.canonicalAlbum;
+  if(url){
+    const img=new Image(); img.crossOrigin='anonymous';
+    img.onload=()=>{ imgCache[url]=img; drawWheel(); };
+    img.onerror=()=>{ console.warn('[WheelOfFates] Image load failed:', url); setArtPreview(idx,'<span class="art-error">Art load failed</span>'); };
+    img.src=url;
+    setArtPreview(idx,`<img src="${esc(url)}" alt="cover" />`);
+  } else {
+    setArtPreview(idx,'<span class="art-error">No art found</span>');
+  }
+  updateSealButton(idx);
+  drawWheel();
+}
+
+function setArtPreview(idx,html){
+  const el=document.getElementById('ap-'+idx);
+  if(el) el.innerHTML=html;
+}
+
+// ── SEAL BUTTON VISIBILITY ─────────────────────────────
+// Seal button shows when both fields have content AND not yet sealed
+function updateSealButton(idx){
+  const n=state.nominees[idx];
+  const btn=document.getElementById('seal-'+idx);
+  if(!btn) return;
+  const canSeal=!n.sealed && n.artist.trim()!=='' && n.album.trim()!=='';
+  btn.classList.toggle('visible', canSeal);
+}
+
+function updateAllSealButtons(){
+  state.nominees.forEach((_,i)=>updateSealButton(i));
+}
+
+function sealCard(idx){
+  const n=state.nominees[idx];
+  if(!n.artist||!n.album) return;
+  clearTimeout(artTimers[idx]);
+
+  // Overwrite with canonical MusicBrainz values if available
+  if(n.canonicalArtist) n.artist=n.canonicalArtist;
+  if(n.canonicalAlbum)  n.album=n.canonicalAlbum;
+
+  // Reflect canonical values back into the visible input fields
+  const card=document.getElementById('card-'+idx);
+  if(card){
+    const artistInput=card.querySelector('input[data-field="artist"]');
+    const albumInput =card.querySelector('input[data-field="album"]');
+    if(artistInput) artistInput.value=n.artist;
+    if(albumInput)  albumInput.value=n.album;
+  }
+
+  n.sealed=true;
+  if(card) card.classList.add('sealed');
+  updateSealButton(idx);
+  saveState();
+  updateSpinButton();
+  drawWheel();
+}
+
+function unsealCard(idx){
+  const n=state.nominees[idx];
+  n.sealed=false;
+  n.canonicalArtist=null;
+  n.canonicalAlbum=null;
+  n.artUrl=null;
+  const card=document.getElementById('card-'+idx);
+  if(card) card.classList.remove('sealed');
+  // Restore art preview state
+  const preview=document.getElementById('ap-'+idx);
+  if(preview){
+    if(n.artist&&n.album) preview.innerHTML='<span class="art-loading">Seeking cover…</span>';
+    else preview.innerHTML='<span class="art-placeholder">Fill both fields to fetch cover art</span>';
+  }
+  updateSealButton(idx);
+  saveState();
+  updateSpinButton();
+  // Re-fetch art with current field values
+  if(n.artist&&n.album) scheduleArtFetch(idx);
+}
+
+function updateSpinButton(){
+  const allSealed=state.nominees.every(n=>n.sealed);
+  document.getElementById('spin-btn').disabled=!allSealed||spinning;
+  const count=state.nominees.filter(n=>n.sealed).length;
+  const status=document.getElementById('spin-status');
+  if(allSealed){
+    status.innerHTML='<span class="ready-count">All six champions are sealed.</span> The Fates await.';
+  } else {
+    status.innerHTML=`<span class="ready-count">${count} of 6</span> champions sealed`;
+  }
+}
+
+// ── WHEEL ──────────────────────────────────────────────
+const canvas=document.getElementById('wheel');
+const ctx=canvas.getContext('2d');
+let wheelAngle=0;
+
+function slices(){
+  const tot=state.nominees.reduce((s,n)=>s+n.weight,0);
+  let out=[],pos=0;
+  state.nominees.forEach((n,i)=>{
+    const span=n.weight/tot*Math.PI*2;
+    out.push({start:pos,end:pos+span,i,n}); pos+=span;
+  });
+  return out;
+}
+
+function drawWheel(){
+  const W=640,H=640,cx=320,cy=320,r=300;
+  ctx.clearRect(0,0,W,H);
+  slices().forEach(s=>{
+    const [bg,fg]=COLORS[s.i%COLORS.length];
+    const a0=s.start+wheelAngle-Math.PI/2, a1=s.end+wheelAngle-Math.PI/2;
+    const mid=(s.start+s.end)/2+wheelAngle-Math.PI/2;
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
+    const img=s.n.artUrl?imgCache[s.n.artUrl]:null;
+    if(img){
+      ctx.clip();
+      // Rotate so slice bisector points straight up (12 o'clock)
+      // Then draw image: top-edge at outer rim (y=-r), bottom at center (y=0)
+      // Image is square so width = r, centered on the bisector axis
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(mid + Math.PI/2); // mid is already absolute angle; +PI/2 rotates bisector to point up
+      const imgW=r*0.9;
+      ctx.drawImage(img, -imgW/2, -r, imgW, r);
+      ctx.restore();
+      // Light tint to unify with wheel's dark aesthetic
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
+      ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.fill();
+    } else { ctx.fillStyle=bg; ctx.fill(); }
+    ctx.strokeStyle='#c9973a'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath(); ctx.stroke();
+    ctx.restore();
+    // Only draw text label if no art — art speaks for itself
+    if(!img){
+      const tr=r*0.62, tx=cx+Math.cos(mid)*tr, ty=cy+Math.sin(mid)*tr;
+      ctx.save(); ctx.translate(tx,ty); ctx.rotate(mid+Math.PI/2);
+      const label=s.n.album||(s.n.artist||'(unnamed)');
+      ctx.font='500 19px EB Garamond,serif'; ctx.fillStyle=fg;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      let d=label;
+      while(ctx.measureText(d).width>110&&d.length>3) d=d.slice(0,-1);
+      if(d!==label) d+='…'; ctx.fillText(d,0,0);
+      ctx.restore();
+    }
+    // Weight stars always shown, near the outer edge of the slice
+    if(s.n.weight>1){
+      const tr=r*0.78, tx=cx+Math.cos(mid)*tr, ty=cy+Math.sin(mid)*tr;
+      ctx.save(); ctx.translate(tx,ty); ctx.rotate(mid+Math.PI/2);
+      ctx.font='11px EB Garamond,serif';
+      ctx.fillStyle='rgba(201,151,58,0.85)';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('★'.repeat(Math.min(s.n.weight,5)),0,0);
+      ctx.restore();
+    }
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,22,0,Math.PI*2); ctx.fillStyle='#0d0a04'; ctx.fill();
+  ctx.strokeStyle='#c9973a'; ctx.lineWidth=2; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,r+2,0,Math.PI*2); ctx.strokeStyle='rgba(201,151,58,0.4)'; ctx.lineWidth=3; ctx.stroke();
+}
+
+function winnerIdx(){
+  const sl=slices(); let a=((-wheelAngle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+  for(const s of sl) if(a>=s.start&&a<s.end) return s.i;
+  return 0;
+}
+
+function spinWheel(){
+  if(spinning) return;
+  spinning=true; document.getElementById('spin-btn').disabled=true;
+  let vel=0.18+Math.random()*0.12; const decel=0.00018+Math.random()*0.00008;
+  (function tick(){ vel-=decel; if(vel<=0){ vel=0; spinning=false; drawWheel(); revealWinner(); return; } wheelAngle+=vel; drawWheel(); requestAnimationFrame(tick); })();
+}
+
+function revealWinner(){
+  const idx=winnerIdx(), w=state.nominees[idx]; lastWinner=idx;
+  const name=w.album||w.artist||'the Unnamed Champion';
+  const lore=LORE[Math.floor(Math.random()*LORE.length)](name,w.owner,w.weight);
+  document.getElementById('winner-album-name').textContent=w.album||w.artist||'(Unnamed)';
+  document.getElementById('winner-artist-name').textContent=w.artist||'';
+  document.getElementById('winner-champion-name').textContent=`Champion of ${w.owner} · ${w.weight>1?w.weight+' tourneys endured':'First tourney'}`;
+  document.getElementById('winner-lore').innerHTML=lore;
+  const heroImg=document.getElementById('winner-art-img'), noBg=document.getElementById('winner-no-bg');
+  if(w.artUrl){ heroImg.src=w.artUrl; heroImg.style.display='block'; noBg.style.display='none'; }
+  else { heroImg.style.display='none'; noBg.style.display='block'; }
+  document.getElementById('winner-overlay').classList.add('show');
+  addEntry(w); saveState();
+}
+
+function addEntry(w){
+  const el=document.getElementById('chronicle'); el.querySelector('.empty-chronicle')?.remove();
+  const name=w.album||w.artist||'(unnamed)';
+  const adj=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
+  const a=adj[state.round-1]||state.round+'th';
+  const div=document.createElement('div'); div.className='chronicle-entry';
+  const th=w.artUrl?`<div class="chronicle-thumb"><img src="${w.artUrl}" alt=""></div>`:`<div class="chronicle-thumb"></div>`;
+  div.innerHTML=`${th}<div><div class="chronicle-round">Tournament ${toRoman(state.round)}</div><div class="chronicle-text"><span class="chronicle-album">${name}</span>${w.artist?' by '+w.artist:''} — borne by ${w.owner} — claimed the throne in its ${a} battle${w.weight>1?' after '+w.weight+' tourneys':''}</div></div>`;
+  el.insertBefore(div,el.firstChild);
+  state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:w.weight,artUrl:w.artUrl});
+}
+
+function toRoman(n){return['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'][n-1]||String(n);}
+
+function closeWinner(){ document.getElementById('winner-overlay').classList.remove('show'); showSwapUI(); }
+
+function showSwapUI(){
+  const winOwner=state.nominees[lastWinner].owner; swapDecisions={};
+  document.getElementById('swap-instructions').innerHTML=`<em>The winning album departs. ${winOwner}'s remaining album holds its weight but earns no bonus. The others may keep (gaining +1 weight) or replace (back to 1×).</em>`;
+  const actions=document.getElementById('swap-actions'); actions.innerHTML='';
+  state.nominees.forEach((n,i)=>{
+    const name=n.album||n.artist||'(unnamed)';
+    if(i===lastWinner){
+      swapDecisions[i]='new';
+      actions.innerHTML+=`<div class="swap-row"><span class="swap-row-owner">${n.owner}</span><span class="swap-row-name" style="color:var(--gold-dim);font-style:italic">⟵ Vacant throne — new champion required</span></div>`;
+    } else {
+      const noBonus=n.owner===winOwner; swapDecisions[i]=noBonus?'keep-no-weight':'keep';
+      const kl=noBonus?'Keep (1× stays)':`Keep (+1 → ${n.weight+1}×)`;
+      const row=document.createElement('div'); row.className='swap-row';
+      row.innerHTML=`<span class="swap-row-owner">${n.owner}</span><span class="swap-row-name"><em>${name}</em></span><span class="swap-row-weight">${n.weight}× now</span><div class="swap-toggle"><button class="swap-btn selected" id="bk${i}" onclick="setSwap(${i},'keep')">${kl}</button><button class="swap-btn" id="bs${i}" onclick="setSwap(${i},'swap')">Replace (1×)</button></div>`;
+      actions.appendChild(row);
+    }
+  });
+  document.getElementById('swap-section').classList.add('show');
+  document.getElementById('swap-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function setSwap(i,d){
+  swapDecisions[i]=d;
+  document.getElementById('bk'+i)?.classList.toggle('selected',d==='keep'||d==='keep-no-weight');
+  document.getElementById('bs'+i)?.classList.toggle('selected',d==='swap');
+}
+
+function finalizeSwaps(){
+  state.nominees.forEach((n,i)=>{
+    if(i===lastWinner){ n.artist='';n.album='';n.weight=1;n.artUrl=null;n.sealed=false;n.canonicalArtist=null;n.canonicalAlbum=null; }
+    else if(swapDecisions[i]==='keep') n.weight++;
+    else if(swapDecisions[i]==='swap'){ n.artist='';n.album='';n.weight=1;n.artUrl=null;n.sealed=false;n.canonicalArtist=null;n.canonicalAlbum=null; }
+  });
+  state.round++;
+  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+  document.getElementById('swap-section').classList.remove('show');
+  saveState(); renderNominees(); drawWheel(); updateSpinButton();
+}
+
+function esc(s){ return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function fi(idx,field,val){
+  if(state.nominees[idx].sealed) return;
+  const n=state.nominees[idx];
+  const prev=n[field];
+  n[field]=val;
+  // Only invalidate art if the field value actually changed
+  if(val!==prev){
+    n.artUrl=null;
+    n.canonicalArtist=null;
+    n.canonicalAlbum=null;
+    // Remove stale cache entry so next fetch is fresh
+    const cacheKey=(n.artist+'|||'+n.album).toLowerCase();
+    delete artCache[cacheKey];
+  }
+  updateSealButton(idx);
+  drawWheel();
+  // Only fetch when both fields have real content (at least 2 chars each)
+  if(n.artist.trim().length>1 && n.album.trim().length>1)
+    scheduleArtFetch(idx);
+  else {
+    clearTimeout(artTimers[idx]);
+    if(!n.artist.trim()||!n.album.trim())
+      setArtPreview(idx,'<span class="art-placeholder">Fill both fields to fetch cover art</span>');
+  }
+}
+
+function renderNominees(){
+  const grid=document.getElementById('nominees-grid'); grid.innerHTML='';
+  state.nominees.forEach((n,i)=>{
+    const [,accent]=COLORS[i%COLORS.length];
+    const pips=Array.from({length:5},(_,j)=>`<span class="pip ${j<n.weight?'active':''}"></span>`).join('');
+    let artHtml;
+    if(n.artUrl) artHtml=`<img src="${esc(n.artUrl)}" alt="cover" />`;
+    else if(n.sealed) artHtml=`<span class="art-error">No art found</span>`;
+    else if(n.artist&&n.album) artHtml=`<span class="art-loading">Seeking cover…</span>`;
+    else artHtml=`<span class="art-placeholder">Fill both fields to fetch cover art</span>`;
+
+    const card=document.createElement('div');
+    card.className='nominee-card'+(n.sealed?' sealed':'');
+    card.id='card-'+i;
+    card.style.borderTopColor=accent;
+    const canSeal=!n.sealed&&n.artist.trim()!==''&&n.album.trim()!=='';
+    card.innerHTML=`
+      <div class="card-header">
+        <div class="nominee-owner">${n.owner} · Seat ${['I','II','III','IV','V','VI'][i]}</div>
+        <div class="sealed-badge">✦ Sealed</div>
+      </div>
+      <div class="art-preview" id="ap-${i}">${artHtml}</div>
+      <div class="field-group">
+        <div class="field-row">
+          <label class="field-label">Artist</label>
+          <input class="field-input" type="text" placeholder="Artist name…" value="${esc(n.artist)}"
+            data-field="artist"
+            oninput="fi(${i},'artist',this.value)" onblur="saveState()" ${n.sealed?'readonly':''} />
+        </div>
+        <div class="field-row">
+          <label class="field-label">Album</label>
+          <input class="field-input" type="text" placeholder="Album title…" value="${esc(n.album)}"
+            data-field="album"
+            oninput="fi(${i},'album',this.value)" onblur="saveState()" ${n.sealed?'readonly':''} />
+        </div>
+      </div>
+      <div class="weight-row">${pips}<span class="weight-label">${n.weight}× weight</span></div>
+      <div class="card-actions">
+        <button class="seal-btn ${canSeal?'visible':''}" id="seal-${i}" onclick="sealCard(${i})">✦ Seal this Champion</button>
+        <button class="unlock-btn" onclick="unsealCard(${i})">Edit</button>
+      </div>`;
+    grid.appendChild(card);
+
+    // If card has both fields and isn't sealed, trigger art fetch
+    if(!n.sealed&&n.artist&&n.album&&!n.artUrl) scheduleArtFetch(i);
+  });
+  drawWheel();
+}
+
+function restoreChronicle(){
+  if(!state.chronicle?.length) return;
+  const el=document.getElementById('chronicle'); el.querySelector('.empty-chronicle')?.remove();
+  [...state.chronicle].reverse().forEach(e=>{
+    const adj=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
+    const a=adj[e.round-1]||e.round+'th';
+    const div=document.createElement('div'); div.className='chronicle-entry';
+    const th=e.artUrl?`<div class="chronicle-thumb"><img src="${e.artUrl}" alt=""></div>`:`<div class="chronicle-thumb"></div>`;
+    div.innerHTML=`${th}<div><div class="chronicle-round">Tournament ${toRoman(e.round)}</div><div class="chronicle-text"><span class="chronicle-album">${e.album}</span>${e.artist?' by '+e.artist:''} — borne by ${e.owner} — claimed the throne in its ${a} battle${e.rounds>1?' after '+e.rounds+' tourneys':''}</div></div>`;
+    el.insertBefore(div,el.firstChild);
+  });
+}
+
+document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+renderNominees();
+restoreChronicle();
+drawWheel();
+updateSpinButton();
+</script>
+<!-- SCROLL OF LORE -->
+<div class="scroll-overlay" id="scroll-overlay" onclick="closeScroll()"></div>
+
+<div class="scroll-tab" id="scroll-tab" onclick="openScroll()" title="The Scroll of Lore">
+  <div class="scroll-tab-roll"></div>
+  <div class="scroll-tab-body">
+    <span class="scroll-tab-icon">📜</span>
+    <span class="scroll-tab-label">How to Play</span>
+  </div>
+  <div class="scroll-tab-roll"></div>
+</div>
+
+<div class="scroll-panel" id="scroll-panel">
+  <div class="scroll-panel-inner">
+    <div class="scroll-roll-top"></div>
+    <div class="scroll-content">
+      <div class="scroll-title">The Scroll of Lore</div>
+      <div class="scroll-subtitle">A guide for the initiated</div>
+      <div class="scroll-divider">⸻✦⸻</div>
+
+      <div class="scroll-body">
+
+        <div class="scroll-section-head">I. The Assembly</div>
+        <p>Three champions gather — <strong>Baxter</strong>, <strong>Chris</strong>, and <strong>Erik</strong> — each bearing two album nominees into the tournament hall. Enter your <em>artist</em> and <em>album</em> into each of your two seats. The Wheel shall seek the cover art from the archives.</p>
+
+        <div class="scroll-section-head">II. The Sealing</div>
+        <p>When your champion is named and its cover art retrieved, press <em>✦ Seal this Champion</em> to lock it in. The canonical title and artist shall be inscribed from the archives at the moment of sealing. Only when all six seats are sealed may the Wheel be invoked.</p>
+        <p>Should you wish to reconsider, press <em>Edit</em> to unseal and try again.</p>
+
+        <div class="scroll-section-head">III. The Spinning</div>
+        <p>One among you shall press <em>Decree the Fates</em>. The Wheel turns, weighted by the burden each album carries — long-suffering nominees spin with greater fortune than fresh recruits. When the Wheel rests, the chosen album is revealed with all due ceremony.</p>
+
+        <div class="scroll-section-head">IV. The Weighing</div>
+        <p>After the winner is proclaimed, the roster must be reformed for the next tourney:</p>
+        <p><strong>The winner's owner</strong> must nominate a new album to fill the vacant seat. Their remaining album keeps its weight but earns no bonus for the round.</p>
+        <p><strong>The other two champions</strong> may choose for each of their surviving albums: <em>Keep</em> it, and it grows heavier by one weight — making it more likely to be chosen in future tourneys. Or <em>Replace</em> it with a new nomination, which enters at ordinary weight.</p>
+
+        <div class="scroll-section-head">V. The Weight of Years</div>
+        <p>Weight is earned through patience. An album that survives one tourney spins with <strong>2×</strong> the fortune of a newcomer. Two tourneys: <strong>3×</strong>. The longer an album waits, the more the Fates favour it — but replace it, and all accumulated fortune is lost.</p>
+
+        <div class="scroll-section-head">VI. The Chronicle</div>
+        <p>Every tournament is recorded in the <em>Chronicle of Battles</em> below the wheel. The history of champions, their owners, and how long they waited before glory is preserved for all to witness.</p>
+
+        <div class="scroll-divider">⸻✦⸻</div>
+        <p style="text-align:center;font-style:italic;color:#6a4010;font-size:12px;">May the Fates be ever in your favour.<br>Or at least tolerably so.</p>
+
+        <div class="scroll-close" onclick="closeScroll()">✦ Roll up the Scroll ✦</div>
+      </div>
+    </div>
+    <div class="scroll-roll-bottom"></div>
+  </div>
+</div>
+
+<script>
+function openScroll(){
+  document.getElementById('scroll-panel').classList.add('open');
+  document.getElementById('scroll-overlay').classList.add('open');
+  document.getElementById('scroll-tab').style.opacity='0';
+  document.getElementById('scroll-tab').style.pointerEvents='none';
+}
+function closeScroll(){
+  document.getElementById('scroll-panel').classList.remove('open');
+  document.getElementById('scroll-overlay').classList.remove('open');
+  document.getElementById('scroll-tab').style.opacity='1';
+  document.getElementById('scroll-tab').style.pointerEvents='all';
+}
+</script>
+</body>
+</html>
