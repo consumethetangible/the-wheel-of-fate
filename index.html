@@ -611,6 +611,18 @@ const LORE=[
 
 const SAVED_KEY='wheelOfFates_v3';
 
+function migrateState(){
+  // Migrate data from older save keys so round/weights aren't lost
+  for(const oldKey of ['wheelOfFates_v1','wheelOfFates_v2']){
+    const raw=localStorage.getItem(oldKey);
+    if(raw && !localStorage.getItem(SAVED_KEY)){
+      localStorage.setItem(SAVED_KEY, raw);
+      localStorage.removeItem(oldKey);
+    }
+  }
+}
+migrateState();
+
 function defaultNominees(){
   return[
     {artist:'',album:'',owner:'Baxter',weight:1,artUrl:null,sealed:false},
@@ -893,6 +905,7 @@ function revealWinner(){
   const heroImg=document.getElementById('winner-art-img'), noBg=document.getElementById('winner-no-bg');
   if(w.artUrl){ heroImg.src=w.artUrl; heroImg.style.display='block'; noBg.style.display='none'; }
   else { heroImg.style.display='none'; noBg.style.display='block'; }
+  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
   document.getElementById('winner-overlay').classList.add('show');
   addEntry(w); saveState();
 }
