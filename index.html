@@ -142,6 +142,66 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
 .pip.active { background:var(--p-gold); }
 .weight-label { font-family:'Cinzel',serif; font-size:9px; color:var(--p-ink-dim); letter-spacing:1px; }
 
+/* WEIGHT CONTROLS */
+.weight-ctrl {
+  display:none;
+  align-items:center;
+  gap:4px;
+  margin-left:auto;
+}
+.nominee-card.sealed .weight-ctrl { display:flex; }
+.w-btn {
+  font-family:'Cinzel',serif; font-size:11px; font-weight:600;
+  width:20px; height:20px; line-height:1;
+  border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.08);
+  color:var(--p-ink-mid); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; padding:0; flex-shrink:0;
+}
+.w-btn:hover { background:rgba(0,0,0,0.16); border-color:var(--p-border); color:var(--p-ink); }
+.w-btn:disabled { opacity:0.3; cursor:not-allowed; }
+.w-val {
+  font-family:'Cinzel',serif; font-size:10px; font-weight:600;
+  color:var(--p-gold); min-width:18px; text-align:center;
+}
+
+/* WEIGHT CONTROLS */
+.weight-ctrl {
+  display:none;
+  align-items:center;
+  gap:4px;
+  margin-left:auto;
+}
+.nominee-card.sealed .weight-ctrl { display:flex; }
+.w-btn {
+  font-family:'Cinzel',serif; font-size:13px; font-weight:600;
+  width:22px; height:22px; line-height:1;
+  border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.08);
+  color:var(--p-ink-mid); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; padding:0; flex-shrink:0;
+}
+.w-btn:hover { background:rgba(0,0,0,0.16); border-color:var(--p-border); color:var(--p-ink); }
+.w-btn:disabled { opacity:0.3; cursor:not-allowed; }
+.w-val {
+  font-family:'Cinzel',serif; font-size:10px; font-weight:600;
+  color:var(--p-gold); min-width:20px; text-align:center;
+}
+
+/* WEIGHT CONTROLS */
+.weight-ctrl { display:none; align-items:center; gap:4px; margin-left:auto; }
+.nominee-card.sealed .weight-ctrl { display:flex; }
+.w-btn {
+  font-family:'Cinzel',serif; font-size:13px; font-weight:600;
+  width:22px; height:22px; border:1px solid var(--p-border-dim);
+  background:rgba(0,0,0,0.08); color:var(--p-ink-mid); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; padding:0; flex-shrink:0;
+}
+.w-btn:hover { background:rgba(0,0,0,0.16); border-color:var(--p-border); color:var(--p-ink); }
+.w-btn:disabled { opacity:0.3; cursor:not-allowed; }
+.w-val { font-family:'Cinzel',serif; font-size:10px; font-weight:600; color:var(--p-gold); min-width:20px; text-align:center; }
+
 /* SEAL / UNLOCK BUTTONS */
 .card-actions { display:flex; gap:6px; margin-top:2px; }
 .seal-btn {
@@ -530,7 +590,10 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
       <div class="winner-ornament">✦ ✦ ✦</div>
       <div class="winner-champion" id="winner-champion-name"></div>
       <div class="winner-lore" id="winner-lore"></div>
-      <button class="modal-btn" onclick="closeWinner()">Accept the Decree &amp; Prepare the Roster</button>
+      <div style="display:flex;gap:10px;margin-top:0;">
+        <button class="modal-btn" style="flex:1" onclick="respinWheel()">↺ Re-spin the Wheel</button>
+        <button class="modal-btn" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008;" onclick="closeWinner()">Accept the Decree &amp; Prepare the Roster</button>
+      </div>
     </div>
   </div>
 </div>
@@ -731,6 +794,8 @@ function updateSpinButton(){
   } else {
     status.innerHTML=`<span class="ready-count">${count} of 6</span> champions sealed`;
   }
+  // Keep round badge in sync with state at all times
+  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
 }
 
 // ── WHEEL ──────────────────────────────────────────────
@@ -846,6 +911,26 @@ function addEntry(w){
 
 function toRoman(n){return['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'][n-1]||String(n);}
 
+function respinWheel(){
+  // Dismiss winner overlay and spin again without recording or incrementing round
+  document.getElementById('winner-overlay').classList.remove('show');
+  lastWinner=null;
+  // Re-enable spin and spin immediately
+  spinning=false;
+  spinWheel();
+}
+
+function respinWheel(){
+  document.getElementById('winner-overlay').classList.remove('show');
+  if(state.chronicle.length) state.chronicle.shift();
+  const el=document.getElementById('chronicle');
+  const first=el.querySelector('.chronicle-entry');
+  if(first) first.remove();
+  lastWinner=null;
+  spinning=false;
+  spinWheel();
+}
+
 function closeWinner(){ document.getElementById('winner-overlay').classList.remove('show'); showSwapUI(); }
 
 function showSwapUI(){
@@ -915,6 +1000,63 @@ function fi(idx,field,val){
   }
 }
 
+function adjustWeight(idx, delta){
+  const n=state.nominees[idx];
+  if(!n.sealed||spinning) return;
+  n.weight=Math.max(1, n.weight+delta);
+  // Update pips
+  const card=document.getElementById('card-'+idx);
+  if(card){
+    const pips=card.querySelectorAll('.pip');
+    pips.forEach((p,j)=>p.classList.toggle('active',j<n.weight));
+    const wlabel=card.querySelector('.weight-label');
+    if(wlabel) wlabel.textContent=n.weight+'× weight';
+    const wval=document.getElementById('wval-'+idx);
+    if(wval) wval.textContent=n.weight+'×';
+    const wdn=document.getElementById('wdn-'+idx);
+    if(wdn) wdn.disabled=n.weight<=1;
+  }
+  saveState();
+  drawWheel();
+}
+
+function adjustWeight(idx, delta){
+  const n=state.nominees[idx];
+  if(!n.sealed||spinning) return;
+  n.weight=Math.max(1, n.weight+delta);
+  const card=document.getElementById('card-'+idx);
+  if(card){
+    const pips=card.querySelectorAll('.pip');
+    pips.forEach((p,j)=>p.classList.toggle('active',j<n.weight));
+    const wlabel=card.querySelector('.weight-label');
+    if(wlabel) wlabel.textContent=n.weight+'× weight';
+    const wval=document.getElementById('wval-'+idx);
+    if(wval) wval.textContent=n.weight+'×';
+    const wdn=document.getElementById('wdn-'+idx);
+    if(wdn) wdn.disabled=n.weight<=1;
+  }
+  saveState();
+  drawWheel();
+}
+
+function adjustWeight(idx, delta){
+  const n=state.nominees[idx];
+  if(!n.sealed||spinning) return;
+  n.weight=Math.max(1, n.weight+delta);
+  const card=document.getElementById('card-'+idx);
+  if(card){
+    card.querySelectorAll('.pip').forEach((p,j)=>p.classList.toggle('active',j<n.weight));
+    const wlabel=card.querySelector('.weight-label');
+    if(wlabel) wlabel.textContent=n.weight+'× weight';
+    const wval=document.getElementById('wval-'+idx);
+    if(wval) wval.textContent=n.weight+'×';
+    const wdn=document.getElementById('wdn-'+idx);
+    if(wdn) wdn.disabled=n.weight<=1;
+  }
+  saveState();
+  drawWheel();
+}
+
 function renderNominees(){
   const grid=document.getElementById('nominees-grid'); grid.innerHTML='';
   state.nominees.forEach((n,i)=>{
@@ -951,7 +1093,14 @@ function renderNominees(){
             oninput="fi(${i},'album',this.value)" onblur="saveState()" ${n.sealed?'readonly':''} />
         </div>
       </div>
-      <div class="weight-row">${pips}<span class="weight-label">${n.weight}× weight</span></div>
+      <div class="weight-row">
+        ${pips}<span class="weight-label">${n.weight}× weight</span>
+        <div class="weight-ctrl">
+          <button class="w-btn" id="wdn-${i}" onclick="adjustWeight(${i},-1)" ${n.weight<=1?'disabled':''}>−</button>
+          <span class="w-val" id="wval-${i}">${n.weight}×</span>
+          <button class="w-btn" onclick="adjustWeight(${i},1)">+</button>
+        </div>
+      </div>
       <div class="card-actions">
         <button class="seal-btn ${canSeal?'visible':''}" id="seal-${i}" onclick="sealCard(${i})">✦ Seal this Champion</button>
         <button class="unlock-btn" onclick="unsealCard(${i})">Edit</button>
