@@ -843,7 +843,11 @@ function drawWheel(){
       ctx.save();
       ctx.translate(cx,cy);
       ctx.rotate(mid + Math.PI/2); // mid is already absolute angle; +PI/2 rotates bisector to point up
-      const imgW=r*0.9;
+      // Scale image width to the slice's angular span so heavier albums fill more of the wheel
+      const sliceAngle = s.end - s.start; // in radians
+      // At full circle (2π) the image fills the diameter (2r). Scale linearly.
+      // Clamp between 0.4r (tiny slice) and 1.8r (very large slice) for visual comfort
+      const imgW = Math.min(1.8*r, Math.max(0.4*r, 2*r * (sliceAngle / (Math.PI*2)) * 6));
       ctx.drawImage(img, -imgW/2, -r, imgW, r);
       ctx.restore();
       // Light tint to unify with wheel's dark aesthetic
