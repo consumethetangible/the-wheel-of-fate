@@ -143,52 +143,6 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
 .weight-label { font-family:'Cinzel',serif; font-size:9px; color:var(--p-ink-dim); letter-spacing:1px; }
 
 /* WEIGHT CONTROLS */
-.weight-ctrl {
-  display:none;
-  align-items:center;
-  gap:4px;
-  margin-left:auto;
-}
-.nominee-card.sealed .weight-ctrl { display:flex; }
-.w-btn {
-  font-family:'Cinzel',serif; font-size:11px; font-weight:600;
-  width:20px; height:20px; line-height:1;
-  border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.08);
-  color:var(--p-ink-mid); cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:all 0.15s; padding:0; flex-shrink:0;
-}
-.w-btn:hover { background:rgba(0,0,0,0.16); border-color:var(--p-border); color:var(--p-ink); }
-.w-btn:disabled { opacity:0.3; cursor:not-allowed; }
-.w-val {
-  font-family:'Cinzel',serif; font-size:10px; font-weight:600;
-  color:var(--p-gold); min-width:18px; text-align:center;
-}
-
-/* WEIGHT CONTROLS */
-.weight-ctrl {
-  display:none;
-  align-items:center;
-  gap:4px;
-  margin-left:auto;
-}
-.nominee-card.sealed .weight-ctrl { display:flex; }
-.w-btn {
-  font-family:'Cinzel',serif; font-size:13px; font-weight:600;
-  width:22px; height:22px; line-height:1;
-  border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.08);
-  color:var(--p-ink-mid); cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:all 0.15s; padding:0; flex-shrink:0;
-}
-.w-btn:hover { background:rgba(0,0,0,0.16); border-color:var(--p-border); color:var(--p-ink); }
-.w-btn:disabled { opacity:0.3; cursor:not-allowed; }
-.w-val {
-  font-family:'Cinzel',serif; font-size:10px; font-weight:600;
-  color:var(--p-gold); min-width:20px; text-align:center;
-}
-
-/* WEIGHT CONTROLS */
 .weight-ctrl { display:none; align-items:center; gap:4px; margin-left:auto; }
 .nominee-card.sealed .weight-ctrl { display:flex; }
 .w-btn {
@@ -314,6 +268,45 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
 .chronicle-text { font-size:13px; font-style:italic; color:var(--p-ink); line-height:1.6; }
 .chronicle-album { color:var(--p-gold); font-style:normal; font-weight:600; }
 .empty-chronicle { padding:28px; text-align:center; font-style:italic; font-size:13px; color:var(--p-ink-dim); }
+
+/* ── EXPORT / IMPORT ────────────────────────────────── */
+.data-btns {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 200;
+}
+.data-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  background: linear-gradient(135deg, #c8a96e 0%, #e8d5a0 40%, #d4b87a 70%, #b8955a 100%);
+  border: 1px solid #8a6a2a;
+  color: #3a1e00;
+  cursor: pointer;
+  border-radius: 4px 4px 4px 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.data-btn:hover { background: linear-gradient(135deg, #d4b87a 0%, #f0e0b0 40%, #e0c88a 70%, #c4a060 100%); }
+#import-file { display: none; }
+
+/* EXPORT / IMPORT */
+.data-btns { display:flex; gap:10px; justify-content:center; width:100%; max-width:740px; padding-bottom:8px; }
+.data-btn {
+  font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  padding:8px 18px; border:1px solid var(--p-border-dim);
+  background:rgba(0,0,0,0.06); color:var(--p-ink-mid);
+  cursor:pointer; transition:all 0.2s; flex:1; max-width:200px;
+}
+.data-btn:hover { border-color:var(--p-border); color:var(--p-ink); background:rgba(0,0,0,0.1); }
+#import-file { display:none; }
 
 /* ── SCROLL OF LORE ─────────────────────────────────── */
 .scroll-tab {
@@ -572,6 +565,13 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
       </div>
     </div>
   </div>
+
+  <div class="data-btns">
+    <button class="data-btn" onclick="exportState()">⬇ Export Save</button>
+    <button class="data-btn" onclick="document.getElementById('import-file').click()">⬆ Import Save</button>
+    <input type="file" id="import-file" accept=".json" onchange="importState(event)">
+  </div>
+
 </div>
 
 <div class="winner-overlay" id="winner-overlay">
@@ -610,18 +610,6 @@ const LORE=[
 ];
 
 const SAVED_KEY='wheelOfFates_v3';
-
-function migrateState(){
-  // Migrate data from older save keys so round/weights aren't lost
-  for(const oldKey of ['wheelOfFates_v1','wheelOfFates_v2']){
-    const raw=localStorage.getItem(oldKey);
-    if(raw && !localStorage.getItem(SAVED_KEY)){
-      localStorage.setItem(SAVED_KEY, raw);
-      localStorage.removeItem(oldKey);
-    }
-  }
-}
-migrateState();
 
 function defaultNominees(){
   return[
@@ -843,11 +831,7 @@ function drawWheel(){
       ctx.save();
       ctx.translate(cx,cy);
       ctx.rotate(mid + Math.PI/2); // mid is already absolute angle; +PI/2 rotates bisector to point up
-      // Scale image width to the slice's angular span so heavier albums fill more of the wheel
-      const sliceAngle = s.end - s.start; // in radians
-      // At full circle (2π) the image fills the diameter (2r). Scale linearly.
-      // Clamp between 0.4r (tiny slice) and 1.8r (very large slice) for visual comfort
-      const imgW = Math.min(1.8*r, Math.max(0.4*r, 2*r * (sliceAngle / (Math.PI*2)) * 6));
+      const imgW=r*0.9;
       ctx.drawImage(img, -imgW/2, -r, imgW, r);
       ctx.restore();
       // Light tint to unify with wheel's dark aesthetic
@@ -909,7 +893,6 @@ function revealWinner(){
   const heroImg=document.getElementById('winner-art-img'), noBg=document.getElementById('winner-no-bg');
   if(w.artUrl){ heroImg.src=w.artUrl; heroImg.style.display='block'; noBg.style.display='none'; }
   else { heroImg.style.display='none'; noBg.style.display='block'; }
-  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
   document.getElementById('winner-overlay').classList.add('show');
   addEntry(w); saveState();
 }
@@ -928,14 +911,7 @@ function addEntry(w){
 
 function toRoman(n){return['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'][n-1]||String(n);}
 
-function respinWheel(){
-  // Dismiss winner overlay and spin again without recording or incrementing round
-  document.getElementById('winner-overlay').classList.remove('show');
-  lastWinner=null;
-  // Re-enable spin and spin immediately
-  spinning=false;
-  spinWheel();
-}
+
 
 function respinWheel(){
   document.getElementById('winner-overlay').classList.remove('show');
@@ -1017,44 +993,9 @@ function fi(idx,field,val){
   }
 }
 
-function adjustWeight(idx, delta){
-  const n=state.nominees[idx];
-  if(!n.sealed||spinning) return;
-  n.weight=Math.max(1, n.weight+delta);
-  // Update pips
-  const card=document.getElementById('card-'+idx);
-  if(card){
-    const pips=card.querySelectorAll('.pip');
-    pips.forEach((p,j)=>p.classList.toggle('active',j<n.weight));
-    const wlabel=card.querySelector('.weight-label');
-    if(wlabel) wlabel.textContent=n.weight+'× weight';
-    const wval=document.getElementById('wval-'+idx);
-    if(wval) wval.textContent=n.weight+'×';
-    const wdn=document.getElementById('wdn-'+idx);
-    if(wdn) wdn.disabled=n.weight<=1;
-  }
-  saveState();
-  drawWheel();
-}
 
-function adjustWeight(idx, delta){
-  const n=state.nominees[idx];
-  if(!n.sealed||spinning) return;
-  n.weight=Math.max(1, n.weight+delta);
-  const card=document.getElementById('card-'+idx);
-  if(card){
-    const pips=card.querySelectorAll('.pip');
-    pips.forEach((p,j)=>p.classList.toggle('active',j<n.weight));
-    const wlabel=card.querySelector('.weight-label');
-    if(wlabel) wlabel.textContent=n.weight+'× weight';
-    const wval=document.getElementById('wval-'+idx);
-    if(wval) wval.textContent=n.weight+'×';
-    const wdn=document.getElementById('wdn-'+idx);
-    if(wdn) wdn.disabled=n.weight<=1;
-  }
-  saveState();
-  drawWheel();
-}
+
+
 
 function adjustWeight(idx, delta){
   const n=state.nominees[idx];
@@ -1072,6 +1013,43 @@ function adjustWeight(idx, delta){
   }
   saveState();
   drawWheel();
+}
+
+function exportState(){
+  const data=JSON.stringify({
+    round:state.round,
+    nominees:state.nominees.map(n=>({...n,artUrl:null})),
+    chronicle:state.chronicle,
+  },null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='wheel-of-fates-save.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importState(event){
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.nominees||!Array.isArray(data.nominees)) throw new Error('Invalid save file');
+      state.round=data.round||1;
+      state.nominees=data.nominees.map(n=>({...n,artUrl:null,sealed:n.sealed||false}));
+      state.chronicle=data.chronicle||[];
+      saveState();
+      document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+      document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
+      renderNominees();
+      restoreChronicle();
+      drawWheel();
+      updateSpinButton();
+      alert('Save loaded — Round '+toRoman(state.round));
+    }catch(err){ alert('Failed to load save: '+err.message); }
+  };
+  reader.readAsText(file);
+  event.target.value='';
 }
 
 function renderNominees(){
@@ -1149,6 +1127,13 @@ restoreChronicle();
 drawWheel();
 updateSpinButton();
 </script>
+<!-- EXPORT / IMPORT -->
+<div class="data-btns">
+  <button class="data-btn" onclick="exportState()">⬇ Export State</button>
+  <button class="data-btn" onclick="document.getElementById('import-file').click()">⬆ Import State</button>
+  <input type="file" id="import-file" accept=".json" onchange="importState(this)">
+</div>
+
 <!-- SCROLL OF LORE -->
 <div class="scroll-overlay" id="scroll-overlay" onclick="closeScroll()"></div>
 
@@ -1203,6 +1188,52 @@ updateSpinButton();
 </div>
 
 <script>
+function exportState(){
+  const data = {
+    round: state.round,
+    nominees: state.nominees.map(n => ({...n, artUrl: null})),
+    chronicle: state.chronicle,
+    exportedAt: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'wheel-of-fates-round-' + toRoman(state.round) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importState(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!data.nominees || !Array.isArray(data.nominees)) throw new Error('Invalid file');
+      // Merge in — reset artUrls since images are session-only
+      data.nominees.forEach(n => { n.artUrl = null; if(n.sealed===undefined) n.sealed=false; });
+      state.round = data.round || 1;
+      state.nominees = data.nominees;
+      state.chronicle = data.chronicle || [];
+      saveState();
+      document.getElementById('round-display').textContent = 'Round ' + toRoman(state.round);
+      renderNominees();
+      const el = document.getElementById('chronicle');
+      el.innerHTML = '<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
+      restoreChronicle();
+      drawWheel();
+      updateSpinButton();
+      // Clear the file input so the same file can be re-imported if needed
+      input.value = '';
+    } catch(err){
+      alert('Could not load that file — make sure it is a valid Wheel of Fates export.');
+      input.value = '';
+    }
+  };
+  reader.readAsText(file);
+}
+
 function openScroll(){
   document.getElementById('scroll-panel').classList.add('open');
   document.getElementById('scroll-overlay').classList.add('open');
