@@ -219,6 +219,30 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
 }
 .modal-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
 
+/* TALE MODALS */
+.tale-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:150; align-items:center; justify-content:center; padding:20px; }
+.tale-overlay.show { display:flex; }
+.tale-writer-modal { background:linear-gradient(160deg,#e8d5a0 0%,#d4b87a 100%); border:2px solid var(--p-border); max-width:540px; width:100%; animation:revealModal 0.4s ease-out; box-shadow:0 20px 60px rgba(0,0,0,0.6); padding:24px; }
+.tale-writer-header { font-family:'Cinzel',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--p-ink-mid); margin-bottom:16px; text-align:center; }
+.tale-writer-info { display:flex; gap:12px; align-items:center; margin-bottom:14px; padding:10px 12px; background:rgba(0,0,0,0.06); border:1px solid var(--p-border-dim); }
+.tale-writer-art { width:48px; height:48px; flex-shrink:0; overflow:hidden; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.15); }
+.tale-writer-art img { width:100%; height:100%; object-fit:cover; display:block; }
+.tale-textarea { width:100%; min-height:150px; background:rgba(255,255,255,0.4); border:1px solid var(--p-border-dim); padding:10px 12px; font-family:'EB Garamond',serif; font-size:14px; line-height:1.75; color:var(--p-ink); resize:vertical; box-sizing:border-box; outline:none; }
+.tale-textarea:focus { border-color:var(--p-border); background:rgba(255,255,255,0.55); }
+.tale-writer-btns { display:flex; gap:8px; margin-top:12px; }
+.tale-reader-modal { background:linear-gradient(160deg,#e8d5a0 0%,#d4b87a 40%,#dfc880 70%,#c8a96e 100%); border:2px solid var(--p-border); max-width:500px; width:100%; animation:revealModal 0.4s ease-out; box-shadow:0 20px 60px rgba(0,0,0,0.6); overflow:hidden; }
+.tale-reader-art { width:100%; padding-top:54%; position:relative; background:#2a1200; overflow:hidden; }
+.tale-reader-no-art { position:absolute; inset:0; background:linear-gradient(135deg,#3a1a00 0%,#1a0800 100%); }
+.tale-reader-art img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.5) saturate(1.2); }
+.tale-reader-art-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 0%,rgba(20,8,0,0.65) 55%,#c8a96e 100%); }
+.tale-reader-art-title { position:absolute; bottom:0; left:0; right:0; padding:16px 24px 8px; }
+.tale-reader-body { padding:6px 24px 22px; }
+.tale-reader-text { font-size:14px; color:var(--p-ink); line-height:1.85; font-style:italic; padding:14px; border-top:1px solid var(--p-border-dim); border-bottom:1px solid var(--p-border-dim); margin:10px 0 16px; text-align:left; min-height:60px; }
+.tale-reader-btns { display:flex; gap:8px; }
+.chronicle-tale-btn { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; text-transform:uppercase; padding:3px 9px; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.05); color:var(--p-ink-mid); cursor:pointer; transition:all 0.15s; margin-top:5px; display:inline-block; }
+.chronicle-tale-btn:hover { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.06); }
+.chronicle-tale-btn.has-tale { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.08); }
+
 /* SWAP */
 .swap-section {
   display:none; width:100%; max-width:740px;
@@ -570,6 +594,7 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
       <div class="winner-lore" id="winner-lore"></div>
       <div style="display:flex;gap:10px;margin-top:0;">
         <button class="modal-btn" style="flex:1" onclick="respinWheel()">↺ Re-spin the Wheel</button>
+        <button class="modal-btn" style="flex:1;font-size:9px;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)" onclick="exportWinnerCard()">📸 Save as Image</button>
         <button class="modal-btn" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008;" onclick="closeWinner()">Accept the Decree &amp; Prepare the Roster</button>
       </div>
     </div>
@@ -621,6 +646,15 @@ state.nominees.forEach(n=>{ n.artUrl=null; if(n.sealed===undefined) n.sealed=fal
 let spinning=false, lastWinner=null, swapDecisions={};
 const artCache={}, imgCache={}, artTimers={};
 
+// Hard-coded cover art for past champions that MusicBrainz can't reliably find.
+// Key: "artist|||album" (lowercase). Add entries here as needed.
+const CHRONICLE_ART_OVERRIDES={
+  'julian cope|||peggy suicide':
+    'https://coverartarchive.org/release/37a4c633-0261-4430-bd09-65df20b514f4/front-250',
+  'the go-betweens|||16 lover\'s lane':
+    'https://coverartarchive.org/release/715276a8-8b14-4c55-8744-7c6610ef5124/front-250',
+};
+
 // ── ART FETCH via iTunes Search API ─────────────────────────────────────────
 // iTunes is explicitly CORS-open, works from file:// with no API key needed.
 // Returns { url, canonicalArtist, canonicalAlbum } or null
@@ -646,17 +680,27 @@ async function fetchArtUrl(artist,album){
       artCache[key]=result;
       return result;
     }
-    // Fallback: if no release had cover-art-archive flag, try the first release anyway
-    const first=data.releases?.[0];
-    if(first){
-      const url=`https://coverartarchive.org/release/${first.id}/front-250`;
-      const result={
-        url,
-        canonicalArtist:first['artist-credit']?.[0]?.artist?.name||null,
-        canonicalAlbum:first.title||null,
-      };
-      artCache[key]=result;
-      return result;
+    // Fallback: no release had a cover-art-archive flag in the API response.
+    // Probe via Image load — the browser handles CORS/redirects transparently.
+    // Returns on the first release whose image actually loads (non-404).
+    for(const rel of(data.releases||[])){
+      const url=`https://coverartarchive.org/release/${rel.id}/front-250`;
+      const loaded=await new Promise(resolve=>{
+        const img=new Image();
+        img.onload=()=>resolve(true);
+        img.onerror=()=>resolve(false);
+        img.src=url;
+        setTimeout(()=>resolve(false),6000); // give up after 6s
+      });
+      if(loaded){
+        const result={
+          url,
+          canonicalArtist:rel['artist-credit']?.[0]?.artist?.name||null,
+          canonicalAlbum:rel.title||null,
+        };
+        artCache[key]=result;
+        return result;
+      }
     }
   }catch(e){ console.error('[WheelOfFates] fetchArtUrl error',e); }
   artCache[key]=null;
@@ -804,13 +848,14 @@ function drawWheel(){
     if(img){
       ctx.clip();
       // Rotate so slice bisector points straight up (12 o'clock)
-      // Then draw image: top-edge at outer rim (y=-r), bottom at center (y=0)
-      // Image is square so width = r, centered on the bisector axis
       ctx.save();
       ctx.translate(cx,cy);
-      ctx.rotate(mid + Math.PI/2); // mid is already absolute angle; +PI/2 rotates bisector to point up
-      const imgW=r*0.9;
-      ctx.drawImage(img, -imgW/2, -r, imgW, r);
+      ctx.rotate(mid + Math.PI/2);
+      // Scale image to cover the full slice: chord width at rim = 2*r*sin(span/2)
+      const span=s.end-s.start;
+      const chord=2*r*Math.sin(span/2);
+      const imgSize=Math.max(chord, r)*1.08; // cover both dimensions, slight buffer
+      ctx.drawImage(img, -imgSize/2, -r, imgSize, imgSize);
       ctx.restore();
       // Light tint to unify with wheel's dark aesthetic
       ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
@@ -856,7 +901,7 @@ function winnerIdx(){
 function spinWheel(){
   if(spinning) return;
   spinning=true; document.getElementById('spin-btn').disabled=true;
-  let vel=0.18+Math.random()*0.12; const decel=0.00018+Math.random()*0.00008;
+  let vel=0.30+Math.random()*0.10; const decel=vel/(270+Math.random()*60); // ~4.5–5.5 s at 60 fps
   (function tick(){ vel-=decel; if(vel<=0){ vel=0; spinning=false; drawWheel(); revealWinner(); return; } wheelAngle+=vel; drawWheel(); requestAnimationFrame(tick); })();
 }
 
@@ -882,7 +927,8 @@ function addEntry(w){
   const a=adj[state.round-1]||state.round+'th';
   const div=document.createElement('div'); div.className='chronicle-entry';
   const th=w.artUrl?`<div class="chronicle-thumb"><img src="${w.artUrl}" alt=""></div>`:`<div class="chronicle-thumb"></div>`;
-  div.innerHTML=`${th}<div><div class="chronicle-round">Tournament ${toRoman(state.round)}</div><div class="chronicle-text"><span class="chronicle-album">${name}</span>${w.artist?' by '+w.artist:''} — borne by ${w.owner} — claimed the throne in its ${a} battle${w.weight>1?' after '+w.weight+' tourneys':''}</div></div>`;
+  const taleBtn=`<button class="chronicle-tale-btn" id="tale-btn-${state.round}" onclick="openTaleWriter(${state.round})">⚔️ Write</button>`;
+  div.innerHTML=`${th}<div style="flex:1"><div class="chronicle-round">Tournament ${toRoman(state.round)}</div><div class="chronicle-text"><span class="chronicle-album">${name}</span>${w.artist?' by '+w.artist:''} — borne by ${w.owner} — claimed the throne in its ${a} battle${w.weight>1?' after '+w.weight+' tourneys':''}</div><div style="text-align:right">${taleBtn}</div></div>`;
   el.insertBefore(div,el.firstChild);
   state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:w.weight,artUrl:w.artUrl});
 }
@@ -1093,9 +1139,30 @@ function restoreChronicle(){
     const adj=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
     const a=adj[e.round-1]||e.round+'th';
     const div=document.createElement('div'); div.className='chronicle-entry';
-    const th=e.artUrl?`<div class="chronicle-thumb"><img src="${e.artUrl}" alt=""></div>`:`<div class="chronicle-thumb"></div>`;
-    div.innerHTML=`${th}<div><div class="chronicle-round">Tournament ${toRoman(e.round)}</div><div class="chronicle-text"><span class="chronicle-album">${e.album}</span>${e.artist?' by '+e.artist:''} — borne by ${e.owner} — claimed the throne in its ${a} battle${e.rounds>1?' after '+e.rounds+' tourneys':''}</div></div>`;
+    const thumbId=`chronicle-thumb-${e.round}`;
+    // Apply hard-coded override — wins over any cached/fetched URL for known entries
+    const _overrideKey=(e.artist+'|||'+e.album).toLowerCase();
+    if(CHRONICLE_ART_OVERRIDES[_overrideKey]) e.artUrl=CHRONICLE_ART_OVERRIDES[_overrideKey];
+    const th=e.artUrl
+      ?`<div class="chronicle-thumb" id="${thumbId}"><img src="${e.artUrl}" alt=""></div>`
+      :`<div class="chronicle-thumb" id="${thumbId}"></div>`;
+    const taleBtn=e.tale
+      ?`<button class="chronicle-tale-btn has-tale" id="tale-btn-${e.round}" onclick="openTaleReader(${e.round})">📜 Read</button>`
+      :`<button class="chronicle-tale-btn" id="tale-btn-${e.round}" onclick="openTaleWriter(${e.round})">⚔️ Write</button>`;
+    div.innerHTML=`${th}<div style="flex:1"><div class="chronicle-round">Tournament ${toRoman(e.round)}</div><div class="chronicle-text"><span class="chronicle-album">${e.album}</span>${e.artist?' by '+e.artist:''} — borne by ${e.owner} — claimed the throne in its ${a} battle${e.rounds>1?' after '+e.rounds+' tourneys':''}</div><div style="text-align:right">${taleBtn}</div></div>`;
     el.insertBefore(div,el.firstChild);
+  });
+  // Fetch cover art for any chronicle entries that are missing it
+  state.chronicle.forEach(e=>{
+    if(!e.artUrl && e.artist && e.album){
+      fetchArtUrl(e.artist, e.album).then(result=>{
+        if(!result?.url) return;
+        e.artUrl=result.url;
+        const thumb=document.getElementById(`chronicle-thumb-${e.round}`);
+        if(thumb) thumb.innerHTML=`<img src="${result.url}" alt="">`;
+        saveState(); // persist so it doesn't need re-fetching next session
+      });
+    }
   });
 }
 
@@ -1160,6 +1227,43 @@ updateSpinButton();
   </div>
 </div>
 
+<div class="tale-overlay" id="tale-writer-overlay" onclick="if(event.target===this)closeTaleWriter()">
+  <div class="tale-writer-modal">
+    <div class="tale-writer-header">⚔️ Inscribe the Tale</div>
+    <div class="tale-writer-info" id="tale-writer-info"></div>
+    <textarea class="tale-textarea" id="tale-textarea" placeholder="Write the tale of this battle..."></textarea>
+    <div class="tale-writer-btns">
+      <button class="modal-btn" style="flex:1" onclick="rerollTale()">🎲 Re-roll</button>
+      <button class="modal-btn" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008" onclick="saveTaleFromWriter()">✓ Save the Tale</button>
+      <button class="modal-btn" style="flex:1;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)" onclick="closeTaleWriter()">✕</button>
+    </div>
+  </div>
+</div>
+
+<div class="tale-overlay" id="tale-reader-overlay" onclick="if(event.target===this)closeTaleReader()">
+  <div class="tale-reader-modal">
+    <div class="tale-reader-art" id="tale-reader-art-panel">
+      <div class="tale-reader-no-art" id="tale-reader-no-art"></div>
+      <img id="tale-reader-art-img" src="" alt="" style="display:none">
+      <div class="tale-reader-art-overlay"></div>
+      <div class="tale-reader-art-title">
+        <div class="winner-header-label" id="tale-reader-round-label"></div>
+        <div class="winner-album" id="tale-reader-album-label"></div>
+        <div class="winner-artist" id="tale-reader-artist-label"></div>
+      </div>
+    </div>
+    <div class="tale-reader-body">
+      <div class="winner-ornament">✦ ✦ ✦</div>
+      <div class="tale-reader-text" id="tale-reader-text"></div>
+      <div class="tale-reader-btns">
+        <button class="modal-btn" style="flex:1" onclick="openTaleWriterFromReader()">✏️ Edit</button>
+        <button class="modal-btn" style="flex:1" onclick="exportTaleImage()">📸 Save</button>
+        <button class="modal-btn" style="flex:1;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)" onclick="closeTaleReader()">✕ Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 function exportState(){
   const data = {
@@ -1218,6 +1322,314 @@ function closeScroll(){
   document.getElementById('scroll-overlay').classList.remove('open');
   document.getElementById('scroll-tab').style.opacity='1';
   document.getElementById('scroll-tab').style.pointerEvents='all';
+}
+
+// ── UTILITY HELPERS ─────────────────────────────────────
+
+function stripHtml(html){
+  const tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  return tmp.textContent||tmp.innerText||'';
+}
+
+function fillTextWrapped(ctx,text,x,y,maxW,lineH){
+  const words=text.split(' ');
+  let line='';
+  for(let i=0;i<words.length;i++){
+    const test=line?line+' '+words[i]:words[i];
+    if(ctx.measureText(test).width>maxW&&line){
+      ctx.fillText(line,x,y);
+      line=words[i];
+      y+=lineH;
+    } else { line=test; }
+  }
+  if(line) ctx.fillText(line,x,y);
+  return y;
+}
+
+function ordinalLong(n){
+  return(['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'][n-1])||(n+'th');
+}
+
+async function loadImageForCanvas(url){
+  if(!url) return null;
+  if(imgCache[url] && imgCache[url].crossOrigin==='anonymous') return imgCache[url];
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=url;
+    setTimeout(()=>resolve(null),8000);
+  });
+}
+
+// ── WINNER CARD EXPORT ───────────────────────────────────
+
+async function exportWinnerCard(){
+  if(lastWinner===null) return;
+  await document.fonts.ready;
+  const w=state.nominees[lastWinner];
+  const CW=600,CH=750,AH=300;
+  const canvas=document.createElement('canvas');
+  canvas.width=CW; canvas.height=CH;
+  const c=canvas.getContext('2d');
+
+  // Art section (top 300px)
+  const img=w.artUrl?await loadImageForCanvas(w.artUrl):null;
+  if(img){
+    // object-fit:cover center-crop
+    const sw=img.naturalWidth,sh=img.naturalHeight;
+    const scale=Math.max(CW/sw,AH/sh);
+    const dw=sw*scale,dh=sh*scale;
+    const sx=(dw-CW)/2,sy=(dh-AH)/2;
+    c.drawImage(img,(CW-dw)/2-sx+sx,(AH-dh)/2-sy+sy,dw,dh);
+    // Simplify: center-crop by adjusting source rect
+    const srcScale=Math.max(CW/sw,AH/sh);
+    const srcW=CW/srcScale,srcH=AH/srcScale;
+    c.clearRect(0,0,CW,AH);
+    c.drawImage(img,(sw-srcW)/2,(sh-srcH)/2,srcW,srcH,0,0,CW,AH);
+  } else {
+    const grd=c.createLinearGradient(0,0,CW,AH);
+    grd.addColorStop(0,'#3a1a00'); grd.addColorStop(1,'#1a0800');
+    c.fillStyle=grd; c.fillRect(0,0,CW,AH);
+  }
+  // Dark gradient overlay fading to parchment
+  const ovg=c.createLinearGradient(0,0,0,AH);
+  ovg.addColorStop(0,'rgba(0,0,0,0.35)');
+  ovg.addColorStop(0.55,'rgba(20,8,0,0.65)');
+  ovg.addColorStop(1,'#c8a96e');
+  c.fillStyle=ovg; c.fillRect(0,0,CW,AH);
+
+  // Text on art (bottom-aligned)
+  let ty=AH-10;
+  // Artist
+  c.font='italic 15px "EB Garamond",serif';
+  c.fillStyle='rgba(255,220,160,0.85)';
+  c.textAlign='center'; c.textBaseline='bottom';
+  c.fillText(w.artist||'',CW/2,ty);
+  ty-=20;
+  // Album (bold Cinzel 26px, word-wrapped)
+  c.font='bold 26px "Cinzel",serif';
+  c.fillStyle='#fff8e8';
+  c.textAlign='center'; c.textBaseline='bottom';
+  const albumWords=(w.album||w.artist||'(Unnamed)').split(' ');
+  let aLines=[],aLine='';
+  for(const aw of albumWords){
+    const test=aLine?aLine+' '+aw:aw;
+    if(c.measureText(test).width>CW-80&&aLine){ aLines.push(aLine); aLine=aw; }
+    else aLine=test;
+  }
+  if(aLine) aLines.push(aLine);
+  ty-=(aLines.length-1)*32;
+  for(let li=0;li<aLines.length;li++){
+    c.fillText(aLines[li],CW/2,ty+li*32);
+  }
+  ty-=24;
+  // "THE WHEEL HAS SPOKEN"
+  c.font='10px "Cinzel",serif';
+  c.fillStyle='rgba(255,220,140,0.8)';
+  c.letterSpacing='4px';
+  c.textBaseline='bottom';
+  c.fillText('THE WHEEL HAS SPOKEN',CW/2,ty);
+  c.letterSpacing='0px';
+
+  // Parchment body (below art)
+  const bodyY=AH;
+  const brdg=c.createLinearGradient(0,bodyY,0,CH);
+  brdg.addColorStop(0,'#e8d5a0'); brdg.addColorStop(1,'#c8a96e');
+  c.fillStyle=brdg; c.fillRect(0,bodyY,CW,CH-bodyY);
+
+  let by=bodyY+26;
+  // Ornament
+  c.font='12px "EB Garamond",serif';
+  c.fillStyle='rgba(90,48,0,0.7)';
+  c.textAlign='center'; c.textBaseline='top';
+  c.fillText('✦  ✦  ✦',CW/2,by); by+=28;
+  // Champion + round line
+  c.font='italic 14px "EB Garamond",serif';
+  c.fillStyle='#5a3000';
+  c.textAlign='center'; c.textBaseline='top';
+  const champLine=`Champion of ${w.owner} · ${w.weight>1?w.weight+' tourneys endured':'First tourney'} · Tournament ${toRoman(state.round)}`;
+  c.fillText(champLine,CW/2,by); by+=24;
+  // Divider
+  c.strokeStyle='rgba(100,60,10,0.3)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(40,by); c.lineTo(CW-40,by); c.stroke(); by+=14;
+  // Lore text
+  const loreText=stripHtml(document.getElementById('winner-lore').innerHTML);
+  c.font='italic 13px "EB Garamond",serif';
+  c.fillStyle='#2a1200';
+  c.textAlign='left'; c.textBaseline='top';
+  fillTextWrapped(c,loreText,40,by,CW-80,20); by+=100;
+  // Footer divider
+  const footerY=CH-28;
+  c.strokeStyle='rgba(100,60,10,0.25)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(40,footerY-8); c.lineTo(CW-40,footerY-8); c.stroke();
+  // Footer text
+  c.font='8px "Cinzel",serif';
+  c.fillStyle='rgba(90,48,0,0.5)';
+  c.textAlign='center'; c.textBaseline='top';
+  c.fillText('WHEEL OF FATES · ALBUM DISCUSSION CLUB',CW/2,footerY);
+
+  const link=document.createElement('a');
+  link.download=`winner-tournament-${toRoman(state.round)}.png`;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── TALE TEMPLATES ───────────────────────────────────────
+
+const TALE_TEMPLATES=[
+  e=>`In the ${ordinalLong(e.round)} tournament of these assembled chronicles, the Wheel of Fates saw fit to bestow its favour upon "${e.album}" — the offering of ${e.owner}. The work had endured ${e.rounds>1?e.rounds+' prior tourneys of patient vigil':'not a single prior tourney, entering fresh to the lists'}, yet on this day the Fates turned their golden face upon it. Let this inscription stand as testament to its triumph.`,
+
+  e=>`Hear ye, hear ye! On this day of Tournament ${toRoman(e.round)}, a great battle was waged in the hall of listening, and lo — ${e.owner}'s chosen offering, "${e.album}"${e.artist?' by '+e.artist:''}, did emerge victorious! The crowd did roar! The minstrels did play! And somewhere, probably, there was cake. The album had been waiting ${e.rounds>1?e.rounds+' whole tourneys':e.rounds+' tourney'}, gathering its strength like a sleeping bear, and when the Wheel spun, it spun true!`,
+
+  e=>`The wheel turned. It always turns. And when the spinning ceased and silence fell over the assembled champions, one name rang out above the rest — "${e.album}". ${e.owner} had carried it faithfully through ${e.rounds>1?e.rounds+' long tournaments':ordinalLong(e.rounds)+' tournament'}, and at last, in Tournament ${toRoman(e.round)}, the Fates exacted their price of glory. Let none say the Wheel is unjust.`,
+
+  e=>`They said it couldn't be done. They whispered in the corridors that "${e.album}" — ${e.owner}'s dark horse — had waited too long, grown too heavy with expectation. ${e.rounds>1?'After '+e.rounds+' tournaments without glory, ':e.rounds===1?'In its very first tournament, ':''}the doubters fell silent. Tournament ${toRoman(e.round)} belonged to ${e.owner}${e.artist?' and '+e.artist:''}. Write it in the chronicles. Write it in fire.`,
+
+  e=>`Thus speaks the Record-Keeper of the Listening Throne: In Tournament ${toRoman(e.round)}, the Wheel adjudicated in favour of "${e.album}"${e.artist?', wrought by '+e.artist:''}. Said album had accumulated ${e.rounds} weight${e.rounds!==1?'s':''} of fortune through the passage of ${e.rounds>1?e.rounds+' prior assemblies':'prior assembly'}, becoming ever more likely in the calculus of fate. ${e.owner} shall be duly noted as Champion of this round. The Chronicle is updated accordingly.`,
+];
+
+// ── TALE STATE ────────────────────────────────────────────
+
+let taleWriterRound=null, taleTemplateIdx=0, taleReaderRound=null;
+
+function openTaleWriter(round){
+  const entry=state.chronicle.find(e=>e.round===round);
+  if(!entry) return;
+  taleWriterRound=round;
+  taleTemplateIdx=0;
+  const info=document.getElementById('tale-writer-info');
+  const artHtml=entry.artUrl?`<div class="tale-writer-art"><img src="${esc(entry.artUrl)}" alt=""></div>`:'';
+  info.innerHTML=`${artHtml}<div><div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--p-ink-mid);margin-bottom:3px">Tournament ${toRoman(round)}</div><div style="font-size:14px;font-weight:600;color:var(--p-ink)">${esc(entry.album)}</div><div style="font-size:12px;font-style:italic;color:var(--p-ink-mid)">${esc(entry.artist||'')} · ${esc(entry.owner)}</div></div>`;
+  const ta=document.getElementById('tale-textarea');
+  ta.value=entry.tale||TALE_TEMPLATES[0](entry);
+  document.getElementById('tale-writer-overlay').classList.add('show');
+}
+
+function rerollTale(){
+  const entry=state.chronicle.find(e=>e.round===taleWriterRound);
+  if(!entry) return;
+  taleTemplateIdx=(taleTemplateIdx+1)%TALE_TEMPLATES.length;
+  document.getElementById('tale-textarea').value=TALE_TEMPLATES[taleTemplateIdx](entry);
+}
+
+function saveTaleFromWriter(){
+  const entry=state.chronicle.find(e=>e.round===taleWriterRound);
+  if(!entry) return;
+  entry.tale=document.getElementById('tale-textarea').value.trim();
+  saveState();
+  // Update the button in the chronicle list
+  const btn=document.getElementById('tale-btn-'+taleWriterRound);
+  if(btn){
+    btn.textContent='📜 Read';
+    btn.className='chronicle-tale-btn has-tale';
+    btn.setAttribute('onclick','openTaleReader('+taleWriterRound+')');
+  }
+  closeTaleWriter();
+}
+
+function closeTaleWriter(){
+  document.getElementById('tale-writer-overlay').classList.remove('show');
+}
+
+function openTaleReader(round){
+  const entry=state.chronicle.find(e=>e.round===round);
+  if(!entry||!entry.tale) return;
+  taleReaderRound=round;
+  const adj=ordinalLong(entry.round);
+  // Art
+  const rImg=document.getElementById('tale-reader-art-img');
+  const rNoBg=document.getElementById('tale-reader-no-art');
+  if(entry.artUrl){ rImg.src=entry.artUrl; rImg.style.display='block'; rNoBg.style.display='none'; }
+  else { rImg.style.display='none'; rNoBg.style.display='block'; }
+  document.getElementById('tale-reader-round-label').textContent='Tournament '+toRoman(round);
+  document.getElementById('tale-reader-album-label').textContent=entry.album;
+  document.getElementById('tale-reader-artist-label').textContent=entry.artist||'';
+  document.getElementById('tale-reader-text').textContent=entry.tale;
+  document.getElementById('tale-reader-overlay').classList.add('show');
+}
+
+function openTaleWriterFromReader(){
+  const round=taleReaderRound;
+  closeTaleReader();
+  openTaleWriter(round);
+}
+
+function closeTaleReader(){
+  document.getElementById('tale-reader-overlay').classList.remove('show');
+}
+
+async function exportTaleImage(){
+  if(taleReaderRound===null) return;
+  const entry=state.chronicle.find(e=>e.round===taleReaderRound);
+  if(!entry||!entry.tale) return;
+  await document.fonts.ready;
+  const CW=600,CH=680,AH=280;
+  const canvas=document.createElement('canvas');
+  canvas.width=CW; canvas.height=CH;
+  const c=canvas.getContext('2d');
+
+  const img=await loadImageForCanvas(entry.artUrl||null);
+  if(img){
+    const sw=img.naturalWidth,sh=img.naturalHeight;
+    const srcScale=Math.max(CW/sw,AH/sh);
+    const srcW=CW/srcScale,srcH=AH/srcScale;
+    c.drawImage(img,(sw-srcW)/2,(sh-srcH)/2,srcW,srcH,0,0,CW,AH);
+  } else {
+    const grd=c.createLinearGradient(0,0,CW,AH);
+    grd.addColorStop(0,'#3a1a00'); grd.addColorStop(1,'#1a0800');
+    c.fillStyle=grd; c.fillRect(0,0,CW,AH);
+  }
+  const ovg=c.createLinearGradient(0,0,0,AH);
+  ovg.addColorStop(0,'rgba(0,0,0,0.35)');
+  ovg.addColorStop(0.55,'rgba(20,8,0,0.65)');
+  ovg.addColorStop(1,'#c8a96e');
+  c.fillStyle=ovg; c.fillRect(0,0,CW,AH);
+
+  let ty=AH-10;
+  c.font='italic 15px "EB Garamond",serif';
+  c.fillStyle='rgba(255,220,160,0.85)';
+  c.textAlign='center'; c.textBaseline='bottom';
+  c.fillText(entry.artist||'',CW/2,ty); ty-=20;
+  c.font='bold 24px "Cinzel",serif';
+  c.fillStyle='#fff8e8';
+  c.textAlign='center'; c.textBaseline='bottom';
+  c.fillText(entry.album,CW/2,ty); ty-=24;
+  c.font='10px "Cinzel",serif';
+  c.fillStyle='rgba(255,220,140,0.8)';
+  c.textBaseline='bottom';
+  c.fillText('TOURNAMENT '+toRoman(entry.round),CW/2,ty);
+
+  const bodyY=AH;
+  const brdg=c.createLinearGradient(0,bodyY,0,CH);
+  brdg.addColorStop(0,'#e8d5a0'); brdg.addColorStop(1,'#c8a96e');
+  c.fillStyle=brdg; c.fillRect(0,bodyY,CW,CH-bodyY);
+
+  let by=bodyY+18;
+  c.font='12px "EB Garamond",serif';
+  c.fillStyle='rgba(90,48,0,0.7)';
+  c.textAlign='center'; c.textBaseline='top';
+  c.fillText('✦  ✦  ✦',CW/2,by); by+=26;
+  c.strokeStyle='rgba(100,60,10,0.3)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(40,by); c.lineTo(CW-40,by); c.stroke(); by+=14;
+  c.font='italic 13px "EB Garamond",serif';
+  c.fillStyle='#2a1200';
+  c.textAlign='left'; c.textBaseline='top';
+  fillTextWrapped(c,entry.tale,40,by,CW-80,20);
+  const footerY=CH-28;
+  c.strokeStyle='rgba(100,60,10,0.25)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(40,footerY-8); c.lineTo(CW-40,footerY-8); c.stroke();
+  c.font='8px "Cinzel",serif';
+  c.fillStyle='rgba(90,48,0,0.5)';
+  c.textAlign='center'; c.textBaseline='top';
+  c.fillText('WHEEL OF FATES · ALBUM DISCUSSION CLUB',CW/2,footerY);
+
+  const link=document.createElement('a');
+  link.download=`tale-tournament-${toRoman(entry.round)}.png`;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
 }
 </script>
 </body>
