@@ -1,54 +1,25 @@
 {
-  "round": 1,
+  "round": 13,
   "nominees": [
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Baxter",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
-    },
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Chris",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
-    },
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Erik",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
-    },
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Baxter",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
-    },
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Chris",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
-    },
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Erik",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
-    }
+    {"artist": "", "album": "", "owner": "Baxter", "weight": 1, "artUrl": null, "sealed": false},
+    {"artist": "", "album": "", "owner": "Chris",  "weight": 1, "artUrl": null, "sealed": false},
+    {"artist": "", "album": "", "owner": "Erik",   "weight": 1, "artUrl": null, "sealed": false},
+    {"artist": "", "album": "", "owner": "Baxter", "weight": 1, "artUrl": null, "sealed": false},
+    {"artist": "", "album": "", "owner": "Chris",  "weight": 1, "artUrl": null, "sealed": false},
+    {"artist": "", "album": "", "owner": "Erik",   "weight": 1, "artUrl": null, "sealed": false}
   ],
-  "chronicle": []
+  "chronicle": [
+    {"round": 12, "album": "The Long Stringed Instrument", "artist": "Ellen Fullman", "owner": "Erik", "rounds": 8, "artUrl": null},
+    {"round": 11, "album": "Don Caballero 2", "artist": "Don Caballero", "owner": "Baxter", "rounds": 6, "artUrl": null},
+    {"round": 10, "album": "Moon Safari", "artist": "Air", "owner": "Chris", "rounds": 7, "artUrl": null},
+    {"round": 9, "album": "Moanin' in the Moonlight", "artist": "Howlin' Wolf", "owner": "Baxter", "rounds": 9, "artUrl": null},
+    {"round": 8, "album": "16 Lover's Lane", "artist": "The Go-Betweens", "owner": "Baxter", "rounds": 3, "artUrl": "https://coverartarchive.org/release/715276a8-8b14-4c55-8744-7c6610ef5124/front-250"},
+    {"round": 7, "album": "The Raincoats", "artist": "The Raincoats", "owner": "Erik", "rounds": 4, "artUrl": null},
+    {"round": 6, "album": "The Blues and the Abstract Truth", "artist": "Oliver Nelson", "owner": "Chris", "rounds": 3, "artUrl": null},
+    {"round": 5, "album": "Peggy Suicide", "artist": "Julian Cope", "owner": "Erik", "rounds": 4, "artUrl": "https://coverartarchive.org/release/37a4c633-0261-4430-bd09-65df20b514f4/front-250"},
+    {"round": 4, "album": "Free Your Mind and Your Ass Will Follow", "artist": "Funkadelic", "owner": "Baxter", "rounds": 2, "artUrl": null},
+    {"round": 3, "album": "Blonde on Blonde", "artist": "Bob Dylan", "owner": "Chris", "rounds": 1, "artUrl": null},
+    {"round": 2, "album": "Double Nickels on the Dime", "artist": "Minutemen", "owner": "Baxter", "rounds": 0, "artUrl": null},
+    {"round": 1, "album": "Nebraska", "artist": "Bruce Springsteen", "owner": "Baxter", "rounds": 0, "artUrl": null}
+  ]
 }
