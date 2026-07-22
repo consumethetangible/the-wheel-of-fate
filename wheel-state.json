@@ -20,14 +20,14 @@
       "canonicalAlbum": "3-D"
     },
     {
-      "artist": "ellen fullman",
-      "album": "",
+      "artist": "Ellen Fullman",
+      "album": "The Long String Instrument",
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Ellen Fullman",
+      "canonicalAlbum": "The Long String Instrument"
     },
     {
       "artist": "",
