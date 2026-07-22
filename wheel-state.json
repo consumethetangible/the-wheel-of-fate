@@ -10,22 +10,24 @@
       "sealed": false
     },
     {
-      "artist": "wrathchild america",
-      "album": "",
+      "artist": "Wrathchild America",
+      "album": "3-D",
       "owner": "Chris",
+      "weight": 8,
+      "artUrl": null,
+      "sealed": true,
+      "canonicalArtist": "Wrathchild America",
+      "canonicalAlbum": "3-D"
+    },
+    {
+      "artist": "ellen fullman",
+      "album": "",
+      "owner": "Erik",
       "weight": 1,
       "artUrl": null,
       "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
-    },
-    {
-      "artist": "",
-      "album": "",
-      "owner": "Erik",
-      "weight": 1,
-      "artUrl": null,
-      "sealed": false
     },
     {
       "artist": "",
@@ -36,12 +38,14 @@
       "sealed": false
     },
     {
-      "artist": "",
-      "album": "",
+      "artist": "Potemkine",
+      "album": "Foetus",
       "owner": "Chris",
-      "weight": 1,
+      "weight": 6,
       "artUrl": null,
-      "sealed": false
+      "sealed": true,
+      "canonicalArtist": "Potemkine",
+      "canonicalAlbum": "Foetus"
     },
     {
       "artist": "",
