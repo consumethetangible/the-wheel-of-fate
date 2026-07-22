@@ -1,0 +1,54 @@
+{
+  "round": 1,
+  "nominees": [
+    {
+      "artist": "",
+      "album": "",
+      "owner": "Baxter",
+      "weight": 1,
+      "artUrl": null,
+      "sealed": false
+    },
+    {
+      "artist": "",
+      "album": "",
+      "owner": "Chris",
+      "weight": 1,
+      "artUrl": null,
+      "sealed": false
+    },
+    {
+      "artist": "",
+      "album": "",
+      "owner": "Erik",
+      "weight": 1,
+      "artUrl": null,
+      "sealed": false
+    },
+    {
+      "artist": "",
+      "album": "",
+      "owner": "Baxter",
+      "weight": 1,
+      "artUrl": null,
+      "sealed": false
+    },
+    {
+      "artist": "",
+      "album": "",
+      "owner": "Chris",
+      "weight": 1,
+      "artUrl": null,
+      "sealed": false
+    },
+    {
+      "artist": "",
+      "album": "",
+      "owner": "Erik",
+      "weight": 1,
+      "artUrl": null,
+      "sealed": false
+    }
+  ],
+  "chronicle": []
+}
