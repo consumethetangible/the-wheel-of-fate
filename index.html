@@ -535,6 +535,7 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
     <h1>The Wheel of Fates</h1>
     <div class="subtitle">Album Discussion Club — Tournament of the Listening Throne</div>
     <div class="round-badge" id="round-display">Round I</div>
+    <div id="sync-status" onclick="manageGhToken()" style="cursor:pointer;font-size:10px;letter-spacing:1px;margin-top:4px;opacity:0.85" title="Click to set or replace your GitHub sync token">☁️ Connecting…</div>
   </div>
   <div class="main">
     <div class="wheel-section">
@@ -614,6 +615,67 @@ const LORE=[
 
 const SAVED_KEY='wheelOfFates_v3';
 
+// ── Cloud sync (GitHub) ──────────────────────────────────────────────────
+// localStorage is now just a fast local cache for instant paint on load.
+// The GitHub repo file below is the real source of truth, so the state
+// survives even if Safari purges local storage on a site you haven't
+// visited in ~7 days.
+const GH_OWNER='consumethetangible';
+const GH_REPO='the-wheel-of-fate';
+const GH_BRANCH='main';
+const GH_STATE_PATH='wheel-state.json';
+const GH_TOKEN_KEY='wheelOfFates_ghToken';
+
+function getGhToken(){ return localStorage.getItem(GH_TOKEN_KEY)||null; }
+
+function promptForGhToken(){
+  const t=prompt('Paste a GitHub token (fine-grained, scoped to the-wheel-of-fate repo, Contents: Read & Write):');
+  if(t && t.trim()){ localStorage.setItem(GH_TOKEN_KEY,t.trim()); return t.trim(); }
+  return null;
+}
+
+function setSyncStatus(text,ok){
+  const el=document.getElementById('sync-status');
+  if(!el) return;
+  el.textContent=text;
+  el.style.color = ok===false?'#a33':'var(--p-ink-mid)';
+}
+
+function manageGhToken(){
+  if(getGhToken() && !confirm('Replace the saved GitHub sync token with a new one?')) return;
+  if(promptForGhToken()) saveState();
+}
+
+async function fetchCloudState(){
+  try{
+    const url=`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${GH_STATE_PATH}?_=${Date.now()}`;
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+
+async function saveCloudState(payload){
+  const token=getGhToken();
+  if(!token){ setSyncStatus('☁️ Not connected — click to set up',false); return; }
+  const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_STATE_PATH}`;
+  try{
+    let sha=null;
+    const getRes=await fetch(apiUrl+`?ref=${GH_BRANCH}`,{headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json'}});
+    if(getRes.ok){ sha=(await getRes.json()).sha; }
+    else if(getRes.status!==404){ setSyncStatus('☁️ Sync error — try again',false); return; }
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(payload,null,2))));
+    const putRes=await fetch(apiUrl,{
+      method:'PUT',
+      headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:`Wheel state — Round ${toRoman(payload.round)}`,content,sha,branch:GH_BRANCH}),
+    });
+    if(putRes.ok) setSyncStatus('☁️ Synced',true);
+    else if(putRes.status===401||putRes.status===403){ localStorage.removeItem(GH_TOKEN_KEY); setSyncStatus('☁️ Token invalid — click to reconnect',false); }
+    else setSyncStatus('☁️ Sync error — try again',false);
+  }catch(e){ setSyncStatus('☁️ Offline — saved locally only',false); }
+}
+
 function defaultNominees(){
   return[
     {artist:'',album:'',owner:'Baxter',weight:1,artUrl:null,sealed:false},
@@ -630,13 +692,29 @@ function loadState(){
   return null;
 }
 function saveState(){
-  try{
-    localStorage.setItem(SAVED_KEY,JSON.stringify({
-      round:state.round,
-      nominees:state.nominees.map(n=>({...n,artUrl:null})),
-      chronicle:state.chronicle,
-    }));
-  }catch(e){}
+  const payload={
+    round:state.round,
+    nominees:state.nominees.map(n=>({...n,artUrl:null})),
+    chronicle:state.chronicle,
+  };
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(payload)); }catch(e){}
+  saveCloudState(payload);
+}
+
+function applyCloudState(cloud){
+  if(!cloud || !Array.isArray(cloud.nominees)) return;
+  cloud.nominees.forEach(n=>{ n.artUrl=null; if(n.sealed===undefined) n.sealed=false; });
+  state.round=cloud.round||1;
+  state.nominees=cloud.nominees;
+  state.chronicle=cloud.chronicle||[];
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify({round:state.round,nominees:state.nominees,chronicle:state.chronicle})); }catch(e){}
+  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+  renderNominees();
+  document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
+  restoreChronicle();
+  drawWheel();
+  updateSpinButton();
+  setSyncStatus('☁️ Synced',true);
 }
 
 let state=loadState()||{round:1,nominees:defaultNominees(),chronicle:[]};
@@ -1171,6 +1249,15 @@ renderNominees();
 restoreChronicle();
 drawWheel();
 updateSpinButton();
+
+// Local state above is just for an instant paint. Now pull the
+// authoritative save from GitHub in the background.
+setSyncStatus(getGhToken()?'☁️ Checking for updates…':'☁️ Not connected — click to set up',null);
+fetchCloudState().then(cloud=>{
+  if(cloud) applyCloudState(cloud);
+  else if(getGhToken()) setSyncStatus('☁️ No cloud save yet',true);
+  else setSyncStatus('☁️ Not connected — click to set up',false);
+});
 </script>
 
 
