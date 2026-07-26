@@ -9,7 +9,7 @@
       "artUrl": null,
       "sealed": false,
       "canonicalArtist": "John Fahey",
-      "canonicalAlbum": "The Great San Bernardino Birthday Party & Other Excursions"
+      "canonicalAlbum": "The Great San Bernardino Birthday Party and Other Excursions"
     },
     {
       "artist": "Beastie Boys",
@@ -77,7 +77,7 @@
       "artist": "Ellen Fullman",
       "owner": "Erik",
       "rounds": 8,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/1554e1ff-f04f-448a-a57e-cb4953d159a1/front-250"
     },
     {
       "round": 13,
@@ -109,7 +109,7 @@
       "artist": "Modulo 1000",
       "owner": "Erik",
       "rounds": 6,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/b12f2aa7-08a4-4e66-afef-850933df80c5/front-250"
     },
     {
       "round": 9,
@@ -133,7 +133,7 @@
       "artist": "The Raincoats",
       "owner": "Erik",
       "rounds": 4,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/7c4d0bd8-c87d-456c-b7c0-b21a6ef6cb24/front-250"
     },
     {
       "round": 6,
@@ -165,7 +165,7 @@
       "artist": "Bob Dylan",
       "owner": "Chris",
       "rounds": 1,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/acc2a08d-5c3d-3f16-a5aa-20824c957f09/front-250"
     },
     {
       "round": 2,
