@@ -83,7 +83,7 @@
       "artist": "Air",
       "owner": "Chris",
       "rounds": 7,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/967fe54d-9486-4226-9342-bedcd9cc3a76/front-250"
     },
     {
       "round": 10,
@@ -123,7 +123,7 @@
       "artist": "Oliver Nelson",
       "owner": "Chris",
       "rounds": 3,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/45415f82-a10c-4a35-aac9-1dd927f3e636/front-250"
     },
     {
       "round": 5,
@@ -155,7 +155,7 @@
       "artist": "Minutemen",
       "owner": "Baxter",
       "rounds": 0,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/396cd5db-a240-4111-bd64-140064a4a0e9/front-250"
     },
     {
       "round": 1,
@@ -163,7 +163,7 @@
       "artist": "Bruce Springsteen",
       "owner": "Baxter",
       "rounds": 0,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/b59fd226-d81b-4dac-872e-ff5587045588/front-250"
     }
   ]
 }
