@@ -3,11 +3,11 @@
   "nominees": [
     {
       "artist": "John Fahey",
-      "album": "The Great San Bernardino Birthday Party & Other Excursions",
+      "album": "The Great San Bernardino Birthday Party and Other Excursions",
       "owner": "Baxter",
-      "weight": 1,
+      "weight": 3,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "John Fahey",
       "canonicalAlbum": "The Great San Bernardino Birthday Party and Other Excursions"
     },
@@ -17,27 +17,27 @@
       "owner": "Chris",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Beastie Boys",
       "canonicalAlbum": "Check Your Head"
     },
     {
       "artist": "Michael Penn",
-      "album": "Free-For-All",
+      "album": "Free-for-All",
       "owner": "Erik",
-      "weight": 1,
+      "weight": 3,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": "Michael Penn",
-      "canonicalAlbum": "Free-for-All"
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "The Futureheads",
       "album": "The Futureheads",
       "owner": "Baxter",
-      "weight": 1,
+      "weight": 2,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "The Futureheads",
       "canonicalAlbum": "The Futureheads"
     },
@@ -45,9 +45,9 @@
       "artist": "Potemkine",
       "album": "Foetus",
       "owner": "Chris",
-      "weight": 6,
+      "weight": 7,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Potemkine",
       "canonicalAlbum": "Foetus"
     },
