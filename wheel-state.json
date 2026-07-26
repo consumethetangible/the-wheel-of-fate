@@ -7,9 +7,9 @@
       "owner": "Baxter",
       "weight": 3,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "John Fahey",
-      "canonicalAlbum": "The Great San Bernardino Birthday Party and Other Excursions"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Beastie Boys",
@@ -45,17 +45,17 @@
       "artist": "Potemkine",
       "album": "Foetus",
       "owner": "Chris",
-      "weight": 6,
+      "weight": 7,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Potemkine",
-      "canonicalAlbum": "Foetus"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Richard Thompson",
       "album": "Mock Tudor",
       "owner": "Erik",
-      "weight": 2,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Richard Thompson",
