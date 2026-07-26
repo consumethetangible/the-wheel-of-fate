@@ -27,9 +27,9 @@
       "owner": "Erik",
       "weight": 3,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Michael Penn",
+      "canonicalAlbum": "Free-for-All"
     },
     {
       "artist": "The Futureheads",
@@ -45,7 +45,7 @@
       "artist": "Potemkine",
       "album": "Foetus",
       "owner": "Chris",
-      "weight": 7,
+      "weight": 6,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Potemkine",
@@ -55,7 +55,7 @@
       "artist": "Richard Thompson",
       "album": "Mock Tudor",
       "owner": "Erik",
-      "weight": 1,
+      "weight": 2,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Richard Thompson",
