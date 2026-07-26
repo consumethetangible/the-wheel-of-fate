@@ -29,7 +29,7 @@
       "artUrl": null,
       "sealed": false,
       "canonicalArtist": "Michael Penn",
-      "canonicalAlbum": "Free-For-All"
+      "canonicalAlbum": "Free-for-All"
     },
     {
       "artist": "The Futureheads",
@@ -47,7 +47,7 @@
       "owner": "Chris",
       "weight": 6,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": "Potemkine",
       "canonicalAlbum": "Foetus"
     },
@@ -69,7 +69,7 @@
       "artist": "Wrathchild America",
       "owner": "Chris",
       "rounds": 8,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/025c6ffd-3de8-45b9-b19e-2e0210dcf708/front-250"
     },
     {
       "round": 14,
@@ -93,7 +93,7 @@
       "artist": "Lovesliescrushing",
       "owner": "Erik",
       "rounds": 6,
-      "artUrl": null
+      "artUrl": "https://coverartarchive.org/release/f26cd7b5-6319-4a95-99d4-ba530e25d494/front-250"
     },
     {
       "round": 11,
