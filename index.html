@@ -655,7 +655,17 @@ async function fetchCloudState(){
   }catch(e){ return null; }
 }
 
-async function saveCloudState(payload){
+// Cloud saves are queued so overlapping calls (e.g. tabbing through several
+// nominee fields, each firing its own onblur save) never race each other for
+// the file's SHA. Without this, two saves could both read the same starting
+// SHA, and whichever PUT lands second gets rejected with a 409 conflict.
+let _cloudSaveChain=Promise.resolve();
+function saveCloudState(payload){
+  _cloudSaveChain=_cloudSaveChain.then(()=>_doSaveCloudState(payload)).catch(()=>{});
+  return _cloudSaveChain;
+}
+
+async function _doSaveCloudState(payload, isRetry){
   const token=getGhToken();
   if(!token){ setSyncStatus('☁️ Not connected — click to set up',false); return; }
   const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_STATE_PATH}`;
@@ -672,6 +682,11 @@ async function saveCloudState(payload){
     });
     if(putRes.ok) setSyncStatus('☁️ Synced',true);
     else if(putRes.status===401||putRes.status===403){ localStorage.removeItem(GH_TOKEN_KEY); setSyncStatus('☁️ Token invalid — click to reconnect',false); }
+    else if(putRes.status===409 && !isRetry){
+      // Someone else's write landed between our GET and PUT — grab the fresh
+      // SHA and try once more before giving up.
+      return _doSaveCloudState(payload, true);
+    }
     else setSyncStatus('☁️ Sync error — try again',false);
   }catch(e){ setSyncStatus('☁️ Offline — saved locally only',false); }
 }
