@@ -1,43 +1,45 @@
 {
-  "round": 14,
+  "round": 16,
   "nominees": [
     {
-      "artist": "John ",
-      "album": "",
+      "artist": "John Fahey",
+      "album": "The Great San Bernardino Birthday Party & Other Excursions",
       "owner": "Baxter",
       "weight": 1,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "John Fahey",
+      "canonicalAlbum": "The Great San Bernardino Birthday Party & Other Excursions"
     },
     {
-      "artist": "Wrathchild America",
-      "album": "3-D",
+      "artist": "Beastie Boys",
+      "album": "Check Your Head",
       "owner": "Chris",
-      "weight": 8,
+      "weight": 1,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Wrathchild America",
-      "canonicalAlbum": "3-D"
+      "sealed": false,
+      "canonicalArtist": "Beastie Boys",
+      "canonicalAlbum": "Check Your Head"
     },
     {
-      "artist": "Ellen Fullman",
-      "album": "The Long String Instrument",
+      "artist": "Michael Penn",
+      "album": "Free-For-All",
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Ellen Fullman",
-      "canonicalAlbum": "The Long String Instrument"
+      "sealed": false,
+      "canonicalArtist": "Michael Penn",
+      "canonicalAlbum": "Free-For-All"
     },
     {
-      "artist": "",
-      "album": "",
+      "artist": "The Futureheads",
+      "album": "The Futureheads",
       "owner": "Baxter",
       "weight": 1,
       "artUrl": null,
-      "sealed": false
+      "sealed": false,
+      "canonicalArtist": "The Futureheads",
+      "canonicalAlbum": "The Futureheads"
     },
     {
       "artist": "Potemkine",
@@ -62,20 +64,36 @@
   ],
   "chronicle": [
     {
-      "round": 13,
-      "album": "The Long Stringed Instrument",
+      "round": 15,
+      "album": "3-D",
+      "artist": "Wrathchild America",
+      "owner": "Chris",
+      "rounds": 8,
+      "artUrl": null
+    },
+    {
+      "round": 14,
+      "album": "The Long String Instrument",
       "artist": "Ellen Fullman",
       "owner": "Erik",
       "rounds": 8,
       "artUrl": null
     },
     {
-      "round": 12,
+      "round": 13,
       "album": "Don Caballero 2",
       "artist": "Don Caballero",
       "owner": "Baxter",
       "rounds": 6,
       "artUrl": "https://coverartarchive.org/release/9e6dcdf6-a702-4b45-9db4-6af1f53c6ce1/front-250"
+    },
+    {
+      "round": 12,
+      "album": "Bloweyelashwish",
+      "artist": "Lovesliescrushing",
+      "owner": "Erik",
+      "rounds": 6,
+      "artUrl": null
     },
     {
       "round": 11,
