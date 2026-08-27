@@ -885,7 +885,16 @@ function unsealCard(idx){
   n.canonicalAlbum=null;
   n.artUrl=null;
   const card=document.getElementById('card-'+idx);
-  if(card) card.classList.remove('sealed');
+  if(card){
+    card.classList.remove('sealed');
+    // Fields carry a real HTML readonly attribute set at render time — removing
+    // the "sealed" class alone only changes styling, it doesn't unlock typing.
+    // Without this, Edit visually unlocks the card but the fields stay dead.
+    const artistInput=card.querySelector('input[data-field="artist"]');
+    const albumInput=card.querySelector('input[data-field="album"]');
+    if(artistInput) artistInput.readOnly=false;
+    if(albumInput) albumInput.readOnly=false;
+  }
   // Restore art preview state
   const preview=document.getElementById('ap-'+idx);
   if(preview){
