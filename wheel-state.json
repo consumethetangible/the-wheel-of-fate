@@ -1,11 +1,11 @@
 {
-  "round": 16,
+  "round": 17,
   "nominees": [
     {
-      "artist": "John Fahey",
-      "album": "The Great San Bernardino Birthday Party and Other Excursions",
+      "artist": "",
+      "album": "",
       "owner": "Baxter",
-      "weight": 3,
+      "weight": 1,
       "artUrl": null,
       "sealed": false,
       "canonicalArtist": null,
@@ -15,21 +15,21 @@
       "artist": "Beastie Boys",
       "album": "Check Your Head",
       "owner": "Chris",
-      "weight": 1,
+      "weight": 2,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Beastie Boys",
       "canonicalAlbum": "Check Your Head"
     },
     {
-      "artist": "Michael Penn",
-      "album": "Free-for-All",
+      "artist": "John Cale",
+      "album": "Fear",
       "owner": "Erik",
-      "weight": 3,
+      "weight": 4,
       "artUrl": null,
       "sealed": true,
-      "canonicalArtist": "Michael Penn",
-      "canonicalAlbum": "Free-for-All"
+      "canonicalArtist": "John Cale",
+      "canonicalAlbum": "Fear"
     },
     {
       "artist": "The Futureheads",
@@ -42,27 +42,35 @@
       "canonicalAlbum": "The Futureheads"
     },
     {
-      "artist": "Potemkine",
-      "album": "Foetus",
+      "artist": "Orang-Utan",
+      "album": "Orang-Utan",
       "owner": "Chris",
-      "weight": 7,
-      "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
-    },
-    {
-      "artist": "Richard Thompson",
-      "album": "Mock Tudor",
-      "owner": "Erik",
-      "weight": 1,
+      "weight": 3,
       "artUrl": null,
       "sealed": true,
-      "canonicalArtist": "Richard Thompson",
-      "canonicalAlbum": "Mock Tudor"
+      "canonicalArtist": "Orang-Utan",
+      "canonicalAlbum": "Orang-Utan"
+    },
+    {
+      "artist": "Tanya Tucker",
+      "album": "Delta Dawn",
+      "owner": "Erik",
+      "weight": 2,
+      "artUrl": null,
+      "sealed": true,
+      "canonicalArtist": "Tanya Tucker",
+      "canonicalAlbum": "Delta Dawn"
     }
   ],
   "chronicle": [
+    {
+      "round": 16,
+      "album": "The Great San Bernardino Birthday Party and Other Excursions",
+      "artist": "John Fahey",
+      "owner": "Baxter",
+      "rounds": 14,
+      "artUrl": "https://coverartarchive.org/release/19e3f7fc-e138-44b1-9244-673669c428d1/front-250"
+    },
     {
       "round": 15,
       "album": "3-D",
