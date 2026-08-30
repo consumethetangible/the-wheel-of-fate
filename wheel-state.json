@@ -1,5 +1,5 @@
 {
-  "round": 17,
+  "round": 18,
   "nominees": [
     {
       "artist": "Robert Hood",
@@ -15,7 +15,7 @@
       "artist": "Beastie Boys",
       "album": "Check Your Head",
       "owner": "Chris",
-      "weight": 2,
+      "weight": 5,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": null,
@@ -27,17 +27,17 @@
       "owner": "Erik",
       "weight": 4,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
     {
-      "artist": "The Futureheads",
-      "album": "The Futureheads",
+      "artist": "",
+      "album": "",
       "owner": "Baxter",
-      "weight": 4,
+      "weight": 1,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -45,17 +45,17 @@
       "artist": "Orang-Utan",
       "album": "Orang-Utan",
       "owner": "Chris",
-      "weight": 2,
+      "weight": 3,
       "artUrl": null,
       "sealed": true,
-      "canonicalArtist": "Orang-Utan",
-      "canonicalAlbum": "Orang-Utan"
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Tanya Tucker",
       "album": "Delta Dawn",
       "owner": "Erik",
-      "weight": 2,
+      "weight": 4,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Tanya Tucker",
@@ -63,6 +63,14 @@
     }
   ],
   "chronicle": [
+    {
+      "round": 17,
+      "album": "The Futureheads",
+      "artist": "The Futureheads",
+      "owner": "Baxter",
+      "rounds": 4,
+      "artUrl": null
+    },
     {
       "round": 16,
       "album": "The Great San Bernardino Birthday Party and Other Excursions",
