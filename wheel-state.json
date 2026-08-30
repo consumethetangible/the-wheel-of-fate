@@ -17,7 +17,7 @@
       "owner": "Chris",
       "weight": 5,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -27,7 +27,7 @@
       "owner": "Erik",
       "weight": 4,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -47,7 +47,7 @@
       "owner": "Chris",
       "weight": 3,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -57,9 +57,9 @@
       "owner": "Erik",
       "weight": 4,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Tanya Tucker",
-      "canonicalAlbum": "Delta Dawn"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     }
   ],
   "chronicle": [
