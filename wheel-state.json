@@ -2,14 +2,14 @@
   "round": 17,
   "nominees": [
     {
-      "artist": "Robert hood",
-      "album": "",
+      "artist": "Robert Hood",
+      "album": "Minimal Nation",
       "owner": "Baxter",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Robert Hood",
+      "canonicalAlbum": "Minimal Nation"
     },
     {
       "artist": "Beastie Boys",
@@ -18,8 +18,8 @@
       "weight": 2,
       "artUrl": null,
       "sealed": true,
-      "canonicalArtist": "Beastie Boys",
-      "canonicalAlbum": "Check Your Head"
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "John Cale",
@@ -27,25 +27,25 @@
       "owner": "Erik",
       "weight": 4,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "John Cale",
-      "canonicalAlbum": "Fear"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "The Futureheads",
       "album": "The Futureheads",
       "owner": "Baxter",
-      "weight": 2,
+      "weight": 4,
       "artUrl": null,
       "sealed": true,
-      "canonicalArtist": "The Futureheads",
-      "canonicalAlbum": "The Futureheads"
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Orang-Utan",
       "album": "Orang-Utan",
       "owner": "Chris",
-      "weight": 3,
+      "weight": 2,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Orang-Utan",
