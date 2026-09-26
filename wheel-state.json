@@ -3,11 +3,11 @@
   "nominees": [
     {
       "artist": "Robert Hood",
-      "album": "minimal ",
+      "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 1,
+      "weight": 2,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Robert Hood",
       "canonicalAlbum": "Minimal Nation"
     },
@@ -32,8 +32,8 @@
       "canonicalAlbum": "Fear"
     },
     {
-      "artist": "",
-      "album": "",
+      "artist": "candy machine",
+      "album": "tune international",
       "owner": "Baxter",
       "weight": 1,
       "artUrl": null,
