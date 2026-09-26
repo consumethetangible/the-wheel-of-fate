@@ -3,7 +3,7 @@
   "nominees": [
     {
       "artist": "Robert Hood",
-      "album": "Minima",
+      "album": "min",
       "owner": "Baxter",
       "weight": 1,
       "artUrl": null,
@@ -13,11 +13,11 @@
     },
     {
       "artist": "Tower of Power",
-      "album": "tower of",
+      "album": "Tower of Power",
       "owner": "Chris",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Tower of Power",
       "canonicalAlbum": "Tower of Power"
     },
@@ -42,22 +42,22 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "",
-      "album": "",
+      "artist": "Orang-Utan",
+      "album": "Orang-Utan",
       "owner": "Chris",
-      "weight": 3,
+      "weight": 5,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Orang-Utan",
+      "canonicalAlbum": "Orang-Utan"
     },
     {
       "artist": "Tanya Tucker",
-      "album": "Delta ",
+      "album": "Delta Dawn",
       "owner": "Erik",
       "weight": 4,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Tanya Tucker",
       "canonicalAlbum": "Delta Dawn"
     }
