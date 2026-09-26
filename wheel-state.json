@@ -12,14 +12,14 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "tower of power",
-      "album": "",
+      "artist": "Tower of Power",
+      "album": "tower of",
       "owner": "Chris",
-      "weight": 5,
+      "weight": 1,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Tower of Power",
+      "canonicalAlbum": "Tower of Power"
     },
     {
       "artist": "John Cale",
