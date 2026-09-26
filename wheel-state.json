@@ -5,7 +5,7 @@
       "artist": "Robert Hood",
       "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 2,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Robert Hood",
@@ -25,19 +25,19 @@
       "artist": "John Cale",
       "album": "Fear",
       "owner": "Erik",
-      "weight": 4,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "John Cale",
       "canonicalAlbum": "Fear"
     },
     {
-      "artist": "the candy machine",
-      "album": "",
+      "artist": "Candy Machine",
+      "album": "Tune International",
       "owner": "Baxter",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -45,7 +45,7 @@
       "artist": "Orang-Utan",
       "album": "Orang-Utan",
       "owner": "Chris",
-      "weight": 5,
+      "weight": 9,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Orang-Utan",
@@ -55,7 +55,7 @@
       "artist": "Tanya Tucker",
       "album": "Delta Dawn",
       "owner": "Erik",
-      "weight": 3,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Tanya Tucker",
@@ -63,6 +63,14 @@
     }
   ],
   "chronicle": [
+    {
+      "round": 18,
+      "album": "Tower of Power",
+      "artist": "Tower of Power",
+      "owner": "Chris",
+      "rounds": 1,
+      "artUrl": "https://coverartarchive.org/release/2e0820df-3ee5-4038-8f92-aa79a808efbc/front-250"
+    },
     {
       "round": 17,
       "album": "The Futureheads",
