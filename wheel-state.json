@@ -1,11 +1,11 @@
 {
-  "round": 18,
+  "round": 19,
   "nominees": [
     {
       "artist": "Robert Hood",
       "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 2,
+      "weight": 3,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Robert Hood",
@@ -25,7 +25,7 @@
       "artist": "John Cale",
       "album": "Fear",
       "owner": "Erik",
-      "weight": 4,
+      "weight": 5,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "John Cale",
@@ -35,27 +35,27 @@
       "artist": "Candy Machine",
       "album": "Tune International",
       "owner": "Baxter",
-      "weight": 1,
+      "weight": 2,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
     {
-      "artist": "squarepusher",
-      "album": "",
+      "artist": "Squarepusher",
+      "album": "Feed Me Weird Things",
       "owner": "Chris",
-      "weight": 9,
+      "weight": 1,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Squarepusher",
+      "canonicalAlbum": "Feed Me Weird Things"
     },
     {
       "artist": "Tanya Tucker",
       "album": "Delta Dawn",
       "owner": "Erik",
-      "weight": 3,
+      "weight": 4,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Tanya Tucker",
@@ -63,6 +63,14 @@
     }
   ],
   "chronicle": [
+    {
+      "round": 19,
+      "album": "Fear",
+      "artist": "John Cale",
+      "owner": "Erik",
+      "rounds": 5,
+      "artUrl": "https://coverartarchive.org/release/02ecd195-1d94-4451-996d-16821d77e325/front-250"
+    },
     {
       "round": 18,
       "album": "Orang-Utan",
