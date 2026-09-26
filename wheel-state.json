@@ -12,8 +12,8 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "Beastie Boys",
-      "album": "Check Your Head",
+      "artist": "tower of power",
+      "album": "",
       "owner": "Chris",
       "weight": 5,
       "artUrl": null,
@@ -28,8 +28,8 @@
       "weight": 4,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "John Cale",
+      "canonicalAlbum": "Fear"
     },
     {
       "artist": "",
@@ -42,8 +42,8 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "Orang-Utan",
-      "album": "Orang-Utan",
+      "artist": "",
+      "album": "",
       "owner": "Chris",
       "weight": 3,
       "artUrl": null,
@@ -58,8 +58,8 @@
       "weight": 4,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Tanya Tucker",
+      "canonicalAlbum": "Delta Dawn"
     }
   ],
   "chronicle": [
