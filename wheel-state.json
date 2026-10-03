@@ -57,9 +57,9 @@
       "owner": "Erik",
       "weight": 5,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Tanya Tucker",
-      "canonicalAlbum": "Delta Dawn"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     }
   ],
   "chronicle": [
