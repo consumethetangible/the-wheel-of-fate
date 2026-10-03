@@ -22,14 +22,14 @@
       "canonicalAlbum": "Tower of Power"
     },
     {
-      "artist": "the wedding present",
-      "album": "",
+      "artist": "The Wedding Present",
+      "album": "Bizarro",
       "owner": "Erik",
-      "weight": 5,
+      "weight": 1,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "The Wedding Present",
+      "canonicalAlbum": "Bizarro"
     },
     {
       "artist": "Candy Machine",
@@ -63,6 +63,14 @@
     }
   ],
   "chronicle": [
+    {
+      "round": 19,
+      "album": "Delta Dawn",
+      "artist": "Tanya Tucker",
+      "owner": "Erik",
+      "rounds": 5,
+      "artUrl": "https://coverartarchive.org/release/aa6d9899-217d-4974-84f2-956c8a19606d/front-250"
+    },
     {
       "round": 19,
       "album": "Fear",
