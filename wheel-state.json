@@ -3,13 +3,13 @@
   "nominees": [
     {
       "artist": "Robert Hood",
-      "album": "Minimal Nation",
+      "album": "Minimal ",
       "owner": "Baxter",
       "weight": 4,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Robert Hood",
+      "canonicalAlbum": "Minimal Nation"
     },
     {
       "artist": "Tower of Power",
