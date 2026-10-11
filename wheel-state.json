@@ -52,14 +52,14 @@
       "canonicalAlbum": "Feed Me Weird Things"
     },
     {
-      "artist": "",
-      "album": "",
+      "artist": "Game Theory",
+      "album": "The ",
       "owner": "Erik",
       "weight": 5,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Game Theory",
+      "canonicalAlbum": "The Real Sheila"
     }
   ],
   "chronicle": [
