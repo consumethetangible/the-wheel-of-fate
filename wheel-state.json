@@ -7,7 +7,7 @@
       "owner": "Baxter",
       "weight": 5,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -32,14 +32,14 @@
       "canonicalAlbum": "Bizarro"
     },
     {
-      "artist": "Candy Machine",
-      "album": "Tune International",
+      "artist": "Cannibal Ox",
+      "album": "The Cold Vein",
       "owner": "Baxter",
-      "weight": 3,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Cannibal Ox",
+      "canonicalAlbum": "The Cold Vein"
     },
     {
       "artist": "Squarepusher",
