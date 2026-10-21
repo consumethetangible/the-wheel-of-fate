@@ -23,13 +23,13 @@
     },
     {
       "artist": "New Kingdom",
-      "album": "Paradise Don't Come",
+      "album": "Paradise Don't Come Cheap",
       "owner": "Erik",
       "enteredRound": 22,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "New Kingdom",
+      "canonicalAlbum": "Paradise Don't Come Cheap"
     },
     {
       "artist": "Cannibal Ox",
