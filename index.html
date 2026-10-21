@@ -114,6 +114,7 @@ button.cv{padding:0;min-height:0;background:var(--field);border:1px solid var(--
 button.cv:hover:not(:disabled){border-color:var(--amber)}
 button.cv:disabled{opacity:1;cursor:default}
 .lrow{display:flex;gap:8px;align-items:center}
+.src{font-size:12px;color:var(--mute);white-space:nowrap}
 .cmsg{text-align:left;min-height:1.4em;margin:8px 0 0}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin:8px 0 12px}
 .fopt{display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;padding:8px;min-height:0;height:auto}
@@ -772,52 +773,30 @@ const CHRONICLE_ART_OVERRIDES={
 // ── ART FETCH via iTunes Search API ─────────────────────────────────────────
 // iTunes is explicitly CORS-open, works from file:// with no API key needed.
 // Returns { url, canonicalArtist, canonicalAlbum } or null
+// MusicBrainz: a phrase search on title and artist. Releases whose title matches exactly are tried
+// first; each cover is checked to actually load (500px, then 250px) before it is accepted.
 async function fetchMusicBrainzArt(artist,album){
-  const key=(artist+'|||'+album).toLowerCase();
-  if(key in artCache) return artCache[key];
   try{
     const q=encodeURIComponent(`release:"${album}" AND artist:"${artist}"`);
-    const res=await fetch(
-      `https://musicbrainz.org/ws/2/release/?query=${q}&limit=10&fmt=json`,
-      {headers:{'User-Agent':'WheelOfFates/1.0'}}
-    );
-    if(!res.ok){ artCache[key]=null; return null; }
-    const data=await res.json();
-    for(const rel of(data.releases||[])){
-      const caa=rel['cover-art-archive'];
-      // Accept any truthy indicator that front art exists
-      if(!caa || !(caa.front || caa.artwork || caa.count>0)) continue;
-      const canonicalArtist=rel['artist-credit']?.[0]?.artist?.name||null;
-      const canonicalAlbum=rel.title||null;
-      const url=`https://coverartarchive.org/release/${rel.id}/front-500`;
-      const result={url,canonicalArtist,canonicalAlbum};
-      artCache[key]=result;
-      return result;
-    }
-    // Fallback: no release had a cover-art-archive flag in the API response.
-    // Probe via Image load — the browser handles CORS/redirects transparently.
-    // Returns on the first release whose image actually loads (non-404).
-    for(const rel of(data.releases||[])){
-      const url=`https://coverartarchive.org/release/${rel.id}/front-500`;
-      const loaded=await new Promise(resolve=>{
-        const img=new Image();
-        img.onload=()=>resolve(true);
-        img.onerror=()=>resolve(false);
-        img.src=url;
-        setTimeout(()=>resolve(false),6000); // give up after 6s
-      });
-      if(loaded){
-        const result={
-          url,
-          canonicalArtist:rel['artist-credit']?.[0]?.artist?.name||null,
-          canonicalAlbum:rel.title||null,
-        };
-        artCache[key]=result;
-        return result;
+    const res=await fetch(`https://musicbrainz.org/ws/2/release/?query=${q}&limit=10&fmt=json`);
+    if(!res.ok){ LOG('MusicBrainz said',res.status); return null; }
+    const rels=(await res.json()).releases||[];
+    LOG(`MusicBrainz returned ${rels.length} release(s)`);
+    const credit=rel=>rel['artist-credit']?.[0]?.artist?.name||'';
+    const hasArt=rel=>{ const caa=rel['cover-art-archive']; return !!(caa&&(caa.front||caa.artwork||caa.count>0)); };
+    const isStrong=rel=>baseTitle(rel.title||'')===baseTitle(album)&&isArtist(artist,{artist:credit(rel)});
+    const ordered=[...rels.filter(r=>hasArt(r)&&isStrong(r)),...rels.filter(r=>hasArt(r)&&!isStrong(r)),...rels.filter(r=>!hasArt(r))].slice(0,8);
+    for(const rel of ordered){
+      let url=null;
+      for(const size of [500,250]){
+        const u=`https://coverartarchive.org/release/${rel.id}/front-${size}`;
+        if(await probeImage(u,false)){ url=u; break; }
       }
+      if(!url) continue;
+      const strong=isStrong(rel);
+      return {url,canonicalArtist:strong?(credit(rel)||null):null,canonicalAlbum:strong?(rel.title||null):null,strong};
     }
-  }catch(e){ console.error('[WheelOfFates] fetchArtUrl error',e); }
-  artCache[key]=null;
+  }catch(e){ console.warn('[WheelOfFates] MusicBrainz lookup error',e); }
   return null;
 }
 
@@ -868,16 +847,35 @@ async function lookupApple(artist,album){
   const best=(await appleCandidates(artist,album,false)).find(c=>isMatch(artist,album,c));
   if(!best) return null;
   const strong=baseTitle(best.name)===baseTitle(album)&&isArtist(artist,best);
-  return {url:bigArt(best.art),canonicalArtist:strong?best.artist:null,canonicalAlbum:strong?cleanName(best.name):null};
+  return {url:bigArt(best.art),canonicalArtist:strong?best.artist:null,canonicalAlbum:strong?cleanName(best.name):null,strong};
+}
+// Order: an exact Apple match wins. Otherwise MusicBrainz gets a say (it matches titles exactly),
+// and a loose Apple match is the last resort. Every step is logged to the browser console.
+const LOG=(...a)=>console.log('[WheelOfFates]',...a);
+function coverSource(url){
+  if(/mzstatic\.com/.test(url)) return 'Apple Music';
+  if(/coverartarchive\.org/.test(url)) return 'MusicBrainz';
+  if(/ytimg\.com/.test(url)) return 'YouTube';
+  if(/bcbits\.com/.test(url)) return 'Bandcamp';
+  return 'a pasted link';
 }
 async function fetchArtUrl(artist,album){
   const key=(artist+'|||'+album).toLowerCase();
   if(key in artCache) return artCache[key];
-  let result=null;
-  try{ result=await lookupApple(artist,album); }catch(e){ console.warn('[WheelOfFates] Apple lookup failed',e); }
-  if(!result){ try{ result=await fetchMusicBrainzArt(artist,album); }catch(e){} }
-  artCache[key]=result||null;
-  return artCache[key];
+  const label=`"${artist}" / "${album}"`;
+  let apple=null, mb=null;
+  try{ apple=await lookupApple(artist,album); }catch(e){ LOG('Apple Music lookup failed:',e.message); }
+  LOG(apple?`Apple Music: ${apple.strong?'exact':'loose'} match for ${label}`:`Apple Music: no match for ${label}`);
+  let result=apple&&apple.strong?apple:null;
+  if(!result){
+    LOG('asking MusicBrainz'+(apple?' (the Apple match was only loose)':''));
+    try{ mb=await fetchMusicBrainzArt(artist,album); }catch(e){ LOG('MusicBrainz lookup failed:',e.message); }
+    LOG(mb?`MusicBrainz: ${mb.strong?'exact':'loose'} match for ${label}`:`MusicBrainz: nothing for ${label}`);
+    result=(mb&&mb.strong)?mb:(apple||mb||null);
+  }
+  LOG(result?`cover for ${label} comes from ${coverSource(result.url)}`:`no cover found for ${label}`);
+  artCache[key]=result;
+  return result;
 }
 
 // ── Cover from a pasted link ────────────────────────────────────────────────
@@ -956,7 +954,7 @@ function openCoverPicker(i){
   if(spinning||lastWinner!==null) return;
   const n=state.nominees[i]; coverIdx=i; const tok=++coverToken;
   const has=(n.artist||'').trim()&&(n.album||'').trim();
-  document.getElementById('cover-for').textContent=has?`${n.artist} · ${n.album}`:'Type an artist and album in the seat first, or just paste a link below.';
+  document.getElementById('cover-for').textContent=(has?`${n.artist} · ${n.album}`:'Type an artist and album in the seat first, or just paste a link below.')+(n.artUrl?`. Current cover: ${coverSource(n.artUrl)}.`:'');
   document.getElementById('cover-link').value=''; setCoverMsg('');
   const box=document.getElementById('cover-results');
   box.innerHTML=has?'<p class="hint">Searching Apple Music…</p>':'';
@@ -1275,8 +1273,8 @@ function initialsTile(n){
   const [bg,fg]=PAL[[...a].reduce((s,c)=>s+c.charCodeAt(0),0)%PAL.length];
   return `<span class="ini" style="background:${bg};color:${fg}">${esc(ini)}</span>`;
 }
-function artInner(n){
-  if(n.artUrl) return `<img src="${esc(n.artUrl)}" alt="cover" />`;
+function artInner(n,i){
+  if(n.artUrl) return `<img src="${esc(n.artUrl)}" alt="cover" onerror="dropBadCover(this.src)" />`;
   if(n.sealed) return initialsTile(n);
   if(n.artist&&n.album) return '<span class="art-loading">Seeking cover…</span>';
   return '<span class="art-placeholder">+</span>';
@@ -1288,10 +1286,10 @@ function seatRow(i,withPill){
   const pct=Math.round(wt/T*1000)/10;
   const kindLbl=withPill?`<span class="pill">${ICON[k]}${KIND[k].name}</span>`:`<span>${KIND[k].name}</span>`;
   const meta=`<div class="meta"><i class="ownerdot" style="--own:${o.c}"></i><b>${esc(n.owner)}</b>${kindLbl}</div>`;
-  const art=`<button type="button" class="cv" id="ap-${i}" onclick="openCoverPicker(${i})" title="Find or change the cover" aria-label="Find or change the cover" ${lock?'disabled':''}>${artInner(n)}</button>`;
+  const art=`<button type="button" class="cv" id="ap-${i}" onclick="openCoverPicker(${i})" title="${n.artUrl?'Cover from '+coverSource(n.artUrl)+'. ':''}Find or change the cover" aria-label="Find or change the cover" ${lock?'disabled':''}>${artInner(n,i)}</button>`;
   if(n.sealed){
     return `<article class="seat" id="card-${i}" style="--own:${o.c}">${art}
-      <div class="info">${meta}<h3>${esc(n.album)}</h3><p>${esc(n.artist)}</p></div>
+      <div class="info">${meta}<h3>${esc(n.album)}</h3><p>${esc(n.artist)}${n.artUrl?` <span class="src">· ${coverSource(n.artUrl)} cover</span>`:''}</p></div>
       <div class="wt"><b id="wval-${i}">${wt}×</b><span>${pct}% of the wheel</span><div class="bar2"><i style="width:${pct}%"></i></div></div>
       <div class="acts">
         <button type="button" class="ghost sm icon" id="wdn-${i}" onclick="adjustWeight(${i},-1)" aria-label="Lower weight" ${wt<=1||lock?'disabled':''}>−</button>
@@ -1335,13 +1333,28 @@ function renderNominees(){
 // Cover art is never saved, so sealed seats look their covers up again after every load.
 // Lookups are spaced out to stay inside MusicBrainz's one-request-a-second limit.
 const artPending=new Set();
+const badCovers=new Set();
+// Redraws one sealed seat in place (sealed seats have no text fields, so nothing typed can be lost).
+function repaintSeat(i){
+  const row=document.getElementById('card-'+i), n=state.nominees[i];
+  if(row&&n&&n.sealed) row.outerHTML=seatRow(i,groupBy==='person');
+}
+// A saved cover address that no longer loads is dropped, so the seat shows its initials and a
+// Find cover button instead of a broken picture.
+function dropBadCover(url){
+  LOG('cover failed to load, dropping it:',url);
+  badCovers.add(url);
+  Object.keys(artCache).forEach(k=>{ if(artCache[k]&&artCache[k].url===url) delete artCache[k]; });
+  state.nominees.forEach((n,i)=>{ if(n.artUrl===url){ n.artUrl=null; if(n.sealed) repaintSeat(i); else if(document.getElementById('ap-'+i)) setArtPreview(i,artInner(n,i)); } });
+  cacheLocal(); drawWheel();
+}
 function loadWheelImage(url){
   if(imgCache[url]) return;
   // try a CORS-clean load first (needed for the save-as-image cards), then fall back to a plain one
   const attempt=cors=>{
     const img=new Image(); if(cors) img.crossOrigin='anonymous';
     img.onload=()=>{ imgCache[url]=img; drawWheel(); };
-    img.onerror=()=>{ if(cors) attempt(false); else console.warn('[WheelOfFates] Image load failed:',url); };
+    img.onerror=()=>{ if(cors) attempt(false); else dropBadCover(url); };
     img.src=url;
   };
   attempt(true);
@@ -1359,9 +1372,9 @@ function hydrateArt(){
       const r=cached||await fetchArtUrl(n.artist,n.album);
       artPending.delete(key);
       const cur=state.nominees[i];
-      if(!r?.url||!cur||!cur.sealed||cur.album!==n.album||cur.artist!==n.artist) return;
+      if(!r?.url||badCovers.has(r.url)||!cur||!cur.sealed||cur.album!==n.album||cur.artist!==n.artist) return;
       cur.artUrl=r.url; loadWheelImage(r.url); cacheLocal();
-      setArtPreview(i,`<img src="${esc(r.url)}" alt="cover" />`);
+      repaintSeat(i);
       drawWheel();
     },delay);
     if(!cached) delay+=1100;
