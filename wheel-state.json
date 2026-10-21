@@ -33,13 +33,13 @@
     },
     {
       "artist": "Cannibal Ox",
-      "album": "The ",
+      "album": "The Cold Vein",
       "owner": "Baxter",
       "enteredRound": 21,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Cannibal Ox",
+      "canonicalAlbum": "The Cold Vein"
     },
     {
       "artist": "Squarepusher",
