@@ -116,6 +116,7 @@ button.cv:disabled{opacity:1;cursor:default}
 .lrow{display:flex;gap:8px;align-items:center}
 .src{font-size:12px;color:var(--mute);white-space:nowrap}
 .src.diag{white-space:normal}
+.nocov{display:grid;place-items:center;width:100%;aspect-ratio:1;border-radius:6px;background:var(--field);color:var(--mute);font-size:12px}
 .sub{font:700 16px/1 var(--head);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);margin:14px 0 4px}
 .menufoot{padding:8px 10px 4px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);margin-top:4px}
 .cmsg{text-align:left;min-height:1.4em;margin:8px 0 0}
@@ -779,14 +780,30 @@ const CHRONICLE_ART_OVERRIDES={
 // iTunes is explicitly CORS-open, works from file:// with no API key needed.
 // Returns { url, canonicalArtist, canonicalAlbum } or null
 // ── MusicBrainz ─────────────────────────────────────────────────────────────
-// A cover is only accepted once it loads: 500px, else 250px.
-async function coverArchiveUrl(id){
-  for(const size of [500,250]){
-    const u=`https://coverartarchive.org/release/${id}/front-${size}`;
-    if(await probeImage(u,false)) return u;
-  }
-  return null;
+// The Cover Art Archive: read its index for the release (it lists the picture addresses and sizes),
+// then try 500px, then 250px, then the full picture, giving each up to 15 seconds. A cover is only
+// accepted once it loads. Resolves { url } or { error } with the reason in plain words.
+async function coverArchiveCover(id){
+  const notes=[];
+  let urls=[];
+  try{
+    const r=await fetch(`https://coverartarchive.org/release/${id}`);
+    if(r.status===404) return {error:'the Cover Art Archive has no pictures for this release'};
+    if(!r.ok) notes.push('its index answered HTTP '+r.status);
+    else{
+      const imgs=(await r.json()).images||[];
+      const f=imgs.find(i=>i.front)||imgs[0];
+      if(!f) return {error:'the release lists no pictures'};
+      const t=f.thumbnails||{};
+      urls=[t['500']||t.large, t['250']||t.small, f.image].filter(Boolean).map(u=>u.replace(/^http:/,'https:'));
+    }
+  }catch(e){ notes.push('its index could not be read'); }
+  if(!urls.length) urls=[`https://coverartarchive.org/release/${id}/front-500`,`https://coverartarchive.org/release/${id}/front-250`];
+  for(const u of urls){ if(await probeImage(u,false,15000)) return {url:u}; }
+  notes.push('the pictures did not load (the image servers behind it may be slow or down)');
+  return {error:notes.join('; ')};
 }
+async function coverArchiveUrl(id){ return (await coverArchiveCover(id)).url||null; }
 const mbCredit=rel=>rel['artist-credit']?.[0]?.artist?.name||'';
 const mbHasArt=rel=>{ const caa=rel['cover-art-archive']; return !!(caa&&(caa.front||caa.artwork||caa.count>0)); };
 // Resolves { rels } or { error } so the caller can say exactly what went wrong.
@@ -806,13 +823,14 @@ async function fetchMusicBrainzArt(artist,album,d={}){
   const pick=async rels=>{
     const ordered=[...rels.filter(r=>mbHasArt(r)&&isStrong(r)),...rels.filter(r=>mbHasArt(r)&&!isStrong(r)),...rels.filter(r=>!mbHasArt(r))].slice(0,8);
     for(const rel of ordered){
-      const url=await coverArchiveUrl(rel.id); if(!url) continue;
+      const c=await coverArchiveCover(rel.id);
+      if(!c.url){ lastWhy=c.error; LOG(`Cover Art Archive for "${rel.title}": ${c.error}`); continue; }
       const strong=isStrong(rel);
-      return {url,canonicalArtist:strong?(mbCredit(rel)||null):null,canonicalAlbum:strong?(rel.title||null):null,strong};
+      return {url:c.url,canonicalArtist:strong?(mbCredit(rel)||null):null,canonicalAlbum:strong?(rel.title||null):null,strong};
     }
     return null;
   };
-  let seen=0;
+  let seen=0, lastWhy='';
   const first=await mbSearch(`release:"${album}" AND artist:"${artist}"`);
   if(first.error){ d.mb=first.error; LOG('MusicBrainz '+first.error); return null; }
   seen+=first.rels.length; LOG(`MusicBrainz returned ${first.rels.length} release(s)`);
@@ -828,7 +846,7 @@ async function fetchMusicBrainzArt(artist,album,d={}){
       result=await pick(near);
     }
   }
-  d.mb=result?(result.strong?'exact match':'loose match'):(seen?`found ${seen} release(s), but no cover loaded`:'no releases found');
+  d.mb=result?(result.strong?'exact match':'loose match'):(seen?`found ${seen} release(s), but no cover loaded${lastWhy?' ('+lastWhy+')':''}`:'no releases found');
   return result;
 }
 
@@ -919,13 +937,13 @@ async function fetchArtUrl(artist,album){
 }
 
 // ── Cover from a pasted link ────────────────────────────────────────────────
-function probeImage(url,cors){
+function probeImage(url,cors,ms){
   return new Promise(res=>{
     const img=new Image(); if(cors) img.crossOrigin='anonymous';
     img.onload=()=>res(img.naturalWidth>=150?img:null);
     img.onerror=()=>res(null);
     img.src=url.replace(/^http:\/\//i,'https://');
-    setTimeout(()=>res(null),8000);
+    setTimeout(()=>res(null),ms||8000);
   });
 }
 async function imageFromAddress(url){
@@ -1017,8 +1035,8 @@ function openCoverPicker(i){
     if(r.error){ mbBox.innerHTML=`<h3 class="sub">MusicBrainz</h3><p class="hint">MusicBrainz ${esc(r.error)}.</p>`; return; }
     const withArt=r.rels.filter(mbHasArt), list=(withArt.length?withArt:r.rels).slice(0,12);
     // a card whose cover does not exist removes itself
-    const mcard=rel=>`<button type="button" class="fopt" data-mb="${esc(JSON.stringify({id:rel.id,a:mbCredit(rel),n:rel.title||''}))}"><img src="https://coverartarchive.org/release/${esc(rel.id)}/front-250" alt="" onerror="this.closest('.fopt').remove()"><strong>${esc(rel.title||'')}</strong><em>${esc(mbCredit(rel))}${rel.date?' · '+esc(String(rel.date).slice(0,4)):''}</em></button>`;
-    mbBox.innerHTML='<h3 class="sub">MusicBrainz</h3>'+(list.length?`<div class="fgrid">${list.map(mcard).join('')}</div>`:'<p class="hint">MusicBrainz found no releases with that title and artist.</p>');
+    const mcard=rel=>`<button type="button" class="fopt" data-mb="${esc(JSON.stringify({id:rel.id,a:mbCredit(rel),n:rel.title||''}))}"><img src="https://coverartarchive.org/release/${esc(rel.id)}/front-250" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'nocov',textContent:'No cover'}))"><strong>${esc(rel.title||'')}</strong><em>${esc(mbCredit(rel))}${rel.date?' · '+esc(String(rel.date).slice(0,4)):''}</em></button>`;
+    mbBox.innerHTML='<h3 class="sub">MusicBrainz</h3>'+(list.length?`<div class="fgrid">${list.map(mcard).join('')}</div><p class="hint">MusicBrainz covers come from the Internet Archive and can take a few seconds to appear.</p>`:'<p class="hint">MusicBrainz found no releases with that title and artist.</p>');
   });
 }
 function closeCoverPicker(){ coverToken++; coverIdx=null; document.getElementById('cover-overlay').classList.remove('show'); }
@@ -1048,11 +1066,11 @@ document.addEventListener('click',async ev=>{
   const i=coverIdx;
   if(b.dataset.mb){
     let m; try{ m=JSON.parse(b.dataset.mb); }catch(e){ return; }
-    setCoverMsg('Getting that cover…');
-    const url=await coverArchiveUrl(m.id);
+    setCoverMsg('Getting that cover… (this can take up to 15 seconds)');
+    const c=await coverArchiveCover(m.id);
     if(coverIdx!==i) return;
-    if(!url){ setCoverMsg('That release has no cover that loads. Try another one.'); return; }
-    applyPickedCover(i,{url,canonicalArtist:m.a||null,canonicalAlbum:m.n||null});
+    if(!c.url){ setCoverMsg('That cover did not load: '+c.error+'.'); return; }
+    applyPickedCover(i,{url:c.url,canonicalArtist:m.a||null,canonicalAlbum:m.n||null});
     return;
   }
   let c; try{ c=JSON.parse(b.dataset.cand); }catch(e){ return; }
@@ -1537,7 +1555,7 @@ drawWheel();
 updateSpinButton();
 
 // Which build is running: shown at the bottom of the ⋯ menu, and logged.
-const BUILD='cover diagnostics, 21 Oct';
+const BUILD='cover archive fix, 21 Oct';
 document.getElementById('build-stamp').textContent='Build: '+BUILD;
 LOG('build:',BUILD);
 
