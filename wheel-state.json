@@ -47,7 +47,7 @@
       "owner": "Chris",
       "enteredRound": 20,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Squarepusher",
       "canonicalAlbum": "Feed Me Weird Things"
     },
