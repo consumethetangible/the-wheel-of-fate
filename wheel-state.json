@@ -17,9 +17,9 @@
       "owner": "Chris",
       "weight": 1,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Nirvana",
-      "canonicalAlbum": "Incesticide"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "New Kingdom",
