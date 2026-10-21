@@ -10,7 +10,7 @@ A weighted random selection wheel for group listening clubs. Members nominate al
 - **Weighted spinning wheel** — albums that survive rounds grow heavier, giving patient picks a better chance
 - **Cover art** looked up automatically on Apple Music (MusicBrainz and the Cover Art Archive as a backup), with a picker for the misses
 - **Canonical titles** — when the match is exact, artist and album names are rewritten to Apple Music's (or MusicBrainz's) spelling at the point of sealing
-- **History** — its own full-width section: a scrolling list of every result, with cover art you can fix (tap a cover or Find cover) and a short tale you can write for any entry
+- **History** — its own full-width section: a scrolling list of every result, with cover art you can fix (tap a cover or Find cover) and a story for every round, told in one of 14 voices (medieval tournament, noir, courtroom, zombie apocalypse and more). Tap an entry to read it, get another telling, edit it, or save the card as an image
 - **Roster management** — replace any seat before the next spin; survivors gain weight automatically
 - **Manual weight correction** — sealed cards expose +/− controls for fixing a weight by hand
 - **Re-spin option** — dismiss a result and spin again without recording it

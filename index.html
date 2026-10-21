@@ -86,7 +86,8 @@ input[type=file]{display:none}
 .result h2{margin:2px 0 0;font:600 24px/1.15 var(--serif);text-wrap:balance;overflow-wrap:anywhere}
 .result p{margin:2px 0 0;color:var(--mute)}
 .result .lore{grid-column:1 / -1;margin:0;color:var(--mute);font:italic 14px/1.55 var(--serif);border-top:1px solid var(--line);padding-top:12px}
-.result .lore .chronicle-album{color:var(--ink);font-style:normal;font-weight:600}
+.result .stand{grid-column:1 / -1;margin:-6px 0 0}
+.result .told{grid-column:1 / -1;margin:-8px 0 0;font-size:13px}
 .result .btns{grid-column:1 / -1;display:flex;gap:8px;flex-wrap:wrap}
 .result .btns .primary{flex:1 1 150px}
 
@@ -160,8 +161,7 @@ button.cv:disabled{opacity:1;cursor:default}
 .hist .hhead{position:sticky;top:0;z-index:1;background:var(--raised);border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding-top:8px;padding-bottom:8px}
 .hist .h+.h{border-top:1px solid var(--line)}
 .hist .rd{font:700 22px/1 var(--head);color:var(--mute);font-variant-numeric:tabular-nums}
-.hist .th{width:52px;height:52px;min-height:0;padding:0;border-radius:8px;overflow:hidden;background:var(--field);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer}
-.hist .th:hover{border-color:var(--amber)}
+.hist .th{width:52px;height:52px;min-height:0;padding:0;border-radius:8px;overflow:hidden;background:var(--field);border:1px solid var(--line);display:grid;place-items:center}
 .hist .th img{width:100%;height:100%;object-fit:cover;display:block}
 .hist .th .ini{width:100%;height:100%;display:grid;place-items:center;font:700 18px/1 var(--head);letter-spacing:.04em}
 .hist .ti{font:600 16px/1.25 var(--serif);overflow-wrap:anywhere}
@@ -172,7 +172,6 @@ button.cv:disabled{opacity:1;cursor:default}
 .hist .wn small{font:400 12px var(--ui);color:var(--mute)}
 .hist .hb{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .hist .empty{display:block;padding:16px;color:var(--mute)}
-.hist .tale-btn.has-tale{border-color:var(--amber);color:var(--amber)}
 
 /* ---------- dialogs ---------- */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.74);z-index:60;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
@@ -191,17 +190,21 @@ button.cv:disabled{opacity:1;cursor:default}
 .cerr{margin:14px 0 0;padding:10px 12px;border:1px solid var(--err);border-radius:8px;color:var(--err);background:rgba(255,122,104,.08)}
 .cerr[hidden],.cforget[hidden]{display:none}
 .cforget{display:block;margin:14px auto 0;background:none;border:none;color:var(--mute);text-decoration:underline;min-height:32px}
-.thead{display:flex;gap:12px;align-items:center;margin:12px 0;padding:10px 12px;background:var(--field);border:1px solid var(--line);border-radius:10px}
-.thead .tw-art{width:52px;height:52px;border-radius:6px;overflow:hidden;flex:none;background:var(--raised)}
-.thead .tw-art img{width:100%;height:100%;object-fit:cover;display:block}
-.thead .tw-title{font:600 16px/1.25 var(--serif)} .thead .tw-sub{color:var(--mute);font-size:13px}
-.tale-textarea{min-height:190px;resize:vertical;line-height:1.55;font-family:var(--serif);font-size:15px}
-.tale-reader-text{font:italic 16px/1.7 var(--serif);color:var(--ink);padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:12px 0;white-space:pre-wrap}
-.tale-reader-head{display:flex;gap:14px;align-items:center}
-.tale-reader-head .tw-art{width:84px;height:84px;border-radius:10px;overflow:hidden;background:var(--field);flex:none}
-.tale-reader-head .tw-art img{width:100%;height:100%;object-fit:cover;display:block}
-.tale-reader-head h2{text-transform:none;font:600 22px/1.2 var(--serif);letter-spacing:0;margin:2px 0}
-.tale-reader-head p{margin:0;color:var(--mute)}
+.cardmodal{max-width:560px}
+.cardmodal .chead{display:flex;gap:14px;align-items:center}
+.cardmodal .chead .cv{width:84px;height:84px;flex:none}
+.cardmodal .chead h2{text-transform:none;font:600 22px/1.2 var(--serif);letter-spacing:0;margin:2px 0}
+.cardmodal .chead p{margin:0;color:var(--mute)}
+.cardmodal .story{font:italic 16px/1.7 var(--serif);color:var(--ink);padding:12px 0 8px;border-top:1px solid var(--line);margin:14px 0 0}
+.cardmodal .told{margin:0;color:var(--mute);font-size:13px}
+.cardmodal textarea{min-height:190px;resize:vertical;line-height:1.55;font-family:var(--serif);font-size:15px}
+.stand{margin:0;font:600 13px/1.4 var(--head);letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
+.hist .h{cursor:pointer}
+.hist .h:hover{background:var(--raised)}
+.hist .h:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+.hist .chev{color:var(--mute);font-size:22px;line-height:1}
+.hist .h:hover .chev{color:var(--amber)}
+.hist .th{cursor:inherit}
 
 @media (min-width:900px){
   .work{grid-template-columns:minmax(380px,440px) minmax(0,1fr);gap:30px;padding-top:26px}
@@ -271,8 +274,11 @@ button.cv:disabled{opacity:1;cursor:default}
         <p id="winner-champion-name"></p>
       </div>
       <p class="lore" id="winner-lore"></p>
+      <p class="stand" id="result-stand"></p>
+      <p class="told" id="result-told"></p>
       <div class="btns">
         <button type="button" class="ghost" onclick="respinWheel()">Spin again</button>
+        <button type="button" class="ghost" onclick="retellResult()">Another telling</button>
         <button type="button" class="ghost" onclick="exportWinnerCard()">Save as image</button>
         <button type="button" class="primary" onclick="closeWinner()">Accept result</button>
       </div>
@@ -300,7 +306,7 @@ button.cv:disabled{opacity:1;cursor:default}
       <li><b>Spin.</b> When all six are sealed, the wheel is ready. Each album's slice is sized by its weight.</li>
       <li><b>Weight is automatic.</b> Every album starts at 1× and gains 1 for each spin it sits through. Replace it and it starts over at 1×.</li>
       <li><b>After a result.</b> Accept it and the winner leaves, which opens its seat. Add the new pick any time before the next spin. You can replace any other seat whenever you like.</li>
-      <li><b>History</b> keeps every winner. Open an entry to write a short tale about it.</li>
+      <li><b>Every result gets a story</b>, told in a different voice each round. <b>Another telling</b> swaps in a new one. <b>History</b> keeps every winner: open an entry to read its story, retell it, edit it, fix the cover, or save it as an image.</li>
     </ol>
     <div class="mrow"><button type="button" class="primary" onclick="closeHelp()">Got it</button></div>
   </div>
@@ -375,50 +381,267 @@ button.cv:disabled{opacity:1;cursor:default}
   </div>
 </div>
 
-<div class="overlay" id="tale-writer-overlay" onclick="if(event.target===this)closeTaleWriter()">
-  <div class="modal" role="dialog" aria-labelledby="tale-writer-title">
-    <h2 id="tale-writer-title">Write the tale</h2>
-    <div class="thead" id="tale-writer-info"></div>
-    <label class="mlabel" for="tale-textarea">Tale</label>
-    <textarea class="tale-textarea" id="tale-textarea" placeholder="Write a few lines about this result…"></textarea>
-    <div class="mrow">
-      <button type="button" class="ghost" onclick="rerollTale()">Another draft</button>
-      <button type="button" class="primary" onclick="saveTaleFromWriter()">Save tale</button>
-      <button type="button" class="ghost" onclick="closeTaleWriter()">Close</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="tale-reader-overlay" onclick="if(event.target===this)closeTaleReader()">
-  <div class="modal" role="dialog" aria-labelledby="tale-reader-album-label">
-    <div class="tale-reader-head">
-      <div class="tw-art" id="tale-reader-art-panel"><img id="tale-reader-art-img" src="" alt="" style="display:none"></div>
-      <div style="min-width:0">
-        <p class="eyebrow" id="tale-reader-round-label"></p>
-        <h2 id="tale-reader-album-label"></h2>
-        <p id="tale-reader-artist-label"></p>
-      </div>
-    </div>
-    <div class="tale-reader-text" id="tale-reader-text"></div>
-    <div class="mrow">
-      <button type="button" class="ghost" onclick="openTaleWriterFromReader()">Edit</button>
-      <button type="button" class="ghost" onclick="exportTaleImage()">Save as image</button>
-      <button type="button" class="primary" onclick="closeTaleReader()">Close</button>
-    </div>
-  </div>
+<div class="overlay" id="card-overlay" onclick="if(event.target===this)closeCard()">
+  <div class="modal cardmodal" role="dialog" aria-label="Round result" id="card-body"></div>
 </div>
 
 <script>
 const OWN={Baxter:{c:'#7aa7e0',d:'#27405f'},Chris:{c:'#c58bdb',d:'#4a2a58'},Erik:{c:'#5fc2b5',d:'#1f4f49'}};
 const ownerColor=o=>OWN[o]||{c:'#a99d90',d:'#332c2c'};
 
-const LORE=[
-  (a,c,r)=>r>=3?`Lo, after ${r} tourneys of patient vigil, the ancient standard of <span class="chronicle-album">${a}</span> — borne by the steadfast ${c} — was at last thrust skyward by the Wheel's decree.`
-    :r===2?`In the fullness of time, <span class="chronicle-album">${a}</span> — a veteran of one prior tourney — answered ${c}'s faith and claimed the Listening Throne.`
-    :`Fresh to the lists, <span class="chronicle-album">${a}</span>, champion of ${c}, rode boldly into battle and emerged victorious in its very first tourney.`,
-  (a,c,r)=>r>=3?`The chroniclers note with reverence: <span class="chronicle-album">${a}</span> had endured ${r} assemblies without being called. At last the Wheel turned its golden face upon ${c}'s offering.`
-    :`The Wheel of Fates, turning as it has since time immemorial, bestowed its favour upon <span class="chronicle-album">${a}</span>. ${c} stands triumphant.`,
+const Lore=(()=>{
+// ── The saga of the three, told in a different voice each round ───────────────
+// Templates only (no AI service). Each voice has three tellings: a full one, a different angle, and a short one.
+// A telling uses whatever facts exist and quietly skips the rest, so older rounds (which have no record of the
+// losing albums or the odds) still read well. People are only ever named, never given pronouns.
+
+const NUM_WORDS=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const numW=n=>n>=0&&n<=12?NUM_WORDS[n]:String(n);
+const capF=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+const ORD_ONES=['','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth'];
+const ORD_TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+const ORD_TENS_END={20:'twentieth',30:'thirtieth',40:'fortieth',50:'fiftieth',60:'sixtieth',70:'seventieth',80:'eightieth',90:'ninetieth'};
+function ordW(n){
+  if(n<20) return ORD_ONES[n]||String(n);
+  if(n<100){ const t=Math.floor(n/10), o=n%10; return o?ORD_TENS[t]+'-'+ORD_ONES[o]:ORD_TENS_END[t*10]; }
+  return n+'th';
+}
+const oxford=list=>list.length<2?(list[0]||''):list.length===2?list.join(' and '):list.slice(0,-1).join(', ')+' and '+list[list.length-1];
+const joinS=(...parts)=>parts.filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+
+// Everything a telling can use, worked out from one context object (see storyContext).
+function storyFacts(c){
+  const o=c.owner, w=Math.max(1,c.weight||1), wait=w-1;
+  const others=Object.keys(c.stand||{}).filter(x=>x!==o);
+  const lost=(c.losers||[]).filter(l=>l.owner!==o).sort((a,b)=>b.weight-a.weight).slice(0,2).map(l=>`${l.owner}'s “${l.album}”`);
+  const wins=c.wins||1, streak=c.streak||1;
+  return {
+    o, r:c.round, T:`“${c.album}”`, by:c.artist?` by ${c.artist}`:'', w, wait,
+    waitT:wait?`${numW(wait)} round${wait===1?'':'s'}`:'',
+    opp:oxford(others), oppN:others.length,
+    fl:oxford(lost), flN:lost.length, v:(pl,sg)=>lost.length>1?pl:sg,
+    wins, winsW:numW(wins), winN:ordW(wins), first:wins===1,
+    streak, streakW:numW(streak), drought:c.drought||0,
+    pct:c.odds!=null?`${c.odds<10?c.odds.toFixed(1):Math.round(c.odds)}%`:'',
+    kw:c.kind==='beloved'?'beloved':c.kind==='exploring'?'exploring':'',
+    wt:w>1?`${w}× weight`:''
+  };
+}
+
+const S=joinS;
+const STORY_VOICES=[
+  {id:'medieval',name:'Medieval tournament',v:[
+    f=>S(`At the lists of the Listening Throne, ${f.T}${f.by}, borne by ${f.o}, is proclaimed champion of Tournament ${f.r}.`,
+      f.wait?`It waited ${f.waitT} beneath patient banners before the Wheel turned its golden face upon it.`:`It rode in fresh to the lists and conquered at once.`,
+      f.fl&&`${f.fl} lay unhorsed in the dust.`,
+      `${f.o} now holds ${f.winsW} ${f.wins===1?'crown':'crowns'}.`),
+    f=>S(`Hear ye! The heralds cry ${f.T} victorious in Tournament ${f.r}, and the colours of ${f.o} fly above all.`,
+      f.fl&&`Down went ${f.fl}, to the groans of the gallery.`,
+      f.streak>=2?`${capF(f.streakW)} tournaments running now bear the banner of ${f.o}.`:f.first?`It is the first laurel for ${f.o}, and long overdue.`:`That is the ${f.winN} laurel for ${f.o}.`),
+    f=>S(`Tournament ${f.r}: ${f.T}${f.by} carries the day for ${f.o}.`,`The crowd roars, and the minstrels are paid.`)
+  ]},
+  {id:'doc',name:'Nature documentary',v:[
+    f=>S(`Here, on the open plains of the listening room, ${f.o} has tracked ${f.T} for ${f.wait?f.waitT:'barely a moment'}.`,
+      `Now, in round ${f.r}, the herd parts, and ${f.T}${f.by} steps into the light${f.pct?`, carrying ${f.pct} of the wheel on its back`:''}.`,
+      f.fl&&`${capF(f.fl)} ${f.v('slip','slips')} back into the tall grass, defeated but not forgotten.`,
+      `${f.o}'s tally rises to ${f.winsW}.`),
+    f=>S(`Few creatures are as patient as ${f.o}.`,
+      f.wait?`${capF(f.waitT)} of waiting, and ${f.T}${f.by} emerges in round ${f.r}.`:`No waiting at all, and ${f.T}${f.by} emerges in round ${f.r}.`,
+      `Nature is rarely this tidy.`,
+      f.fl&&`Nearby, ${f.fl} ${f.v('watch','watches')} from the treeline.`),
+    f=>S(`Round ${f.r}.`,`${f.T} emerges for ${f.o}.`,`The wheel, as always, takes no notes.`)
+  ]},
+  {id:'noir',name:'Noir',v:[
+    f=>S(`The wheel never sleeps, and neither did ${f.o}.`,
+      f.wait?`For ${f.waitT}, ${f.T}${f.by} sat in the dark, waiting on a call.`:`${f.T}${f.by} walked in off the street and got the job.`,
+      `Round ${f.r} came around and the numbers fell its way${f.pct?`, ${f.pct} on the board`:''}.`,
+      f.fl&&`${capF(f.fl)} went quiet.`,
+      `That makes ${f.winsW} for ${f.o}. The city never cares.`),
+    f=>S(`It was round ${f.r}, raining the way it only rains in a listening room.`,
+      `${f.o} slid ${f.T}${f.by} across the table, and for once the wheel looked down.`,
+      f.fl&&`${capF(f.fl)} left by the back door.`,
+      `Nobody asked questions. Nobody ever does.`),
+    f=>S(`Round ${f.r}. ${f.T}${f.by}.`,`${f.o} walked out smiling while ${f.opp||'the others'} studied the floor.`)
+  ]},
+  {id:'sports',name:'Sports broadcast',v:[
+    f=>S(`And ${f.T} comes down the stretch${f.wt?` at ${f.wt}`:''}!`,
+      `${f.o} has it in round ${f.r}${f.fl?`, past ${f.fl}`:''}!`,
+      f.streak>=2?`That's ${f.streakW} straight for ${f.o}, folks!`:`That's win number ${f.winsW} for ${f.o}, folks!`,
+      f.opp&&`${capF(f.opp)} will be thinking about this one all week.`),
+    f=>S(`Scoreboard check, round ${f.r}: ${f.T}${f.by} takes it for ${f.o}${f.kw?`, a ${f.kw} pick`:''}.`,
+      f.pct&&`The odds said ${f.pct}, and for once the odds were right.`,
+      f.fl&&`${capF(f.fl)} ${f.v('are','is')} left staring at the replay.`,
+      `The standings are about to look different.`),
+    f=>S(`${f.o} takes round ${f.r} with ${f.T}.`,`The crowd is on its feet and the replay is already rolling.`)
+  ]},
+  {id:'court',name:'Courtroom',v:[
+    f=>S(`In round ${f.r}, the court finds for ${f.T}${f.by}.`,
+      `The petitioner, ${f.o}, ${f.wait?`proved ${f.waitT} of patient waiting${f.pct?` at odds of ${f.pct}`:''}`:`needed no waiting at all`}.`,
+      f.opp&&(f.fl?`The respondents, ${f.opp}, are reminded that ${f.fl} ${f.v('were','was')} dismissed without prejudice.`:`The respondents, ${f.opp}, are reminded that their picks were dismissed without prejudice.`),
+      `That is ruling number ${f.winsW} for ${f.o}. Court adjourned.`),
+    f=>S(`In the matter of round ${f.r}, the court rules for ${f.o}.`,`Exhibit A: ${f.T}${f.by}.`,
+      f.kw&&`The court notes it was a ${f.kw} pick and takes that into account.`,
+      f.fl&&`${capF(f.fl)} ${f.v('are','is')} struck from the record.`),
+    f=>S(`Round ${f.r}: judgment for ${f.o}.`,`${f.T} is entered into the record.`)
+  ]},
+  {id:'ship',name:"Ship's log",v:[
+    f=>S(`Captain's log, round ${f.r}.`,
+      `The Wheel has spoken: ${f.T}${f.by}, delivered by ${f.o}${f.wt?` at ${f.wt}`:''}.`,
+      f.fl&&`${capF(f.fl)} ${f.v('drift','drifts')} into the dark, intact but unheard.`,
+      `${f.o}'s fleet now holds ${f.winsW} ${f.wins===1?'system':'systems'}.`),
+    f=>S(`Mission log ${f.r}. Long-range sensors report one winner: ${f.T}${f.by}.`,
+      `${f.o} confirms the contact and plots a course for the next round.`,
+      f.opp&&`${capF(f.opp)} ${f.oppN>1?'have':'has'} been notified.`),
+    f=>S(`Log ${f.r}: ${f.T} for ${f.o}.`,`All hands to the listening deck.`)
+  ]},
+  {id:'myth',name:'Mythic epic',v:[
+    f=>S(f.w>1?`In the ${ordW(f.r)} age of the Wheel, ${f.o} called a ${f.w}-fold weight upon ${f.T}${f.by}, and the heavens bent.`:`In the ${ordW(f.r)} age of the Wheel, ${f.o} spoke ${f.T}${f.by} into the sky, and the heavens listened.`,
+      f.fl&&`${capF(f.fl)} fell to ash.`,
+      `${capF(f.winsW)} ${f.wins===1?'victory stands':'victories stand'} in the name of ${f.o}.`),
+    f=>S(`The Three gathered, as they always do, and the Wheel turned for the ${ordW(f.r)} time.`,
+      `When it stilled, ${f.T}${f.by} stood, and ${f.o} rose with it.`,
+      f.fl&&`${capF(f.fl)} returned to the silence.`,
+      `Thus it is written.`),
+    f=>S(`${f.o} claims the ${ordW(f.r)} round.`,`${f.T} is carved into the sky.`)
+  ]},
+  {id:'wrestling',name:'Wrestling promo',v:[
+    f=>S(`LADIES AND GENTLEMEN, YOUR WINNER OF ROUND ${f.r}: ${(f.T+f.by).toUpperCase()}, REPRESENTING ${f.o.toUpperCase()}!`,
+      f.wait?`${f.waitT.toUpperCase()} IT WAITED IN THE BACK, AND TONIGHT THE WAIT IS OVER!`:`IT DIDN'T EVEN HAVE TO WAIT!`,
+      f.opp&&`${f.opp.toUpperCase()}, YOU CAN LOOK AWAY, BUT YOU CANNOT HIDE!`,
+      `${f.o.toUpperCase()} IS NOW A ${f.winsW.toUpperCase()}-TIME CHAMPION!`),
+    f=>S(`Listen up! ${f.o} just put ${f.T}${f.by} through the table in round ${f.r}.`,
+      f.fl&&`${capF(f.fl)} never saw the chair coming.`,
+      `Nobody beats ${f.o} when the wheel is hungry. Nobody.`),
+    f=>S(`${f.o}! ${f.T}! Round ${f.r}!`,`Somebody bring the belt.`)
+  ]},
+  {id:'weather',name:'Weather report',v:[
+    f=>S(`Round ${f.r} forecast: a heavy system${f.wt?` building at ${f.wt}`:''} has made landfall.`,
+      `${f.T}${f.by} arrived from ${f.o}'s side of the map${f.pct?`, with a ${f.pct} chance of exactly this`:''}.`,
+      f.fl&&`Expect ${f.fl} to clear out by evening.`,
+      `${f.o} is up to ${f.winsW} on the season.`),
+    f=>S(`Today's outlook: sunny for ${f.o}, cloudy for ${f.opp||'everyone else'}.`,
+      `${f.T}${f.by} moved in during round ${f.r} and is expected to hang around through the weekend.`,
+      f.streak>=2&&`A ${f.streakW}-round warm streak for ${f.o} continues.`),
+    f=>S(`Round ${f.r}: clear skies for ${f.o}.`,`${f.T} leads the front.`)
+  ]},
+  {id:'heist',name:'Heist briefing',v:[
+    f=>S(`Round ${f.r}: the crew gathered, and the plan was simple. ${f.o} puts ${f.T}${f.by} on the wheel and waits.`,
+      f.wait?`It took ${f.waitT}, but the lock finally clicked.`:`It worked on the first try.`,
+      f.fl&&`${capF(f.fl)} never saw it coming.`,
+      `That is ${f.winsW} ${f.wins===1?'job':'jobs'} for ${f.o}, and nobody got hurt. Much.`),
+    f=>S(`Briefing for round ${f.r}: the target was the Listening Throne, and the inside man was ${f.T}${f.by}.`,
+      `${f.o} walked out with the win${f.opp?` and left ${f.opp} counting the exits`:''}.`,
+      `Burn the plans.`),
+    f=>S(`Job ${f.r} complete.`,`${f.T}, delivered by ${f.o}.`,`Meet at the usual place.`)
+  ]},
+  {id:'war',name:'Humans versus the machines',v:[
+    f=>S(`Year of the Wheel, round ${f.r}. The machines were winning until ${f.o}'s unit deployed ${f.T}${f.by}.`,
+      f.wait?`It had been held in reserve for ${f.waitT}.`:`It went in with the first wave.`,
+      f.fl&&`Casualties: ${f.fl}.`,
+      `${f.o}'s resistance has now taken ${f.winsW} ${f.wins===1?'outpost':'outposts'}.`),
+    f=>S(`Transmission from the front, round ${f.r}: the machines have been pushed back.`,
+      `${f.T}${f.by} holds the line for ${f.o}${f.wt?` at ${f.wt}`:''}.`,
+      f.opp&&`${capF(f.opp)}, if you can hear this, fall back to the shelter.`),
+    f=>S(`Round ${f.r}: ${f.T} wins the skirmish for ${f.o}.`,`Humanity lives to listen another day.`)
+  ]},
+  {id:'zombie',name:'Zombie apocalypse',v:[
+    f=>S(`Day ${f.r} of the long night. ${f.o} found ${f.T}${f.by} in the wreckage and held the door.`,
+      f.wait?`It had survived ${f.waitT} on the barricade.`:`It showed up just in time.`,
+      f.fl&&`${capF(f.fl)} did not make it out of the parking lot.`,
+      `That is ${f.winsW} ${f.wins===1?'win':'wins'} for ${f.o}, and the supplies are holding.`),
+    f=>S(`The radio crackled at round ${f.r}: ${f.T}${f.by} is clear. Repeat, clear.`,
+      `${f.o} gets the good bunk.`,
+      f.opp&&`${capF(f.opp)} ${f.oppN>1?'take':'takes'} first watch.`),
+    f=>S(`Round ${f.r}: ${f.T} survives.`,`${f.o} gets the last of the canned peaches.`)
+  ]},
+  {id:'cosmic',name:'Cosmic horror',v:[
+    f=>S(`In round ${f.r}, the Wheel slowed beyond all reason, and ${f.T}${f.by} rose from the deep.`,
+      f.wait?`${f.o} had whispered its name for ${f.waitT}, and something had finally listened.`:`${f.o} had barely spoken its name, and still the thing answered.`,
+      f.fl&&`${capF(f.fl)} ${f.v('were','was')} swallowed by the dark between the stars.`,
+      `${f.o} has now won ${f.wins===1?'once':`${f.winsW} times`} and has not slept well since.`),
+    f=>S(`They say no one who has heard ${f.T} in round ${f.r} is ever quite the same.`,
+      `${f.o} insists everything is fine.`,
+      f.opp&&`${capF(f.opp)} ${f.oppN>1?'have':'has'} stopped asking.`),
+    f=>S(`Round ${f.r}: ${f.T}${f.by}.`,`${f.o} does not remember choosing it.`,`The wheel remembers.`)
+  ]},
+  {id:'ap',name:'AP news release',v:[
+    f=>S(`LISTENING ROOM (AP) — ${f.T}${f.by} won round ${f.r}, club officials confirmed.`,
+      `The pick, submitted by ${f.o}${f.kw?` as a ${f.kw} selection`:''}, carried a weight of ${f.w}×${f.pct?` and a ${f.pct} chance of winning`:''}.`,
+      f.fl&&`${capF(f.fl)} also competed.`,
+      `${f.o} now has ${f.winsW} ${f.wins===1?'win':'wins'}.`,
+      f.opp&&`${f.opp} did not immediately respond to requests for comment.`),
+    f=>S(`ROUND ${f.r}, LISTENING ROOM (AP) — ${f.o} won the round with ${f.T}${f.by}, the club said.`,
+      f.streak>=2?`It was ${f.o}'s ${ordW(f.streak)} consecutive win.`:(f.drought>=4&&!f.first)?`It was ${f.o}'s first win in ${numW(f.drought)} rounds.`:'',
+      `More to follow.`),
+    f=>S(`(AP) — ${f.T} wins round ${f.r} for ${f.o}.`,`More to follow.`)
+  ]}
 ];
+
+// Builds the context for one round from the chronicle. `entry` is a chronicle entry
+// ({round, album, artist, owner, rounds, kind?, odds?, field?}); `chronicle` includes it.
+// `owners` lists everyone who plays, so the standings show people with no wins yet.
+function storyContext(entry,chronicle,owners){
+  const all=[...chronicle].sort((a,b)=>a.round-b.round);
+  const stand={}; (owners||[]).forEach(o=>{ stand[o]=0; });
+  all.forEach(e=>{ if(!(e.owner in stand)) stand[e.owner]=0; });
+  all.filter(e=>e.round<=entry.round).forEach(e=>{ stand[e.owner]++; });
+  const before=all.filter(e=>e.round<entry.round);
+  let streak=1; for(let i=before.length-1;i>=0&&before[i].owner===entry.owner;i--) streak++;
+  const prevOwn=[...before].reverse().find(e=>e.owner===entry.owner);
+  return {
+    round:entry.round, album:entry.album, artist:entry.artist||'', owner:entry.owner,
+    weight:Math.max(1,entry.rounds||1), kind:entry.kind||null, odds:entry.odds!=null?entry.odds:null,
+    losers:entry.field&&entry.field.length?entry.field.map(l=>({owner:l.o,album:l.a,weight:l.w})):null,
+    stand, wins:stand[entry.owner], streak, drought:prevOwn?entry.round-prevOwn.round:0
+  };
+}
+const standLine=stand=>Object.entries(stand).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([n,w])=>`${n} ${w}`).join(' · ');
+
+// Picks a voice that was not used in the last nine rounds (there are fourteen), so they rotate evenly.
+// `rand` returns 0..1 (Math.random for a live spin; a seeded one gives the same old rounds every time).
+function pickVoice(recentIds,rand){
+  const avoid=new Set(recentIds.slice(0,9));
+  const pool=STORY_VOICES.filter(v=>!avoid.has(v.id));
+  const list=pool.length?pool:STORY_VOICES;
+  return list[Math.floor(rand()*list.length)];
+}
+function tellStory(ctx,voiceId,rand,variant){
+  const voice=STORY_VOICES.find(v=>v.id===voiceId)||STORY_VOICES[0];
+  // the full telling most of the time, the other angle often, the short one rarely
+  const roll=rand(), i=variant!=null?variant:(roll<0.5?0:roll<0.85?1:2);
+  return {voice:voice.id,variant:i,text:voice.v[i](storyFacts(ctx))};
+}
+// A small seeded random generator, so retelling the same old round always gives the same story.
+function seededRand(seed){ let s=(seed*2654435761)>>>0||1; return ()=>{ s^=s<<13; s>>>=0; s^=s>>>17; s^=s<<5; s>>>=0; return s/4294967296; }; }
+
+
+return {STORY_VOICES,storyContext,standLine,pickVoice,tellStory,seededRand};
+})();
+
+// Owners for the standings line: whoever holds a seat, in seat order.
+const storyOwners=()=>[...new Set(state.nominees.map(n=>n.owner))];
+const voiceName=id=>(Lore.STORY_VOICES.find(v=>v.id===id)||{}).name||'';
+// Tells one chronicle entry. Voices rotate: the ones used just before this round are skipped.
+function tellEntry(e,rand,avoidCurrent){
+  const prior=state.chronicle.filter(x=>x.round<e.round&&x.voice).sort((a,b)=>b.round-a.round).map(x=>x.voice);
+  const recent=avoidCurrent&&e.voice?[e.voice,...prior]:prior;
+  const ctx=Lore.storyContext(e,state.chronicle,storyOwners());
+  const v=Lore.pickVoice(recent,rand);
+  const t=Lore.tellStory(ctx,v.id,rand);
+  e.tale=t.text; e.voice=t.voice; delete e.edited;
+}
+// Old rounds get a story the first time they are seen. Same round, same story every time (seeded),
+// so it only becomes permanent when the next save happens.
+function storifyHistory(){
+  let changed=false;
+  [...state.chronicle].sort((a,b)=>a.round-b.round).forEach(e=>{
+    if(e.tale) return;
+    tellEntry(e,Lore.seededRand(e.round*7919),false); changed=true;
+  });
+  if(changed) cacheLocal();
+}
+const entryLine=e=>[`${e.owner}${e.kind?`'s ${e.kind} pick`:''}`,`${e.rounds}× ${e.kind?'weight':'at win'}`,e.odds!=null?`${e.odds}% chance`:''].filter(Boolean).join(' · ');
+const entryStand=e=>Lore.standLine(Lore.storyContext(e,state.chronicle,storyOwners()).stand);
 
 const SAVED_KEY='wheelOfFates_v3';
 
@@ -1087,7 +1310,10 @@ function runCoverSearch(){
     mbBox.innerHTML='<h3 class="sub">MusicBrainz</h3>'+(list.length?`<div class="fgrid">${list.map(mcard).join('')}</div><p class="hint">MusicBrainz covers come from the Internet Archive and can take a few seconds to appear.</p>`:'<p class="hint">MusicBrainz found no releases with that title and artist.</p>');
   });
 }
-function closeCoverPicker(){ coverToken++; coverTarget=null; document.getElementById('cover-overlay').classList.remove('show'); }
+function closeCoverPicker(){
+  coverToken++; coverTarget=null; document.getElementById('cover-overlay').classList.remove('show');
+  if(reopenCard){ reopenCard=false; if(cardEntry()){ renderCard(); document.getElementById('card-overlay').classList.add('show'); } }
+}
 function setCoverMsg(t){ document.getElementById('cover-msg').textContent=t; }
 function applyPickedCover(t,r){
   if(t.kind==='hist'){     // a past winner keeps its name; only the cover changes
@@ -1295,16 +1521,27 @@ function spinWheel(){
 
 function revealWinner(){
   const idx=winnerIdx(); lastWinner=idx;
-  addEntry(state.nominees[idx]);
+  addEntry(state.nominees[idx],idx);
   showResult(idx);
   renderNominees();   // redraws the seats locked, and the wheel dimmed
   saveState(true);
 }
 
-function addEntry(w){
-  const name=w.album||w.artist||'(unnamed)';
-  state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:weightOf(w),artUrl:w.artUrl});
+function addEntry(w,idx){
+  const name=w.album||w.artist||'(unnamed)', wt=weightOf(w), T=totalWeight();
+  const e={round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:wt,artUrl:w.artUrl,
+    kind:KIND[kindOf(idx)].name.toLowerCase(), odds:Math.round(wt/T*1000)/10,
+    field:state.nominees.filter((n,i)=>i!==idx&&n.sealed).map(n=>({o:n.owner,a:n.album,w:weightOf(n)}))};
+  state.chronicle.unshift(e);
+  tellEntry(e,Math.random,false);
   renderHistory(); fillHistoryArt();
+}
+// "Another telling" on the fresh result: a different voice, same facts.
+function retellResult(){
+  const e=state.chronicle[0];
+  if(lastWinner===null||!e||e.round!==state.round) return;
+  tellEntry(e,Math.random,true);
+  saveState(); showResult(lastWinner); renderHistory();
 }
 
 function toRoman(n){return String(n);}
@@ -1530,13 +1767,10 @@ function renderHistory(){
     // Hard-coded override wins over any cached/fetched URL for known entries
     const ok=(e.artist+'|||'+e.album).toLowerCase();
     if(CHRONICLE_ART_OVERRIDES[ok]&&!histBad.has(CHRONICLE_ART_OVERRIDES[ok])) e.artUrl=CHRONICLE_ART_OVERRIDES[ok];
-    const th=`<button type="button" class="th" id="chronicle-thumb-${e.round}" onclick="openHistoryCover(${e.round})" title="${e.artUrl?'Change the cover':'Find a cover'}" aria-label="${e.artUrl?'Change the cover':'Find a cover'} for round ${e.round}">${e.artUrl?`<img src="${esc(e.artUrl)}" alt="" onerror="dropBadHistCover(${e.round})">`:initialsTile(e)}</button>`;
-    const tale=e.tale
-      ?`<button type="button" class="ghost sm tale-btn has-tale" id="tale-btn-${e.round}" onclick="openTaleReader(${e.round})">Read tale</button>`
-      :`<button type="button" class="ghost sm tale-btn" id="tale-btn-${e.round}" onclick="openTaleWriter(${e.round})">Write tale</button>`;
-    const find=e.artUrl?'':`<button type="button" class="ghost sm" onclick="openHistoryCover(${e.round})">Find cover</button>`;
+    const th=`<div class="th" id="chronicle-thumb-${e.round}">${e.artUrl?`<img src="${esc(e.artUrl)}" alt="" onerror="dropBadHistCover(${e.round})">`:initialsTile(e)}</div>`;
+    const find=e.artUrl?'':`<button type="button" class="ghost sm" onclick="event.stopPropagation();openHistoryCover(${e.round})">Find cover</button>`;
     const diag=e.artUrl?null:coverDiag[ok];
-    return `<div class="h"><span class="rd">${e.round}</span>${th}<div class="tt"><div class="ti">${esc(e.album)}</div><div class="ar">${esc(e.artist||'')}${diag?` <span class="src diag">· No cover found. ${esc(diag)}</span>`:''}</div></div><div class="mt"><span class="ow"><i class="ownerdot" style="--own:${ownerColor(e.owner).c}"></i>${esc(e.owner)}</span><span class="wn">${e.rounds}×<small> at win</small></span></div><div class="hb">${find}${tale}</div></div>`;
+    return `<div class="h" role="button" tabindex="0" aria-label="Open round ${e.round}: ${esc(e.album)}" onclick="openCard(${e.round})" onkeydown="if((event.key==='Enter'||event.key===' ')&&event.target===this){event.preventDefault();openCard(${e.round})}"><span class="rd">${e.round}</span>${th}<div class="tt"><div class="ti">${esc(e.album)}</div><div class="ar">${esc(e.artist||'')}${diag?` <span class="src diag">· No cover found. ${esc(diag)}</span>`:''}</div></div><div class="mt"><span class="ow"><i class="ownerdot" style="--own:${ownerColor(e.owner).c}"></i>${esc(e.owner)}</span><span class="wn">${e.rounds}×<small> at win</small></span></div><div class="hb">${find}<span class="chev" aria-hidden="true">›</span></div></div>`;
   }).join('');
   el.scrollTop=keep;
 }
@@ -1557,7 +1791,7 @@ async function fillHistoryArt(){
     }
   } finally { histArtBusy=false; }
 }
-function restoreChronicle(){ renderHistory(); fillHistoryArt(); }
+function restoreChronicle(){ storifyHistory(); renderHistory(); fillHistoryArt(); }
 
 // Result card (shown under the wheel after a spin, until it is accepted or re-spun)
 function showResult(idx){
@@ -1567,7 +1801,11 @@ function showResult(idx){
   document.getElementById('winner-album-name').textContent=name;
   document.getElementById('winner-artist-name').textContent=w.artist||'';
   document.getElementById('winner-champion-name').textContent=`${w.owner}'s ${KIND[kindOf(idx)].name.toLowerCase()} pick · ${ww}× · ${pct}% chance`;
-  document.getElementById('winner-lore').innerHTML=LORE[Math.floor(Math.random()*LORE.length)](esc(name),esc(w.owner),ww);
+  const e=state.chronicle[0];
+  const has=e&&e.round===state.round;
+  document.getElementById('winner-lore').textContent=has?e.tale||'':'';
+  document.getElementById('result-stand').textContent=has?entryStand(e):'';
+  document.getElementById('result-told').textContent=has&&e.voice?`Told as: ${voiceName(e.voice)}${e.edited?' (edited)':''}`:'';
   document.getElementById('result-art').innerHTML=w.artUrl?`<img src="${esc(w.artUrl)}" alt="cover" />`:initialsTile(w);
   document.getElementById('result').hidden=false;
   document.getElementById('spinbar').hidden=true;
@@ -1602,8 +1840,9 @@ function openHelp(){ document.getElementById('help-overlay').classList.add('show
 function closeHelp(){ document.getElementById('help-overlay').classList.remove('show'); }
 document.addEventListener('keydown',ev=>{
   if(ev.key!=='Escape') return;
-  ['help-overlay','connect-overlay','tale-writer-overlay','tale-reader-overlay','cover-overlay'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
-  coverTarget=null; coverToken++;
+  if(document.getElementById('cover-overlay').classList.contains('show')){ closeCoverPicker(); return; }
+  ['help-overlay','connect-overlay'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
+  closeCard();
 });
 
 document.getElementById('round-display').textContent=state.round;
@@ -1613,7 +1852,7 @@ drawWheel();
 updateSpinButton();
 
 // Which build is running: shown at the bottom of the ⋯ menu, and logged.
-const BUILD='history section, 21 Oct';
+const BUILD='stories, 21 Oct';
 document.getElementById('build-stamp').textContent='Build: '+BUILD;
 LOG('build:',BUILD);
 
@@ -1672,32 +1911,7 @@ function importState(input){
 
 // ── UTILITY HELPERS ─────────────────────────────────────
 
-function stripHtml(html){
-  const tmp=document.createElement('div');
-  tmp.innerHTML=html;
-  return tmp.textContent||tmp.innerText||'';
-}
-
-function fillTextWrapped(ctx,text,x,y,maxW,lineH){
-  const words=text.split(' ');
-  let line='';
-  for(let i=0;i<words.length;i++){
-    const test=line?line+' '+words[i]:words[i];
-    if(ctx.measureText(test).width>maxW&&line){
-      ctx.fillText(line,x,y);
-      line=words[i];
-      y+=lineH;
-    } else { line=test; }
-  }
-  if(line) ctx.fillText(line,x,y);
-  return y;
-}
-
-function ordinalLong(n){
-  return(['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'][n-1])||(n+'th');
-}
-
-async function loadImageForCanvas(url){
+function loadImageForCanvas(url){
   if(!url) return null;
   if(imgCache[url] && imgCache[url].crossOrigin==='anonymous') return imgCache[url];
   return new Promise(resolve=>{
@@ -1713,105 +1927,73 @@ async function loadImageForCanvas(url){
 // ── WINNER CARD EXPORT ───────────────────────────────────
 
 async function exportWinnerCard(){
-  if(lastWinner===null) return;
-  const w=state.nominees[lastWinner];
-  await shareCard({
-    art:w.artUrl, kicker:`ROUND ${state.round} RESULT`, title:w.album||w.artist||'(Unnamed)', artist:w.artist||'',
-    line:`${w.owner}'s ${KIND[kindOf(lastWinner)].name.toLowerCase()} pick · ${weightOf(w)}× weight`,
-    body:stripHtml(document.getElementById('winner-lore').innerHTML),
-    file:`result-round-${state.round}.png`, height:750
-  });
+  const e=state.chronicle[0];
+  if(lastWinner===null||!e||e.round!==state.round) return;
+  await saveEntryImage(e);
 }
 
-// ── TALE TEMPLATES ───────────────────────────────────────
+// ── The result card (opens from History) ─────────────────
 
-const TALE_TEMPLATES=[
-  e=>`In the ${ordinalLong(e.round)} tournament of these assembled chronicles, the Wheel of Fates saw fit to bestow its favour upon "${e.album}" — the offering of ${e.owner}. The work had endured ${e.rounds>1?e.rounds+' prior tourneys of patient vigil':'not a single prior tourney, entering fresh to the lists'}, yet on this day the Fates turned their golden face upon it. Let this inscription stand as testament to its triumph.`,
+let cardRound=null, cardEditing=false, reopenCard=false;
+const cardEntry=()=>state.chronicle.find(e=>e.round===cardRound);
 
-  e=>`Hear ye, hear ye! On this day of Tournament ${toRoman(e.round)}, a great battle was waged in the hall of listening, and lo — ${e.owner}'s chosen offering, "${e.album}"${e.artist?' by '+e.artist:''}, did emerge victorious! The crowd did roar! The minstrels did play! And somewhere, probably, there was cake. The album had been waiting ${e.rounds>1?e.rounds+' whole tourneys':e.rounds+' tourney'}, gathering its strength like a sleeping bear, and when the Wheel spun, it spun true!`,
-
-  e=>`The wheel turned. It always turns. And when the spinning ceased and silence fell over the assembled champions, one name rang out above the rest — "${e.album}". ${e.owner} had carried it faithfully through ${e.rounds>1?e.rounds+' long tournaments':ordinalLong(e.rounds)+' tournament'}, and at last, in Tournament ${toRoman(e.round)}, the Fates exacted their price of glory. Let none say the Wheel is unjust.`,
-
-  e=>`They said it couldn't be done. They whispered in the corridors that "${e.album}" — ${e.owner}'s dark horse — had waited too long, grown too heavy with expectation. ${e.rounds>1?'After '+e.rounds+' tournaments without glory, ':e.rounds===1?'In its very first tournament, ':''}the doubters fell silent. Tournament ${toRoman(e.round)} belonged to ${e.owner}${e.artist?' and '+e.artist:''}. Write it in the chronicles. Write it in fire.`,
-
-  e=>`Thus speaks the Record-Keeper of the Listening Throne: In Tournament ${toRoman(e.round)}, the Wheel adjudicated in favour of "${e.album}"${e.artist?', wrought by '+e.artist:''}. Said album had accumulated ${e.rounds} weight${e.rounds!==1?'s':''} of fortune through the passage of ${e.rounds>1?e.rounds+' prior assemblies':'prior assembly'}, becoming ever more likely in the calculus of fate. ${e.owner} shall be duly noted as Champion of this round. The Chronicle is updated accordingly.`,
-];
-
-// ── TALE STATE ────────────────────────────────────────────
-
-let taleWriterRound=null, taleTemplateIdx=0, taleReaderRound=null;
-
-function openTaleWriter(round){
-  const entry=state.chronicle.find(e=>e.round===round);
-  if(!entry) return;
-  taleWriterRound=round;
-  taleTemplateIdx=0;
-  const info=document.getElementById('tale-writer-info');
-  const artHtml=entry.artUrl?`<div class="tw-art"><img src="${esc(entry.artUrl)}" alt=""></div>`:'';
-  info.innerHTML=`${artHtml}<div><p class="eyebrow">Round ${round}</p><div class="tw-title">${esc(entry.album)}</div><div class="tw-sub">${esc(entry.artist||'')} · ${esc(entry.owner)}</div></div>`;
-  const ta=document.getElementById('tale-textarea');
-  ta.value=entry.tale||TALE_TEMPLATES[0](entry);
-  document.getElementById('tale-writer-overlay').classList.add('show');
+function openCard(round){
+  if(!state.chronicle.some(e=>e.round===round)) return;
+  cardRound=round; cardEditing=false;
+  renderCard();
+  document.getElementById('card-overlay').classList.add('show');
 }
-
-function rerollTale(){
-  const entry=state.chronicle.find(e=>e.round===taleWriterRound);
-  if(!entry) return;
-  taleTemplateIdx=(taleTemplateIdx+1)%TALE_TEMPLATES.length;
-  document.getElementById('tale-textarea').value=TALE_TEMPLATES[taleTemplateIdx](entry);
+function closeCard(){
+  cardRound=null; cardEditing=false;
+  document.getElementById('card-overlay').classList.remove('show');
 }
-
-function saveTaleFromWriter(){
-  const entry=state.chronicle.find(e=>e.round===taleWriterRound);
-  if(!entry) return;
-  entry.tale=document.getElementById('tale-textarea').value.trim();
-  saveState();
-  // Update the button in the history list
-  const btn=document.getElementById('tale-btn-'+taleWriterRound);
-  if(btn){
-    btn.textContent='Read tale';
-    btn.className='ghost sm tale-btn has-tale';
-    btn.setAttribute('onclick','openTaleReader('+taleWriterRound+')');
-  }
-  closeTaleWriter();
+function renderCard(){
+  const e=cardEntry(); if(!e) return closeCard();
+  const art=e.artUrl?`<img src="${esc(e.artUrl)}" alt="cover">`:initialsTile(e);
+  const story=cardEditing
+    ?`<label class="mlabel" for="card-text">Story</label><textarea id="card-text" aria-label="Story"></textarea>
+      <div class="mrow"><button type="button" class="primary" onclick="cardSaveEdit()">Save story</button><button type="button" class="ghost" onclick="cardCancelEdit()">Cancel</button></div>`
+    :`<p class="story" id="card-story"></p><p class="stand">${esc(entryStand(e))}</p><p class="told">${e.voice?`Told as: ${esc(voiceName(e.voice))}${e.edited?' (edited)':''}`:''}</p>
+      <div class="mrow">
+        <button type="button" class="primary" onclick="cardSaveImage()">Save as image</button>
+        <button type="button" class="ghost" onclick="cardRetell()">Another telling</button>
+        <button type="button" class="ghost" onclick="cardEdit()">Edit story</button>
+        <button type="button" class="ghost" onclick="cardChangeCover()">Change cover</button>
+        <button type="button" class="ghost" onclick="closeCard()">Close</button>
+      </div>`;
+  document.getElementById('card-body').innerHTML=
+    `<div class="chead"><div class="cv">${art}</div><div style="min-width:0"><p class="eyebrow">Round ${e.round}</p><h2>${esc(e.album)}</h2><p>${esc(e.artist||'')}</p><p>${esc(entryLine(e))}</p></div></div>${story}`;
+  const s=document.getElementById('card-story'); if(s) s.textContent=e.tale||'';
+  const ta=document.getElementById('card-text'); if(ta){ ta.value=e.tale||''; ta.focus(); }
 }
-
-function closeTaleWriter(){
-  document.getElementById('tale-writer-overlay').classList.remove('show');
+function cardRetell(){
+  const e=cardEntry(); if(!e) return;
+  if(e.edited&&!confirm('Replace the story you edited with a new telling?')) return;
+  tellEntry(e,Math.random,true);
+  saveState(); renderCard(); renderHistory();
+  if(lastWinner!==null&&e.round===state.round) showResult(lastWinner);
 }
-
-function openTaleReader(round){
-  const entry=state.chronicle.find(e=>e.round===round);
-  if(!entry||!entry.tale) return;
-  taleReaderRound=round;
-  const rImg=document.getElementById('tale-reader-art-img');
-  if(entry.artUrl){ rImg.src=entry.artUrl; rImg.style.display='block'; }
-  else { rImg.style.display='none'; }
-  document.getElementById('tale-reader-round-label').textContent='Round '+round;
-  document.getElementById('tale-reader-album-label').textContent=entry.album;
-  document.getElementById('tale-reader-artist-label').textContent=entry.artist||'';
-  document.getElementById('tale-reader-text').textContent=entry.tale;
-  document.getElementById('tale-reader-overlay').classList.add('show');
+function cardEdit(){ cardEditing=true; renderCard(); }
+function cardCancelEdit(){ cardEditing=false; renderCard(); }
+function cardSaveEdit(){
+  const e=cardEntry(); if(!e) return;
+  const v=document.getElementById('card-text').value.trim();
+  if(v&&v!==e.tale){ e.tale=v; e.edited=true; saveState(); }
+  cardEditing=false; renderCard();
+  if(lastWinner!==null&&e.round===state.round) showResult(lastWinner);
 }
-
-function openTaleWriterFromReader(){
-  const round=taleReaderRound;
-  closeTaleReader();
-  openTaleWriter(round);
+function cardChangeCover(){
+  const round=cardRound; if(round==null) return;
+  document.getElementById('card-overlay').classList.remove('show');
+  reopenCard=true; openHistoryCover(round);
+  if(!coverTarget) { reopenCard=false; document.getElementById('card-overlay').classList.add('show'); }
 }
-
-function closeTaleReader(){
-  document.getElementById('tale-reader-overlay').classList.remove('show');
-}
-
-async function exportTaleImage(){
-  if(taleReaderRound===null) return;
-  const entry=state.chronicle.find(e=>e.round===taleReaderRound);
-  if(!entry||!entry.tale) return;
-  await shareCard({
-    art:entry.artUrl, kicker:`ROUND ${entry.round}`, title:entry.album, artist:entry.artist||'',
-    line:`${entry.owner} · ${entry.rounds}× at win`, body:entry.tale,
-    file:`tale-round-${entry.round}.png`, height:680
+async function cardSaveImage(){ const e=cardEntry(); if(e) await saveEntryImage(e); }
+function saveEntryImage(e){
+  return shareCard({
+    art:e.artUrl, kicker:`ROUND ${e.round}`, title:e.album, artist:e.artist||'', line:entryLine(e),
+    body:e.tale||'', stand:entryStand(e), voice:e.voice?`Told as: ${voiceName(e.voice)}`:'',
+    file:`round-${e.round}.png`
   });
 }
 
@@ -1826,11 +2008,26 @@ function respinWheel(){
 }
 
 // One card layout for both "save as image" exports.
-async function shareCard({art,kicker,title,artist,line,body,file,height}){
+function wrapLines(c,text,maxW){
+  const out=[]; let line='';
+  for(const w of String(text).split(/\s+/).filter(Boolean)){
+    const test=line?line+' '+w:w;
+    if(c.measureText(test).width>maxW&&line){ out.push(line); line=w; } else line=test;
+  }
+  if(line) out.push(line);
+  return out;
+}
+
+// One card layout for every "save as image" export. Height follows the length of the story.
+async function shareCard({art,kicker,title,artist,line,body,stand,voice,file}){
   await document.fonts.ready;
-  const CW=600,CH=height,AH=290;
-  const cv=document.createElement('canvas'); cv.width=CW; cv.height=CH;
+  const CW=600,AH=290,LH=23,BODY_FONT='italic 15px "Source Serif 4",Georgia,serif';
+  const cv=document.createElement('canvas'); cv.width=CW; cv.height=2000;
   const c=cv.getContext('2d');
+  c.font=BODY_FONT;
+  const lines=wrapLines(c,body,CW-64);
+  const CH=AH+22+30+18+lines.length*LH+(stand?44:0)+(voice?26:0)+64;
+  cv.height=CH;     // resizing clears the canvas and resets the context
   c.fillStyle='#171313'; c.fillRect(0,0,CW,CH);
   const img=await loadImageForCanvas(art||null);
   if(img){
@@ -1845,10 +2042,8 @@ async function shareCard({art,kicker,title,artist,line,body,file,height}){
   let y=AH-14;
   c.font='15px "Source Serif 4",Georgia,serif'; c.fillStyle='#a99d90'; c.fillText(artist,32,y); y-=24;
   c.font='600 30px "Source Serif 4",Georgia,serif'; c.fillStyle='#f2eadf';
-  const words=title.split(' '), lines=[]; let cur='';
-  for(const wd of words){ const t=cur?cur+' '+wd:wd; if(c.measureText(t).width>CW-64&&cur){ lines.push(cur); cur=wd; } else cur=t; }
-  if(cur) lines.push(cur);
-  for(let i=lines.length-1;i>=0;i--){ c.fillText(lines[i],32,y); y-=36; }
+  const tl=wrapLines(c,title,CW-64);
+  for(let i=tl.length-1;i>=0;i--){ c.fillText(tl[i],32,y); y-=36; }
   c.font='700 15px "Barlow Condensed","Arial Narrow",sans-serif'; c.fillStyle='#f0a13a';
   c.letterSpacing='2px'; c.fillText(kicker,32,y); c.letterSpacing='0px';
   // body
@@ -1856,9 +2051,14 @@ async function shareCard({art,kicker,title,artist,line,body,file,height}){
   c.textBaseline='top'; c.font='14px ui-sans-serif,system-ui,sans-serif'; c.fillStyle='#a99d90';
   c.fillText(line,32,by); by+=30;
   c.strokeStyle='#322828'; c.lineWidth=1; c.beginPath(); c.moveTo(32,by); c.lineTo(CW-32,by); c.stroke(); by+=18;
-  c.font='italic 15px "Source Serif 4",Georgia,serif'; c.fillStyle='#f2eadf';
-  fillTextWrapped(c,body,32,by,CW-64,23);
-  c.font='600 12px "Barlow Condensed","Arial Narrow",sans-serif'; c.fillStyle='#6f6458'; c.letterSpacing='2px'; c.textAlign='center';
+  c.font=BODY_FONT; c.fillStyle='#f2eadf';
+  lines.forEach((l,i)=>c.fillText(l,32,by+i*LH)); by+=lines.length*LH;
+  if(stand){
+    by+=14; c.font='600 14px "Barlow Condensed","Arial Narrow",sans-serif'; c.fillStyle='#f0a13a'; c.letterSpacing='1.5px';
+    c.fillText(stand.toUpperCase(),32,by); c.letterSpacing='0px'; by+=22;
+  }
+  if(voice){ by+=4; c.font='13px ui-sans-serif,system-ui,sans-serif'; c.fillStyle='#6f6458'; c.fillText(voice,32,by); }
+  c.font='600 12px "Barlow Condensed","Arial Narrow",sans-serif'; c.fillStyle='#6f6458'; c.letterSpacing='2px'; c.textAlign='center'; c.textBaseline='alphabetic';
   c.fillText('WHEEL OF FATES',CW/2,CH-26); c.letterSpacing='0px';
   const a=document.createElement('a'); a.download=file; a.href=cv.toDataURL('image/png'); a.click();
 }
