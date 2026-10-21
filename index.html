@@ -3,597 +3,345 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Wheel of Fates — Album Discussion Club</title>
+<meta name="theme-color" content="#0e0c0c">
+<meta name="color-scheme" content="dark">
+<title>Wheel of Fates</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --gold: #c9973a; --gold-light: #e8c06a; --gold-dim: #7a5a1e;
-  --ink: #f0e6c8; --ink-dim: #9a8a68;
-  --stone: #2a2418; --border: #3d3020; --scroll-bg: #120f07;
-  /* parchment palette — used throughout the main UI */
-  --p-bg:      #d4b87a;
-  --p-bg-dark: #b8955a;
-  --p-bg-mid:  #c8a96e;
-  --p-ink:     #2a1200;
-  --p-ink-mid: #5a3000;
-  --p-ink-dim: #8a6030;
-  --p-border:  #8a6a2a;
-  --p-border-dim: rgba(100,60,10,0.25);
-  --p-gold:    #8a5010;
-  --p-shadow:  rgba(0,0,0,0.35);
+:root{
+  color-scheme:dark;
+  --bg:#0e0c0c; --surface:#171313; --raised:#201919; --field:#110e0e;
+  --line:#322828; --line2:#4d3e3e;
+  --ink:#f2eadf; --mute:#a99d90;
+  --amber:#f0a13a; --amber-ink:#1c1206; --red:#c9392a;
+  --ok:#62b58a; --warn:#e3b341; --err:#ff7a68; --focus:#8cbcff;
+  --head:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --ui:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+  --sl:env(safe-area-inset-left,0px); --sr:env(safe-area-inset-right,0px);
 }
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--ink);font:15px/1.45 var(--ui);
+  background:radial-gradient(1100px 480px at 8% -12%,rgba(201,57,42,.17),transparent 62%),var(--bg);
+  background-repeat:no-repeat;padding-left:var(--sl);padding-right:var(--sr)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+button{font:inherit;color:var(--ink);background:var(--raised);border:1px solid var(--line2);border-radius:8px;padding:9px 14px;min-height:40px;cursor:pointer;transition:border-color .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--amber)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{background:var(--amber);border-color:var(--amber);color:var(--amber-ink);font-weight:700}
+button.primary:hover:not(:disabled){background:#f6b257}
+button.ghost{background:transparent}
+button.sm{min-height:34px;padding:5px 11px;font-size:13px}
+button.icon{min-width:34px;padding:5px 0;font-size:16px;line-height:1}
+input,textarea{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;min-height:40px;width:100%;min-width:0}
+input[type=file]{display:none}
+.eyebrow{margin:0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
 
-body {
-  font-family: 'EB Garamond', serif;
-  min-height: 100vh;
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(100,60,10,0.05) 32px, rgba(100,60,10,0.05) 33px),
-    linear-gradient(160deg, #e8d5a0 0%, #d4b87a 25%, #dfc88a 50%, #c8a96e 75%, #d8c080 100%);
-  background-attachment: fixed;
-  color: var(--p-ink);
-}
-.app { display: flex; flex-direction: column; }
+/* ---------- top bar ---------- */
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:calc(12px + var(--st)) 18px 12px;position:relative;background:rgba(14,12,12,.88);z-index:5}
+.bar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--amber) 28%,var(--red) 72%,transparent);opacity:.6}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.brand svg{width:30px;height:30px;flex:none}
+.brand b{font:700 28px/1 var(--head);letter-spacing:.02em;white-space:nowrap}
+.chip{display:flex;align-items:baseline;gap:8px;border:1px solid var(--line2);border-radius:999px;padding:5px 14px;min-height:36px;
+  background:linear-gradient(90deg,rgba(240,161,58,.26) var(--p,0%),transparent var(--p,0%)),var(--surface)}
+.chip small{font-size:12.5px;color:var(--mute)} .chip strong{font-size:15px;font-variant-numeric:tabular-nums}
+.chip.ok{border-color:rgba(98,181,138,.7)}
+.sync{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);background:transparent;border:0;padding:6px 4px;min-height:36px;max-width:300px}
+.sync:hover:not(:disabled){border-color:transparent;color:var(--ink)}
+.sync span#sync-status{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--line2)}
+.dot.ok{background:var(--ok);box-shadow:0 0 8px rgba(98,181,138,.7)}
+.dot.pending{background:var(--warn);animation:pulse 1s ease-in-out infinite}
+.dot.err{background:var(--err)}
+@keyframes pulse{50%{opacity:.35}}
+.menuwrap{position:relative}
+.menu{width:40px;padding:0;font-size:20px;line-height:1}
+.menupop{position:absolute;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--line2);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:180px;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:20}
+.menupop[hidden]{display:none}
+.menupop button{background:transparent;border:0;text-align:left;border-radius:6px;min-height:38px}
+.menupop button:hover{background:var(--raised)}
 
-/* HEADER */
-.header {
-  text-align: center;
-  padding: 28px 20px 18px;
-  background: linear-gradient(180deg, #7a5020 0%, #a07838 30%, #c09050 60%, #d4a860 100%);
-  border-bottom: 3px solid #6a4010;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
-  position: relative;
-}
-.header::before,.header::after { content:'⸻✦⸻'; display:block; color:rgba(255,220,140,0.7); font-size:14px; letter-spacing:6px; margin:4px 0; }
-.header::after { margin-bottom: 0; }
-.header h1 { font-family:'Cinzel',serif; font-size:clamp(18px,4vw,30px); font-weight:700; color:#fff8e8; letter-spacing:4px; text-transform:uppercase; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-.header .subtitle { font-size:13px; color:rgba(255,230,170,0.8); font-style:italic; margin-top:4px; }
-.round-badge { display:inline-block; font-family:'Cinzel',serif; font-size:11px; color:#fff3d0; border:1px solid rgba(255,220,140,0.5); padding:3px 14px; letter-spacing:2px; margin-top:10px; background: rgba(0,0,0,0.2); }
+.sync-banner{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;padding:10px 18px;background:#33260d;border-bottom:1px solid #6b4d14}
+.sync-banner[hidden]{display:none}
+.sync-banner span{flex:1 1 280px}
 
-.main { display:flex; flex-direction:column; align-items:center; padding:24px 16px; gap:28px; }
+/* ---------- layout ---------- */
+.work{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;padding:22px 18px calc(40px + var(--sb));max-width:1240px;margin:0 auto}
+.wheelcol{display:flex;flex-direction:column;align-items:center;gap:16px;min-width:0}
+.wheelbox{position:relative;width:100%;max-width:440px}
+.wheelbox canvas{display:block;width:100%;height:auto;aspect-ratio:1;max-width:100%}
+.pointer{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid var(--amber);filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.spinbar{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:440px}
+.spinbar[hidden]{display:none}
+.spinbar .primary{width:100%;min-height:52px;font:700 22px/1 var(--head);letter-spacing:.06em;text-transform:uppercase}
+.hint{color:var(--mute);font-size:13px;text-align:center;margin:0}
 
-/* WHEEL */
-.wheel-section { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:480px; }
-.wheel-wrap { position:relative; width:320px; height:320px; flex-shrink:0; }
-canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(0 0 28px rgba(100,60,10,0.5)) drop-shadow(0 4px 16px rgba(0,0,0,0.4)); }
-.wheel-pointer { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:18px; height:18px; background:var(--gold); border-radius:50%; border:3px solid #2a1200; box-shadow:0 0 10px rgba(201,151,58,0.6); z-index:10; pointer-events:none; }
-.wheel-tick { position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:22px solid #8a5010; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4)); z-index:10; }
-.wheel-frame { position:absolute; inset:-8px; border-radius:50%; border:2px solid #8a6030; pointer-events:none; }
-.wheel-frame::before { content:''; position:absolute; inset:5px; border-radius:50%; border:1px solid rgba(100,60,10,0.3); }
+.result{width:100%;max-width:440px;background:var(--surface);border:1px solid var(--amber);border-radius:12px;padding:14px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;box-shadow:0 0 0 3px rgba(240,161,58,.12)}
+.result[hidden]{display:none}
+.result .cv{grid-area:auto}
+.result h2{margin:2px 0 0;font:600 24px/1.15 var(--serif);text-wrap:balance;overflow-wrap:anywhere}
+.result p{margin:2px 0 0;color:var(--mute)}
+.result .lore{grid-column:1 / -1;margin:0;color:var(--mute);font:italic 14px/1.55 var(--serif);border-top:1px solid var(--line);padding-top:12px}
+.result .lore .chronicle-album{color:var(--ink);font-style:normal;font-weight:600}
+.result .btns{grid-column:1 / -1;display:flex;gap:8px;flex-wrap:wrap}
+.result .btns .primary{flex:1 1 150px}
 
-.spin-btn {
-  font-family:'Cinzel',serif; font-size:14px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
-  background: linear-gradient(180deg, #c09050 0%, #8a5818 100%);
-  border: 1px solid #6a3a08; color: #fff8e8;
-  padding:12px 36px; cursor:pointer; transition:all 0.2s; position:relative;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-.spin-btn::before,.spin-btn::after { content:'✦'; position:absolute; top:50%; transform:translateY(-50%); color:rgba(255,220,140,0.7); font-size:10px; }
-.spin-btn::before { left:12px; } .spin-btn::after { right:12px; }
-.spin-btn:hover:not(:disabled) { background: linear-gradient(180deg, #d0a060 0%, #9a6828 100%); box-shadow:0 4px 14px rgba(0,0,0,0.35); }
-.spin-btn:disabled { opacity:0.45; cursor:not-allowed; }
+.side{display:flex;flex-direction:column;gap:22px;min-width:0}
+.gb{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gb>span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden}
+.seg button{border:0;border-radius:0;min-height:38px;background:var(--surface)}
+.seg button+button{border-left:1px solid var(--line2)}
+.seg button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink);font-weight:700}
+.seats{display:flex;flex-direction:column;gap:22px}
+.group{display:flex;flex-direction:column;gap:8px}
+.ghead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ghead h2{margin:0;font:700 24px/1 var(--head);letter-spacing:.03em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ghead h2 svg{width:20px;height:20px;stroke:var(--amber);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ghead span{color:var(--mute);font-size:13.5px}
+.ownerdot{width:11px;height:11px;border-radius:50%;background:var(--own);display:inline-block;flex:none}
 
-.spin-status { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; color:var(--p-ink-mid); text-align:center; min-height:16px; }
-.spin-status .ready-count { color:var(--p-gold); font-weight:600; }
+.seat{display:grid;grid-template-columns:64px minmax(0,1fr) auto;grid-template-areas:"cv info wt" "cv info acts";gap:2px 14px;align-items:center;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.seat.open{border-style:dashed;border-color:var(--amber);background:rgba(240,161,58,.05)}
+.cv{grid-area:cv;width:64px;height:64px;border-radius:8px;overflow:hidden;background:var(--field);border:1px solid var(--line);display:grid;place-items:center;flex:none}
+.cv img{width:100%;height:100%;object-fit:cover;display:block}
+.cv .ini{width:100%;height:100%;display:grid;place-items:center;font:700 22px/1 var(--head);letter-spacing:.04em}
+.cv .art-loading,.cv .art-error,.cv .art-placeholder{font-size:11px;color:var(--mute);text-align:center;padding:4px;line-height:1.2}
+.cv .art-placeholder{font-size:22px;color:var(--amber)}
+.seat.open .cv{border:1px dashed var(--amber)}
+.info{grid-area:info;min-width:0}
+.meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+.meta>*{white-space:nowrap}
+.meta b{color:var(--ink);font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line2);border-radius:999px;padding:1px 9px 1px 7px;font-size:12px;color:var(--ink);background:var(--raised)}
+.pill svg{width:13px;height:13px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.seat h3{margin:3px 0 0;font:600 18px/1.2 var(--serif);overflow-wrap:anywhere}
+.seat p{margin:1px 0 0;color:var(--mute);font-size:14px;overflow-wrap:anywhere}
+.wt{grid-area:wt;text-align:right;min-width:92px}
+.wt b{font:700 34px/1 var(--head);color:var(--amber);font-variant-numeric:tabular-nums}
+.wt span{display:block;font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.bar2{height:5px;border-radius:3px;background:var(--line);margin-top:5px;overflow:hidden}
+.bar2 i{display:block;height:100%;background:var(--own);border-radius:3px}
+.acts{grid-area:acts;display:flex;gap:6px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+.form{grid-column:2 / -1;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+.form label{display:block;font-size:12px;color:var(--mute);margin-bottom:3px}
+.form .row{grid-column:1 / -1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.form .note{color:var(--mute);font-size:13px;flex:1 1 200px}
 
-/* SECTION TITLES */
-.section-title {
-  font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;
-  color:var(--p-ink-mid); text-align:center; margin-bottom:14px;
-  display:flex; align-items:center; gap:10px;
-}
-.section-title::before,.section-title::after { content:''; flex:1; height:1px; background:var(--p-border-dim); }
+.hist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.hist .h{display:grid;grid-template-columns:36px 40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px}
+.hist .h+.h{border-top:1px solid var(--line)}
+.hist .rd{font:700 20px/1 var(--head);color:var(--mute);font-variant-numeric:tabular-nums}
+.hist .th{width:40px;height:40px;border-radius:6px;overflow:hidden;background:var(--field);border:1px solid var(--line)}
+.hist .th img{width:100%;height:100%;object-fit:cover;display:block}
+.hist .ti{font:600 15px/1.25 var(--serif);overflow-wrap:anywhere}
+.hist .ar{color:var(--mute);font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hist .empty{display:block;padding:16px;color:var(--mute)}
+.hist .tale-btn.has-tale{border-color:var(--amber);color:var(--amber)}
+.histmore{align-self:flex-start}
 
-/* NOMINEES */
-.nominees-section { width:100%; max-width:740px; }
-.nominees-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+/* ---------- dialogs ---------- */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.74);z-index:60;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
+.overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--line2);border-radius:14px;max-width:540px;width:100%;margin:5vh 0;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.modal h2{margin:0 0 6px;font:700 26px/1 var(--head);letter-spacing:.03em;text-transform:uppercase}
+.modal .lead{margin:0 0 14px;color:var(--mute)}
+.modal ol,.modal ul{margin:8px 0;padding-left:20px;line-height:1.6}
+.modal p{margin:0 0 10px}
+.mrow{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.mrow .primary{flex:2 1 160px} .mrow button{flex:1 1 90px}
+.mlabel{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:12px 0 4px}
+.details{margin-top:14px;color:var(--mute)}
+.details summary{cursor:pointer;color:var(--amber);font-weight:600;min-height:32px}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.cerr{margin:14px 0 0;padding:10px 12px;border:1px solid var(--err);border-radius:8px;color:var(--err);background:rgba(255,122,104,.08)}
+.cerr[hidden],.cforget[hidden]{display:none}
+.cforget{display:block;margin:14px auto 0;background:none;border:none;color:var(--mute);text-decoration:underline;min-height:32px}
+.thead{display:flex;gap:12px;align-items:center;margin:12px 0;padding:10px 12px;background:var(--field);border:1px solid var(--line);border-radius:10px}
+.thead .tw-art{width:52px;height:52px;border-radius:6px;overflow:hidden;flex:none;background:var(--raised)}
+.thead .tw-art img{width:100%;height:100%;object-fit:cover;display:block}
+.thead .tw-title{font:600 16px/1.25 var(--serif)} .thead .tw-sub{color:var(--mute);font-size:13px}
+.tale-textarea{min-height:190px;resize:vertical;line-height:1.55;font-family:var(--serif);font-size:15px}
+.tale-reader-text{font:italic 16px/1.7 var(--serif);color:var(--ink);padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:12px 0;white-space:pre-wrap}
+.tale-reader-head{display:flex;gap:14px;align-items:center}
+.tale-reader-head .tw-art{width:84px;height:84px;border-radius:10px;overflow:hidden;background:var(--field);flex:none}
+.tale-reader-head .tw-art img{width:100%;height:100%;object-fit:cover;display:block}
+.tale-reader-head h2{text-transform:none;font:600 22px/1.2 var(--serif);letter-spacing:0;margin:2px 0}
+.tale-reader-head p{margin:0;color:var(--mute)}
 
-/* CARD BASE */
-.nominee-card {
-  background: linear-gradient(160deg, #e8d5a0 0%, #d8c080 50%, #cdb070 100%);
-  border: 1px solid var(--p-border);
-  border-top: 3px solid var(--p-ink-mid);
-  padding:12px 14px; display:flex; flex-direction:column; gap:8px;
-  transition: box-shadow 0.25s, border-color 0.25s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
-  position: relative;
+@media (min-width:900px){
+  .work{grid-template-columns:minmax(380px,440px) minmax(0,1fr);gap:30px;padding-top:26px}
+  .wheelcol{position:sticky;top:16px;align-self:start}
 }
-.nominee-card::before {
-  content:'';
-  position:absolute; inset:0; pointer-events:none;
-  background: radial-gradient(ellipse at 80% 10%, rgba(255,255,255,0.08) 0%, transparent 60%);
+@media (max-width:560px){
+  .bar{padding-left:14px;padding-right:14px}
+  .work{padding-left:14px;padding-right:14px}
+  .seat{grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"cv info wt" "acts acts acts"}
+  .cv{width:52px;height:52px} .cv .ini{font-size:19px}
+  .seat h3{font-size:16.5px}
+  .wt{min-width:72px} .wt b{font-size:30px}
+  .acts{justify-content:flex-start}
+  .form{grid-column:1 / -1;grid-template-columns:1fr}
+  .hist .h{grid-template-columns:30px 36px minmax(0,1fr);}
+  .hist .h .hb{grid-column:3}
+  .cgrid{grid-template-columns:1fr}
 }
-.nominee-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
-
-/* SEALED STATE */
-.nominee-card.sealed {
-  border-color: var(--p-border);
-  box-shadow: 0 2px 12px rgba(100,60,10,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-}
-.nominee-card.sealed .field-input { pointer-events:none; opacity:0.8; border-bottom-color:transparent; }
-
-/* CARD HEADER ROW */
-.card-header { display:flex; align-items:center; justify-content:space-between; }
-.nominee-owner { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--p-ink-mid); }
-.sealed-badge { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:var(--p-gold); opacity:0; transform:translateY(-3px); transition:opacity 0.3s,transform 0.3s; pointer-events:none; }
-.nominee-card.sealed .sealed-badge { opacity:1; transform:translateY(0); }
-
-/* ART PREVIEW */
-.art-preview { width:100%; aspect-ratio:1; background:rgba(0,0,0,0.15); border:1px solid var(--p-border-dim); display:flex; align-items:center; justify-content:center; overflow:hidden; transition:border-color 0.3s; }
-.nominee-card.sealed .art-preview { border-color:var(--p-border); }
-.art-preview img { width:100%; height:100%; object-fit:cover; display:block; }
-.art-placeholder { font-size:11px; color:var(--p-ink-dim); font-style:italic; text-align:center; padding:8px; line-height:1.5; }
-.art-loading { font-size:11px; color:var(--p-gold); font-style:italic; }
-.art-error { font-size:10px; color:#8b3a1a; font-style:italic; text-align:center; padding:6px; }
-
-/* FIELDS */
-.field-group { display:flex; flex-direction:column; gap:6px; }
-.field-row { display:flex; flex-direction:column; gap:3px; }
-.field-label { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; color:var(--p-ink-mid); text-transform:uppercase; }
-.field-input { background:none; border:none; border-bottom:1px solid var(--p-border-dim); color:var(--p-ink); font-family:'EB Garamond',serif; font-size:14px; width:100%; padding:3px 0; outline:none; transition:border-color 0.2s; }
-.field-input:focus { border-bottom-color:var(--p-border); }
-.field-input::placeholder { color:var(--p-ink-dim); font-style:italic; }
-
-/* WEIGHT PIPS */
-.weight-row { display:flex; align-items:center; gap:5px; }
-.pip { width:7px; height:7px; border-radius:50%; background:rgba(100,60,10,0.2); transition:background 0.3s; }
-.pip.active { background:var(--p-gold); }
-.weight-label { font-family:'Cinzel',serif; font-size:9px; color:var(--p-ink-dim); letter-spacing:1px; }
-
-/* WEIGHT CONTROLS */
-.weight-ctrl { display:none; align-items:center; gap:4px; margin-left:auto; }
-.nominee-card.sealed .weight-ctrl { display:flex; }
-.w-btn {
-  font-family:'Cinzel',serif; font-size:13px; font-weight:600;
-  width:22px; height:22px; border:1px solid var(--p-border-dim);
-  background:rgba(0,0,0,0.08); color:var(--p-ink-mid); cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:all 0.15s; padding:0; flex-shrink:0;
-}
-.w-btn:hover { background:rgba(0,0,0,0.16); border-color:var(--p-border); color:var(--p-ink); }
-.w-btn:disabled { opacity:0.3; cursor:not-allowed; }
-.w-val { font-family:'Cinzel',serif; font-size:10px; font-weight:600; color:var(--p-gold); min-width:20px; text-align:center; }
-
-/* SEAL / UNLOCK BUTTONS */
-.card-actions { display:flex; gap:6px; margin-top:2px; }
-.seal-btn {
-  font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase;
-  padding:6px 10px;
-  background: linear-gradient(180deg, #b07030 0%, #7a4810 100%);
-  border: 1px solid #5a3008; color:#fff8e8;
-  cursor:pointer; flex:1;
-  opacity:0; pointer-events:none; transform:translateY(3px);
-  transition:opacity 0.2s,transform 0.2s,background 0.2s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-}
-.seal-btn.visible { opacity:1; pointer-events:all; transform:translateY(0); }
-.seal-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
-
-.unlock-btn {
-  font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; text-transform:uppercase;
-  padding:6px 10px; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.08); color:var(--p-ink-mid);
-  cursor:pointer; transition:all 0.2s;
-  opacity:0; pointer-events:none; width:0; overflow:hidden; padding:0;
-  transition:opacity 0.2s,width 0.2s;
-}
-.nominee-card.sealed .unlock-btn { opacity:1; pointer-events:all; width:auto; padding:6px 10px; }
-.nominee-card.sealed .seal-btn { opacity:0; pointer-events:none; }
-.unlock-btn:hover { border-color:var(--p-border); color:var(--p-ink); background:rgba(0,0,0,0.12); }
-
-/* WINNER OVERLAY */
-.winner-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:100; align-items:center; justify-content:center; padding:20px; }
-.winner-overlay.show { display:flex; }
-.winner-modal {
-  background: linear-gradient(160deg, #e8d5a0 0%, #d4b87a 40%, #dfc880 70%, #c8a96e 100%);
-  border: 2px solid var(--p-border);
-  max-width:500px; width:100%; text-align:center;
-  animation:revealModal 0.5s ease-out; overflow:hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-}
-@keyframes revealModal { from{opacity:0;transform:scale(0.9) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
-
-.winner-art-hero { width:100%; padding-top:56%; position:relative; background:#2a1200; overflow:hidden; }
-.winner-art-hero img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.5) saturate(1.2); }
-.winner-art-no-bg { position:absolute; inset:0; background:linear-gradient(135deg,#3a1a00 0%,#1a0800 100%); }
-.winner-art-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 0%,rgba(20,8,0,0.65) 55%,#c8a96e 100%); }
-.winner-art-title { position:absolute; bottom:0; left:0; right:0; padding:16px 24px 6px; }
-.winner-header-label { font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,220,140,0.8); margin-bottom:6px; }
-.winner-album { font-family:'Cinzel',serif; font-size:clamp(16px,4vw,23px); color:#fff8e8; font-weight:700; line-height:1.2; text-shadow:0 2px 8px rgba(0,0,0,0.6); }
-.winner-artist { font-size:14px; color:rgba(255,220,160,0.85); font-style:italic; margin-top:3px; }
-
-.winner-body { padding:4px 24px 22px; }
-.winner-ornament { color:var(--p-ink-mid); font-size:11px; letter-spacing:8px; margin:8px 0 4px; }
-.winner-champion { font-size:13px; font-style:italic; color:var(--p-ink-mid); margin:4px 0 10px; }
-.winner-lore { font-size:13px; color:var(--p-ink); line-height:1.7; font-style:italic; padding:12px 14px; border-top:1px solid var(--p-border-dim); border-bottom:1px solid var(--p-border-dim); margin:8px 0 14px; text-align:left; }
-.modal-btn {
-  font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; text-transform:uppercase;
-  padding:10px 20px;
-  background: linear-gradient(180deg, #b07030 0%, #7a4810 100%);
-  border:1px solid #5a3008; color:#fff8e8;
-  cursor:pointer; transition:all 0.2s; width:100%;
-  box-shadow:0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-  text-shadow:0 1px 2px rgba(0,0,0,0.4);
-}
-.modal-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
-
-/* TALE MODALS */
-.tale-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:150; align-items:center; justify-content:center; padding:20px; }
-.tale-overlay.show { display:flex; }
-.tale-writer-modal { background:linear-gradient(160deg,#e8d5a0 0%,#d4b87a 100%); border:2px solid var(--p-border); max-width:540px; width:100%; animation:revealModal 0.4s ease-out; box-shadow:0 20px 60px rgba(0,0,0,0.6); padding:24px; }
-.tale-writer-header { font-family:'Cinzel',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--p-ink-mid); margin-bottom:16px; text-align:center; }
-.tale-writer-info { display:flex; gap:12px; align-items:center; margin-bottom:14px; padding:10px 12px; background:rgba(0,0,0,0.06); border:1px solid var(--p-border-dim); }
-.tale-writer-art { width:48px; height:48px; flex-shrink:0; overflow:hidden; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.15); }
-.tale-writer-art img { width:100%; height:100%; object-fit:cover; display:block; }
-.tale-textarea { width:100%; min-height:150px; background:rgba(255,255,255,0.4); border:1px solid var(--p-border-dim); padding:10px 12px; font-family:'EB Garamond',serif; font-size:14px; line-height:1.75; color:var(--p-ink); resize:vertical; box-sizing:border-box; outline:none; }
-.tale-textarea:focus { border-color:var(--p-border); background:rgba(255,255,255,0.55); }
-.tale-writer-btns { display:flex; gap:8px; margin-top:12px; }
-.tale-reader-modal { background:linear-gradient(160deg,#e8d5a0 0%,#d4b87a 40%,#dfc880 70%,#c8a96e 100%); border:2px solid var(--p-border); max-width:500px; width:100%; animation:revealModal 0.4s ease-out; box-shadow:0 20px 60px rgba(0,0,0,0.6); overflow:hidden; }
-.tale-reader-art { width:100%; padding-top:54%; position:relative; background:#2a1200; overflow:hidden; }
-.tale-reader-no-art { position:absolute; inset:0; background:linear-gradient(135deg,#3a1a00 0%,#1a0800 100%); }
-.tale-reader-art img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(0.5) saturate(1.2); }
-.tale-reader-art-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 0%,rgba(20,8,0,0.65) 55%,#c8a96e 100%); }
-.tale-reader-art-title { position:absolute; bottom:0; left:0; right:0; padding:16px 24px 8px; }
-.tale-reader-body { padding:6px 24px 22px; }
-.tale-reader-text { font-size:14px; color:var(--p-ink); line-height:1.85; font-style:italic; padding:14px; border-top:1px solid var(--p-border-dim); border-bottom:1px solid var(--p-border-dim); margin:10px 0 16px; text-align:left; min-height:60px; }
-.tale-reader-btns { display:flex; gap:8px; }
-.chronicle-tale-btn { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; text-transform:uppercase; padding:3px 9px; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.05); color:var(--p-ink-mid); cursor:pointer; transition:all 0.15s; margin-top:5px; display:inline-block; }
-.chronicle-tale-btn:hover { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.06); }
-.chronicle-tale-btn.has-tale { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.08); }
-
-/* SYNC BANNER + CONNECT PANEL */
-.sync-banner { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; padding:10px 18px; background:#4a2a10; color:#f5e6c0; border-bottom:2px solid #2a1200; font-size:14px; line-height:1.4; text-align:center; }
-.sync-banner[hidden] { display:none; }
-.sync-banner span { flex:1 1 280px; }
-.sync-banner button { font-family:'Cinzel',serif; font-size:10px; letter-spacing:1px; text-transform:uppercase; padding:7px 12px; border:1px solid #c9973a; background:rgba(0,0,0,0.25); color:#f5e6c0; cursor:pointer; }
-.sync-banner button:hover { background:rgba(201,151,58,0.3); }
-.connect-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:160; align-items:flex-start; justify-content:center; padding:20px; overflow:auto; }
-.connect-overlay.show { display:flex; }
-.connect-modal { background:linear-gradient(160deg,#e8d5a0 0%,#d4b87a 100%); border:2px solid var(--p-border); max-width:520px; width:100%; margin:4vh 0; box-shadow:0 20px 60px rgba(0,0,0,0.6); padding:24px; }
-.connect-title { font-family:'Cinzel',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--p-ink-mid); margin-bottom:12px; text-align:center; }
-.connect-lead { font-size:14px; line-height:1.6; color:var(--p-ink-mid); font-style:italic; margin-bottom:16px; text-align:center; }
-.connect-label { display:block; font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--p-ink-dim); margin:12px 0 2px; }
-.connect-input { width:100%; background:rgba(255,255,255,0.18); border:1px solid var(--p-border-dim); border-bottom:1px solid var(--p-border); color:var(--p-ink); font-family:'EB Garamond',serif; font-size:16px; padding:8px 10px; outline:none; }
-.connect-input:focus { border-color:var(--p-border); background:rgba(255,255,255,0.3); }
-.connect-details { margin-top:14px; font-size:14px; color:var(--p-ink-mid); }
-.connect-details summary { cursor:pointer; font-family:'Cinzel',serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--p-gold); padding:6px 0; }
-.connect-details ol { padding-left:20px; margin:8px 0; line-height:1.6; }
-.connect-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
-.connect-err { margin-top:14px; padding:9px 12px; border:1px solid #a33; color:#7a1818; background:rgba(170,51,51,0.1); font-size:14px; }
-.connect-err[hidden], .connect-forget[hidden] { display:none; }
-.connect-btns { display:flex; gap:8px; margin-top:16px; }
-.connect-forget { display:block; margin:14px auto 0; background:none; border:none; color:var(--p-ink-dim); font-family:'EB Garamond',serif; font-size:13px; text-decoration:underline; cursor:pointer; }
-.connect-how { border-top:1px solid var(--p-border-dim); margin-top:18px; padding-top:6px; }
-@media (max-width:480px){ .connect-grid { grid-template-columns:1fr; } }
-
-/* CHRONICLE */
-.chronicle-section { width:100%; max-width:740px; padding-bottom:32px; }
-.chronicle-scroll {
-  background: linear-gradient(180deg, #dcc878 0%, #c8aa58 100%);
-  border:1px solid var(--p-border); border-top:3px solid var(--p-ink-mid);
-  max-height:320px; overflow-y:auto;
-  box-shadow:0 2px 12px rgba(0,0,0,0.2);
-}
-.chronicle-scroll::-webkit-scrollbar { width:5px; }
-.chronicle-scroll::-webkit-scrollbar-track { background:rgba(0,0,0,0.05); }
-.chronicle-scroll::-webkit-scrollbar-thumb { background:var(--p-border); border-radius:2px; }
-.chronicle-entry { padding:12px 16px; border-bottom:1px solid var(--p-border-dim); animation:fadeIn 0.6s ease-out; display:flex; gap:12px; align-items:flex-start; }
-.chronicle-entry:last-child { border-bottom:none; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.chronicle-thumb { width:42px; height:42px; flex-shrink:0; background:rgba(0,0,0,0.15); border:1px solid var(--p-border-dim); overflow:hidden; }
-.chronicle-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-.chronicle-round { font-family:'Cinzel',serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--p-ink-mid); margin-bottom:3px; }
-.chronicle-text { font-size:13px; font-style:italic; color:var(--p-ink); line-height:1.6; }
-.chronicle-album { color:var(--p-gold); font-style:normal; font-weight:600; }
-.empty-chronicle { padding:28px; text-align:center; font-style:italic; font-size:13px; color:var(--p-ink-dim); }
-
-/* ── EXPORT / IMPORT ────────────────────────────────── */
-.data-btns {
-  display:flex; gap:10px; justify-content:center;
-  width:100%; max-width:740px; margin:0 auto; padding-bottom:8px;
-}
-.data-btn {
-  font-family:'EB Garamond',serif; font-size:15px; font-style:italic;
-  padding:8px 24px; border:1px solid var(--p-border-dim);
-  background:rgba(0,0,0,0.06); color:var(--p-ink-mid);
-  cursor:pointer; transition:all 0.2s; flex:1; max-width:220px;
-  -webkit-font-smoothing: antialiased;
-}
-.data-btn:hover { border-color:var(--p-border); color:var(--p-ink); background:rgba(0,0,0,0.1); }
-#import-file { display:none; }
-
-
-
-/* ── SCROLL OF LORE ─────────────────────────────────── */
-.scroll-tab {
-  position: fixed;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 200;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.scroll-tab-body {
-  background: linear-gradient(135deg, #c8a96e 0%, #e8d5a0 40%, #d4b87a 70%, #b8955a 100%);
-  border: 1px solid #8a6a2a;
-  border-right: none;
-  width: 28px;
-  padding: 14px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  box-shadow: -3px 0 12px rgba(0,0,0,0.5), inset 1px 0 3px rgba(255,255,255,0.15);
-  border-radius: 6px 0 0 6px;
-  transition: width 0.2s;
-}
-.scroll-tab-body:hover { background: linear-gradient(135deg, #d4b87a 0%, #f0e0b0 40%, #e0c88a 70%, #c4a060 100%); }
-.scroll-tab-label {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #5a3a0a;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  text-transform: uppercase;
-  user-select: none;
-}
-.scroll-tab-icon { font-size: 14px; color: #7a4a0a; }
-/* rolled ends on tab */
-.scroll-tab-roll {
-  width: 28px;
-  height: 10px;
-  background: linear-gradient(to bottom, #a07840, #c8a96e);
-  border: 1px solid #7a5a20;
-  border-right: none;
-  border-radius: 6px 0 0 6px;
-  box-shadow: -2px 0 6px rgba(0,0,0,0.4);
-}
-
-/* FULL SCROLL PANEL */
-.scroll-panel {
-  position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 340px;
-  z-index: 199;
-  transform: translateX(100%);
-  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
-}
-.scroll-panel.open {
-  transform: translateX(0);
-  pointer-events: all;
-}
-
-.scroll-panel-inner {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 28px,
-      rgba(139,100,40,0.06) 28px,
-      rgba(139,100,40,0.06) 29px
-    ),
-    linear-gradient(160deg, #e8d5a0 0%, #d4b87a 25%, #e0c88a 50%, #c8a96e 75%, #d8c08a 100%);
-  border-left: 3px solid #8a6030;
-  box-shadow: -8px 0 32px rgba(0,0,0,0.7), inset 2px 0 8px rgba(255,255,255,0.1);
-  overflow: hidden;
-  position: relative;
-}
-
-/* Aged paper texture overlays */
-.scroll-panel-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 10%, rgba(100,60,0,0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 90%, rgba(80,40,0,0.15) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(60,30,0,0.08) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Top rolled edge */
-.scroll-roll-top {
-  height: 22px;
-  background: linear-gradient(to bottom, #7a5020, #b8884a, #d4a860, #c09050);
-  border-bottom: 2px solid #6a4010;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.2);
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
-}
-.scroll-roll-top::after {
-  content: '';
-  position: absolute;
-  inset: 3px 20px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-}
-
-/* Bottom rolled edge */
-.scroll-roll-bottom {
-  height: 22px;
-  background: linear-gradient(to top, #7a5020, #b8884a, #d4a860, #c09050);
-  border-top: 2px solid #6a4010;
-  box-shadow: 0 -4px 10px rgba(0,0,0,0.4), inset 0 -1px 3px rgba(255,255,255,0.2);
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
-}
-
-.scroll-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 28px 20px;
-  position: relative;
-  z-index: 2;
-}
-.scroll-content::-webkit-scrollbar { width: 4px; }
-.scroll-content::-webkit-scrollbar-track { background: transparent; }
-.scroll-content::-webkit-scrollbar-thumb { background: rgba(100,60,10,0.3); border-radius: 2px; }
-
-.scroll-title {
-  font-family: 'Cinzel', serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: #3a1e00;
-  text-align: center;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.scroll-subtitle {
-  font-family: 'EB Garamond', serif;
-  font-size: 11px;
-  font-style: italic;
-  color: #6a4010;
-  text-align: center;
-  margin-bottom: 16px;
-  letter-spacing: 1px;
-}
-.scroll-divider {
-  text-align: center;
-  color: #8a5a20;
-  font-size: 13px;
-  letter-spacing: 6px;
-  margin: 12px 0;
-}
-.scroll-section-head {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  font-weight: 600;
-  color: #5a3000;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin: 16px 0 6px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid rgba(100,60,10,0.25);
-}
-.scroll-section-head:first-of-type { margin-top: 4px; }
-.scroll-body {
-  font-family: 'EB Garamond', serif;
-  font-size: 13.5px;
-  color: #2a1200;
-  line-height: 1.75;
-}
-.scroll-body p { margin-bottom: 10px; }
-.scroll-body strong { font-weight: 600; color: #3a1800; }
-.scroll-body em { font-style: italic; color: #5a3010; }
-.scroll-close {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #6a4010;
-  text-align: center;
-  margin-top: 14px;
-  cursor: pointer;
-  padding: 6px;
-  border: 1px solid rgba(100,60,10,0.3);
-  transition: background 0.2s;
-}
-.scroll-close:hover { background: rgba(100,60,10,0.08); }
-
-/* Overlay behind scroll */
-.scroll-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 198;
-  background: rgba(0,0,0,0);
-  pointer-events: none;
-  transition: background 0.45s;
-}
-.scroll-overlay.open {
-  background: rgba(0,0,0,0.35);
-  pointer-events: all;
-}
+@media (prefers-reduced-motion:reduce){.dot.pending{animation:none}}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <h1>The Wheel of Fates</h1>
-    <div class="subtitle">Album Discussion Club — Tournament of the Listening Throne</div>
-    <div class="round-badge" id="round-display">Round I</div>
-    <div id="sync-status" onclick="openConnect()" style="cursor:pointer;font-size:10px;letter-spacing:1px;margin-top:4px;opacity:0.85" title="Click to connect or manage GitHub sync">☁️ Connecting…</div>
+<header class="bar">
+  <div class="brand">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#f0a13a" stroke-width="4"/><path d="M32 32V8M32 32l20.8 12M32 32L11.2 44" stroke="#c9392a" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="32" r="5" fill="#f0a13a"/></svg>
+    <b>Wheel of Fates</b>
   </div>
-  <div id="sync-banner" class="sync-banner" role="alert" hidden></div>
-  <div class="main">
-    <div class="wheel-section">
-      <div class="wheel-wrap">
-        <div class="wheel-frame"></div>
-        <div class="wheel-tick"></div>
-        <canvas id="wheel" width="640" height="640"></canvas>
-        <div class="wheel-pointer"></div>
+  <div class="chip"><small>Round</small><strong id="round-display">1</strong></div>
+  <div class="chip" id="chip-sealed"><small>Sealed</small><strong>0 of 6</strong></div>
+  <button type="button" class="sync" id="sync-btn" onclick="openConnect()" title="Connect or manage GitHub sync" role="status"><span class="dot" id="sync-dot"></span><span id="sync-status">Connecting…</span></button>
+  <div class="menuwrap">
+    <button type="button" class="menu" id="menu-btn" aria-label="Menu" aria-haspopup="true" aria-expanded="false" onclick="toggleMenu(event)">⋯</button>
+    <div class="menupop" id="menu-pop" hidden>
+      <button type="button" onclick="openHelp()">How it works</button>
+      <button type="button" onclick="openConnect()">Sync settings</button>
+      <button type="button" onclick="exportState()">Export save</button>
+      <button type="button" onclick="document.getElementById('import-file').click()">Import save</button>
+    </div>
+  </div>
+  <input type="file" id="import-file" accept=".json" onchange="importState(this)">
+</header>
+<div id="sync-banner" class="sync-banner" role="alert" hidden></div>
+
+<main class="work">
+  <div class="wheelcol">
+    <div class="wheelbox">
+      <canvas id="wheel" width="640" height="640" aria-label="The wheel, one slice per seat sized by weight"></canvas>
+      <div class="pointer"></div>
+    </div>
+    <div class="spinbar" id="spinbar">
+      <button type="button" class="primary" id="spin-btn" onclick="spinWheel()" disabled>Spin the wheel</button>
+      <p class="hint" id="spin-status"></p>
+    </div>
+    <section class="result" id="result" aria-live="polite" hidden>
+      <div class="cv" id="result-art" style="width:84px;height:84px"></div>
+      <div style="min-width:0">
+        <p class="eyebrow" id="result-round"></p>
+        <h2 id="winner-album-name"></h2>
+        <p id="winner-artist-name"></p>
+        <p id="winner-champion-name"></p>
       </div>
-      <div class="spin-status" id="spin-status"></div>
-      <button class="spin-btn" id="spin-btn" onclick="spinWheel()" disabled>Decree the Fates</button>
-    </div>
-
-    <div class="nominees-section">
-      <div class="section-title">The Six Champions</div>
-      <div class="nominees-grid" id="nominees-grid"></div>
-    </div>
-
-    <div class="chronicle-section">
-      <div class="section-title">The Chronicle of Battles</div>
-      <div class="chronicle-scroll" id="chronicle">
-        <div class="empty-chronicle">The chronicle awaits its first tale...</div>
+      <p class="lore" id="winner-lore"></p>
+      <div class="btns">
+        <button type="button" class="ghost" onclick="respinWheel()">Spin again</button>
+        <button type="button" class="ghost" onclick="exportWinnerCard()">Save as image</button>
+        <button type="button" class="primary" onclick="closeWinner()">Accept result</button>
       </div>
-    </div>
+    </section>
   </div>
 
-  <div class="data-btns">
-    <button class="data-btn" onclick="exportState()">Export Save</button>
-    <button class="data-btn" onclick="document.getElementById('import-file').click()">Import Save</button>
-    <input type="file" id="import-file" accept=".json" onchange="importState(event)">
+  <div class="side">
+    <div class="seats" id="nominees-grid"></div>
+    <section class="group">
+      <div class="ghead"><h2>History</h2><span id="hist-count"></span></div>
+      <div class="hist" id="chronicle"></div>
+      <button type="button" class="ghost sm histmore" id="hist-more" onclick="toggleHistory()" hidden></button>
+    </section>
   </div>
+</main>
 
+<div class="overlay" id="help-overlay" onclick="if(event.target===this)closeHelp()">
+  <div class="modal" role="dialog" aria-labelledby="help-title">
+    <h2 id="help-title">How it works</h2>
+    <p class="lead">Three of us, two picks each: one beloved album and one we want to explore.</p>
+    <ol>
+      <li><b>Add your picks.</b> Type an artist and album into a seat. The cover and the official names come from MusicBrainz.</li>
+      <li><b>Seal each seat.</b> Sealing locks the pick in. Edit unlocks it again to fix a typo.</li>
+      <li><b>Spin.</b> When all six are sealed, the wheel is ready. Each album's slice is sized by its weight.</li>
+      <li><b>Weight is automatic.</b> Every album starts at 1× and gains 1 for each spin it sits through. Replace it and it starts over at 1×.</li>
+      <li><b>After a result.</b> Accept it and the winner leaves, which opens its seat. Add the new pick any time before the next spin. You can replace any other seat whenever you like.</li>
+      <li><b>History</b> keeps every winner. Open an entry to write a short tale about it.</li>
+    </ol>
+    <div class="mrow"><button type="button" class="primary" onclick="closeHelp()">Got it</button></div>
+  </div>
 </div>
 
-<div class="winner-overlay" id="winner-overlay">
-  <div class="winner-modal">
-    <div class="winner-art-hero">
-      <div class="winner-art-no-bg" id="winner-no-bg"></div>
-      <img id="winner-art-img" src="" alt="" style="display:none">
-      <div class="winner-art-overlay"></div>
-      <div class="winner-art-title">
-        <div class="winner-header-label">The Wheel Has Spoken</div>
-        <div class="winner-album" id="winner-album-name"></div>
-        <div class="winner-artist" id="winner-artist-name"></div>
+<div class="overlay" id="connect-overlay" onclick="if(event.target===this)closeConnect()">
+  <div class="modal" role="dialog" aria-labelledby="connect-title">
+    <h2 id="connect-title">Connect to GitHub</h2>
+    <p class="lead">The wheel saves to a file in your repo as you work, so every change is backed up and can be rolled back. Paste the access token once on each device.</p>
+    <form id="connect-form" autocomplete="off" onsubmit="submitConnect(event)">
+      <label class="mlabel" for="c-token">Access token</label>
+      <input id="c-token" type="password" autocapitalize="none" spellcheck="false" placeholder="Paste once per device">
+      <details class="details">
+        <summary>Repository details</summary>
+        <div class="cgrid">
+          <div><label class="mlabel" for="c-owner">GitHub username</label><input id="c-owner" autocapitalize="none" spellcheck="false" required></div>
+          <div><label class="mlabel" for="c-repo">Repo</label><input id="c-repo" autocapitalize="none" spellcheck="false" required></div>
+          <div><label class="mlabel" for="c-path">File in the repo</label><input id="c-path" autocapitalize="none" spellcheck="false" required></div>
+          <div><label class="mlabel" for="c-branch">Branch</label><input id="c-branch" autocapitalize="none" spellcheck="false" required></div>
+        </div>
+      </details>
+      <p class="cerr" id="connect-err" role="alert" hidden></p>
+      <div class="mrow">
+        <button class="primary" type="submit" id="c-go">Connect</button>
+        <button class="ghost" type="button" onclick="closeConnect()">Close</button>
+      </div>
+      <button class="cforget" type="button" id="c-forget" onclick="forgetDevice()" hidden>Forget the token on this device</button>
+    </form>
+    <details class="details">
+      <summary>How to make the access token</summary>
+      <ol>
+        <li>On GitHub, open Settings, then Developer settings, then Personal access tokens, then Fine-grained tokens.</li>
+        <li>Choose Generate new token and name it something like Wheel of Fates. Set an expiry you are comfortable with.</li>
+        <li>Under Repository access, choose Only select repositories and pick the-wheel-of-fate.</li>
+        <li>Under Permissions, Repository permissions, set Contents to Read and write.</li>
+        <li>Generate the token, copy it, and paste it above. GitHub only shows it once.</li>
+      </ol>
+      The token stays in this browser only, and it can touch that one repo and nothing else.
+    </details>
+  </div>
+</div>
+
+<div class="overlay" id="tale-writer-overlay" onclick="if(event.target===this)closeTaleWriter()">
+  <div class="modal" role="dialog" aria-labelledby="tale-writer-title">
+    <h2 id="tale-writer-title">Write the tale</h2>
+    <div class="thead" id="tale-writer-info"></div>
+    <label class="mlabel" for="tale-textarea">Tale</label>
+    <textarea class="tale-textarea" id="tale-textarea" placeholder="Write a few lines about this result…"></textarea>
+    <div class="mrow">
+      <button type="button" class="ghost" onclick="rerollTale()">Another draft</button>
+      <button type="button" class="primary" onclick="saveTaleFromWriter()">Save tale</button>
+      <button type="button" class="ghost" onclick="closeTaleWriter()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="tale-reader-overlay" onclick="if(event.target===this)closeTaleReader()">
+  <div class="modal" role="dialog" aria-labelledby="tale-reader-album-label">
+    <div class="tale-reader-head">
+      <div class="tw-art" id="tale-reader-art-panel"><img id="tale-reader-art-img" src="" alt="" style="display:none"></div>
+      <div style="min-width:0">
+        <p class="eyebrow" id="tale-reader-round-label"></p>
+        <h2 id="tale-reader-album-label"></h2>
+        <p id="tale-reader-artist-label"></p>
       </div>
     </div>
-    <div class="winner-body">
-      <div class="winner-ornament">✦ ✦ ✦</div>
-      <div class="winner-champion" id="winner-champion-name"></div>
-      <div class="winner-lore" id="winner-lore"></div>
-      <div style="display:flex;gap:10px;margin-top:0;">
-        <button class="modal-btn" style="flex:1" onclick="respinWheel()">↺ Re-spin the Wheel</button>
-        <button class="modal-btn" style="flex:1;font-size:9px;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)" onclick="exportWinnerCard()">📸 Save as Image</button>
-        <button class="modal-btn" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008;" onclick="closeWinner()">Accept the Decree &amp; Prepare the Roster</button>
-      </div>
+    <div class="tale-reader-text" id="tale-reader-text"></div>
+    <div class="mrow">
+      <button type="button" class="ghost" onclick="openTaleWriterFromReader()">Edit</button>
+      <button type="button" class="ghost" onclick="exportTaleImage()">Save as image</button>
+      <button type="button" class="primary" onclick="closeTaleReader()">Close</button>
     </div>
   </div>
 </div>
 
 <script>
-const COLORS=[['#2a1f0e','#c9973a'],['#0e1a2a','#4a8fc9'],['#1a0e0e','#c94a4a'],['#0e2a1a','#4ac97a'],['#1a0e2a','#8a4ac9'],['#2a1a0e','#c97a4a']];
+const OWN={Baxter:{c:'#7aa7e0',d:'#27405f'},Chris:{c:'#c58bdb',d:'#4a2a58'},Erik:{c:'#5fc2b5',d:'#1f4f49'}};
+const ownerColor=o=>OWN[o]||{c:'#a99d90',d:'#332c2c'};
 
 const LORE=[
   (a,c,r)=>r>=3?`Lo, after ${r} tourneys of patient vigil, the ancient standard of <span class="chronicle-album">${a}</span> — borne by the steadfast ${c} — was at last thrust skyward by the Wheel's decree.`
@@ -713,8 +461,9 @@ function validateState(d){
 function setSyncStatus(text,ok){
   const el=document.getElementById('sync-status');
   if(!el) return;
-  el.textContent=text;
-  el.style.color = ok===false?'#a33':'var(--p-ink-mid)';
+  el.textContent=text.replace(/^☁️\s*/,'');
+  const d=document.getElementById('sync-dot');
+  if(d) d.className='dot '+(ok===false?'err':ok===true?'ok':'pending');
 }
 const nowTime=()=>new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
 
@@ -920,19 +669,32 @@ function normalizeState(s){
 }
 
 function loadState(){
-  try{ const s=JSON.parse(localStorage.getItem(SAVED_KEY)); if(s&&Array.isArray(s.nominees)) return normalizeState(s); }catch(e){}
+  try{
+    const s=JSON.parse(localStorage.getItem(SAVED_KEY));
+    if(s&&Array.isArray(s.nominees)){
+      const arts=s.nominees.map(n=>n.artUrl);
+      normalizeState(s);
+      s.nominees.forEach((n,i)=>{ n.artUrl=n.sealed&&typeof arts[i]==='string'?arts[i]:null; });
+      return s;
+    }
+  }catch(e){}
   return null;
 }
-function snapshot(){
+// forDevice=true keeps each sealed seat's cover address so a reload does not have to look
+// every cover up again. The copy that goes to GitHub never carries cover addresses.
+function snapshot(forDevice){
   return {
     round:state.round,
-    nominees:state.nominees.map(n=>({...n,artUrl:null})),
+    nominees:state.nominees.map(n=>({...n,artUrl:forDevice&&n.sealed?n.artUrl:null})),
     chronicle:state.chronicle,
   };
 }
+// Refreshes this device's copy only. Used when a cover is found, which is not an edit.
+function cacheLocal(){ try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot(true))); }catch(e){} }
+
 // now=true skips the debounce (spin result, accepted decree).
 function saveState(now){
-  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){}
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot(true))); }catch(e){}
   markDirty(now===true);
 }
 
@@ -946,22 +708,26 @@ function applyCloudState(cloud){
     showSyncBanner('The saved file on GitHub failed a check ('+problems[0]+'), so it was not loaded. Your on-screen wheel is untouched.');
     return false;
   }
+  // keep covers already on screen for seats that did not change
+  const known={};
+  state.nominees.forEach(n=>{ if(n.artUrl) known[(n.artist+'|||'+n.album).toLowerCase()]=n.artUrl; });
+  cloud.nominees.forEach(n=>{ if(n.sealed) n.artUrl=known[(n.artist+'|||'+n.album).toLowerCase()]||null; });
   state.round=cloud.round;
   state.nominees=cloud.nominees;
   state.chronicle=cloud.chronicle;
-  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){}
-  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot(true))); }catch(e){}
+  document.getElementById('round-display').textContent=state.round;
   renderNominees();
   document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
-  restoreChronicle();
+  restoreChronicle(); restoreUnacceptedResult();
   drawWheel();
   updateSpinButton();
   return true;
 }
 
 let state=loadState()||{round:1,nominees:defaultNominees(),chronicle:[]};
-// artUrl is always session-only; sealed state persists
-normalizeState(state);
+// loadState() already normalized any saved copy (and kept this device's cover addresses);
+// a brand-new state is built in the right shape.
 
 let spinning=false, lastWinner=null;
 const artCache={}, imgCache={}, artTimers={};
@@ -1038,24 +804,15 @@ function scheduleArtFetch(idx){
 async function doArtFetch(idx){
   const n=state.nominees[idx];
   if(!n.artist||!n.album||n.sealed) return;
-  console.log(`[WheelOfFates] Fetching art for: "${n.artist}" / "${n.album}"`);
   const result=await fetchArtUrl(n.artist,n.album);
-  console.log(`[WheelOfFates] Result for idx ${idx}:`, result);
   // Don't apply if card was sealed or cleared while fetching
   if(state.nominees[idx].sealed) return;
   const url=result?.url||null;
   n.artUrl=url;
   if(result?.canonicalArtist) n.canonicalArtist=result.canonicalArtist;
   if(result?.canonicalAlbum)  n.canonicalAlbum=result.canonicalAlbum;
-  if(url){
-    const img=new Image(); img.crossOrigin='anonymous';
-    img.onload=()=>{ imgCache[url]=img; drawWheel(); };
-    img.onerror=()=>{ console.warn('[WheelOfFates] Image load failed:', url); setArtPreview(idx,'<span class="art-error">Art load failed</span>'); };
-    img.src=url;
-    setArtPreview(idx,`<img src="${esc(url)}" alt="cover" />`);
-  } else {
-    setArtPreview(idx,'<span class="art-error">No art found</span>');
-  }
+  if(url){ loadWheelImage(url); setArtPreview(idx,`<img src="${esc(url)}" alt="cover" />`); }
+  else setArtPreview(idx,'<span class="art-error">No cover found</span>');
   updateSealButton(idx);
   drawWheel();
 }
@@ -1071,8 +828,7 @@ function updateSealButton(idx){
   const n=state.nominees[idx];
   const btn=document.getElementById('seal-'+idx);
   if(!btn) return;
-  const canSeal=!n.sealed && n.artist.trim()!=='' && n.album.trim()!=='';
-  btn.classList.toggle('visible', canSeal);
+  btn.disabled=!(n.artist.trim()!==''&&n.album.trim()!=='');
 }
 
 function updateAllSealButtons(){
@@ -1081,73 +837,37 @@ function updateAllSealButtons(){
 
 function sealCard(idx){
   const n=state.nominees[idx];
-  if(!n.artist||!n.album) return;
+  if(!n.artist||!n.album||spinning||lastWinner!==null) return;
   clearTimeout(artTimers[idx]);
-
   // Overwrite with canonical MusicBrainz values if available
   if(n.canonicalArtist) n.artist=n.canonicalArtist;
   if(n.canonicalAlbum)  n.album=n.canonicalAlbum;
-
-  // Reflect canonical values back into the visible input fields
-  const card=document.getElementById('card-'+idx);
-  if(card){
-    const artistInput=card.querySelector('input[data-field="artist"]');
-    const albumInput =card.querySelector('input[data-field="album"]');
-    if(artistInput) artistInput.value=n.artist;
-    if(albumInput)  albumInput.value=n.album;
-  }
-
   n.sealed=true;
   if(n.enteredRound==null) n.enteredRound=state.round;
-  if(card) card.classList.add('sealed');
-  updateSealButton(idx);
-  saveState();
-  updateSpinButton();
-  drawWheel();
+  saveState(); renderNominees(); updateSpinButton();
 }
 
 function unsealCard(idx){
+  if(spinning||lastWinner!==null) return;
   const n=state.nominees[idx];
   n.sealed=false;
   n.canonicalArtist=null;
   n.canonicalAlbum=null;
   n.artUrl=null;
-  const card=document.getElementById('card-'+idx);
-  if(card){
-    card.classList.remove('sealed');
-    // Fields carry a real HTML readonly attribute set at render time — removing
-    // the "sealed" class alone only changes styling, it doesn't unlock typing.
-    // Without this, Edit visually unlocks the card but the fields stay dead.
-    const artistInput=card.querySelector('input[data-field="artist"]');
-    const albumInput=card.querySelector('input[data-field="album"]');
-    if(artistInput) artistInput.readOnly=false;
-    if(albumInput) albumInput.readOnly=false;
-  }
-  // Restore art preview state
-  const preview=document.getElementById('ap-'+idx);
-  if(preview){
-    if(n.artist&&n.album) preview.innerHTML='<span class="art-loading">Seeking cover…</span>';
-    else preview.innerHTML='<span class="art-placeholder">Fill both fields to fetch cover art</span>';
-  }
-  updateSealButton(idx);
-  saveState();
-  updateSpinButton();
-  // Re-fetch art with current field values
-  if(n.artist&&n.album) scheduleArtFetch(idx);
+  saveState(); renderNominees(); updateSpinButton();
 }
 
 function updateSpinButton(){
-  const allSealed=state.nominees.every(n=>n.sealed);
-  document.getElementById('spin-btn').disabled=!allSealed||spinning;
-  const count=state.nominees.filter(n=>n.sealed).length;
+  const sealed=state.nominees.filter(n=>n.sealed).length;
+  const allSealed=sealed===6;
+  document.getElementById('spin-btn').disabled=!allSealed||spinning||lastWinner!==null;
   const status=document.getElementById('spin-status');
-  if(allSealed){
-    status.innerHTML='<span class="ready-count">All six champions are sealed.</span> The Fates await.';
-  } else {
-    status.innerHTML=`<span class="ready-count">${count} of 6</span> champions sealed`;
-  }
-  // Keep round badge in sync with state at all times
-  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+  status.textContent=allSealed?'All six picks are sealed.':`${6-sealed} seat${6-sealed===1?' is':'s are'} not sealed yet. Fill ${6-sealed===1?'it':'them'} to spin.`;
+  const chip=document.getElementById('chip-sealed');
+  chip.style.setProperty('--p',(sealed/6*100)+'%');
+  chip.className='chip'+(allSealed?' ok':'');
+  chip.querySelector('strong').textContent=sealed+' of 6';
+  document.getElementById('round-display').textContent=state.round;
 }
 
 // ── WHEEL ──────────────────────────────────────────────
@@ -1166,61 +886,58 @@ function slices(){
 }
 
 function drawWheel(){
-  const W=640,H=640,cx=320,cy=320,r=300;
-  ctx.clearRect(0,0,W,H);
+  const W=640,cx=320,cy=320,r=298,tau=Math.PI*2;
+  ctx.clearRect(0,0,W,W);
+  ctx.beginPath(); ctx.arc(cx,cy,r+8,0,tau); ctx.fillStyle='#171313'; ctx.fill();
+  ctx.lineWidth=1.5; ctx.strokeStyle='#4d3e3e'; ctx.stroke();
+  const dim=lastWinner!==null&&!spinning;
+  const badges=[];
   slices().forEach(s=>{
-    const [bg,fg]=COLORS[s.i%COLORS.length];
-    const a0=s.start+wheelAngle-Math.PI/2, a1=s.end+wheelAngle-Math.PI/2;
-    const mid=(s.start+s.end)/2+wheelAngle-Math.PI/2;
-    ctx.save();
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
-    const img=s.n.artUrl?imgCache[s.n.artUrl]:null;
+    const n=s.n, o=ownerColor(n.owner);
+    const a0=s.start+wheelAngle-Math.PI/2, a1=s.end+wheelAngle-Math.PI/2, mid=(a0+a1)/2, span=s.end-s.start;
+    const has=!!(n.artist||n.album), win=dim&&lastWinner===s.i;
+    const img=n.artUrl?imgCache[n.artUrl]:null;
+    const path=()=>{ ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath(); };
+    ctx.save(); path();
     if(img){
-      ctx.clip();
-      // Rotate so slice bisector points straight up (12 o'clock)
-      ctx.save();
-      ctx.translate(cx,cy);
-      ctx.rotate(mid + Math.PI/2);
-      // Scale image to cover the full slice: chord width at rim = 2*r*sin(span/2)
-      const span=s.end-s.start;
-      const chord=2*r*Math.sin(span/2);
-      const imgSize=Math.max(chord, r)*1.08; // cover both dimensions, slight buffer
-      ctx.drawImage(img, -imgSize/2, -r, imgSize, imgSize);
-      ctx.restore();
-      // Light tint to unify with wheel's dark aesthetic
-      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
-      ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.fill();
-    } else { ctx.fillStyle=bg; ctx.fill(); }
-    ctx.strokeStyle='#c9973a'; ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath(); ctx.stroke();
+      // the album art fills the slice: turn the slice to point up, then cover its chord width
+      ctx.clip(); ctx.translate(cx,cy); ctx.rotate(mid+Math.PI/2);
+      const chord=2*r*Math.sin(Math.min(span,Math.PI)/2), sz=Math.max(chord,r)*1.08;
+      ctx.drawImage(img,-sz/2,-r,sz,sz);
+      ctx.rotate(-(mid+Math.PI/2)); ctx.translate(-cx,-cy);
+      ctx.fillStyle='rgba(0,0,0,.2)'; ctx.fillRect(0,0,W,W);
+    } else { ctx.fillStyle=has?o.d:'#110e0e'; ctx.fill(); }
     ctx.restore();
-    // Only draw text label if no art — art speaks for itself
-    if(!img){
-      const tr=r*0.62, tx=cx+Math.cos(mid)*tr, ty=cy+Math.sin(mid)*tr;
-      ctx.save(); ctx.translate(tx,ty); ctx.rotate(mid+Math.PI/2);
-      const label=s.n.album||(s.n.artist||'(unnamed)');
-      ctx.font='500 19px EB Garamond,serif'; ctx.fillStyle=fg;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      let d=label;
-      while(ctx.measureText(d).width>110&&d.length>3) d=d.slice(0,-1);
-      if(d!==label) d+='…'; ctx.fillText(d,0,0);
+    if(has&&!img){
+      // no cover yet: show the title along the slice so it is never blank
+      ctx.save(); ctx.translate(cx,cy);
+      const flip=Math.cos(mid)<0; ctx.rotate(flip?mid+Math.PI:mid);
+      ctx.font='600 22px "Barlow Condensed","Arial Narrow",sans-serif'; ctx.fillStyle='#f2eadf';
+      ctx.textBaseline='middle'; ctx.textAlign=flip?'left':'right';
+      let t=(n.album||n.artist).toUpperCase(); const room=r-130;
+      while(ctx.measureText(t).width>room&&t.length>3) t=t.slice(0,-1);
+      if(t!==(n.album||n.artist).toUpperCase()) t=t.trimEnd()+'…';
+      ctx.fillText(t,flip?-(r-60):(r-60),0);
       ctx.restore();
     }
-    // Weight stars always shown, near the outer edge of the slice
-    const sw=weightOf(s.n);
-    if(sw>1){
-      const tr=r*0.78, tx=cx+Math.cos(mid)*tr, ty=cy+Math.sin(mid)*tr;
-      ctx.save(); ctx.translate(tx,ty); ctx.rotate(mid+Math.PI/2);
-      ctx.font='11px EB Garamond,serif';
-      ctx.fillStyle='rgba(201,151,58,0.85)';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('★'.repeat(Math.min(sw,5)),0,0);
-      ctx.restore();
-    }
+    if(dim&&!win&&has){ path(); ctx.fillStyle='rgba(0,0,0,.55)'; ctx.fill(); }
+    path();
+    if(!has){ ctx.setLineDash([6,6]); ctx.strokeStyle='#f0a13a'; ctx.lineWidth=1.5; ctx.stroke(); ctx.setLineDash([]); }
+    ctx.lineWidth=win?5:3; ctx.strokeStyle=win?'#f0a13a':'#0e0c0c'; ctx.stroke();
+    badges.push({n,mid,o,has});
   });
-  ctx.beginPath(); ctx.arc(cx,cy,22,0,Math.PI*2); ctx.fillStyle='#0d0a04'; ctx.fill();
-  ctx.strokeStyle='#c9973a'; ctx.lineWidth=2; ctx.stroke();
-  ctx.beginPath(); ctx.arc(cx,cy,r+2,0,Math.PI*2); ctx.strokeStyle='rgba(201,151,58,0.4)'; ctx.lineWidth=3; ctx.stroke();
+  // weight badges sit near the rim and stay upright so they always read
+  badges.forEach(({n,mid,o,has})=>{
+    const txt=has?weightOf(n)+'×':'open', br=r*.8, bx=cx+Math.cos(mid)*br, by=cy+Math.sin(mid)*br;
+    ctx.font='700 26px "Barlow Condensed","Arial Narrow",sans-serif';
+    const w=ctx.measureText(txt).width+22, h=34;
+    ctx.beginPath(); ctx.roundRect(bx-w/2,by-h/2,w,h,h/2); ctx.fillStyle='rgba(14,12,12,.88)'; ctx.fill();
+    ctx.lineWidth=2; ctx.strokeStyle=has?o.c:'#f0a13a'; ctx.stroke();
+    ctx.fillStyle=has?'#f2eadf':'#f0a13a'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(txt,bx,by+1);
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,34,0,tau); ctx.fillStyle='#0e0c0c'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle='#f0a13a'; ctx.stroke();
+  ctx.fillStyle='#f2eadf'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='700 28px "Barlow Condensed","Arial Narrow",sans-serif'; ctx.fillText(String(state.round),cx,cy+1);
 }
 
 function winnerIdx(){
@@ -1237,49 +954,20 @@ function spinWheel(){
 }
 
 function revealWinner(){
-  const idx=winnerIdx(), w=state.nominees[idx]; lastWinner=idx;
-  const name=w.album||w.artist||'the Unnamed Champion';
-  const ww=weightOf(w);
-  const lore=LORE[Math.floor(Math.random()*LORE.length)](name,w.owner,ww);
-  document.getElementById('winner-album-name').textContent=w.album||w.artist||'(Unnamed)';
-  document.getElementById('winner-artist-name').textContent=w.artist||'';
-  document.getElementById('winner-champion-name').textContent=`Champion of ${w.owner} · ${ww>1?ww+' tourneys endured':'First tourney'}`;
-  document.getElementById('winner-lore').innerHTML=lore;
-  const heroImg=document.getElementById('winner-art-img'), noBg=document.getElementById('winner-no-bg');
-  if(w.artUrl){ heroImg.src=w.artUrl; heroImg.style.display='block'; noBg.style.display='none'; }
-  else { heroImg.style.display='none'; noBg.style.display='block'; }
-  document.getElementById('winner-overlay').classList.add('show');
-  addEntry(w); saveState(true);
+  const idx=winnerIdx(); lastWinner=idx;
+  addEntry(state.nominees[idx]);
+  showResult(idx);
+  renderNominees();   // redraws the seats locked, and the wheel dimmed
+  saveState(true);
 }
 
 function addEntry(w){
-  const el=document.getElementById('chronicle'); el.querySelector('.empty-chronicle')?.remove();
   const name=w.album||w.artist||'(unnamed)';
-  const adj=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
-  const a=adj[state.round-1]||state.round+'th';
-  const ww=weightOf(w);
-  const div=document.createElement('div'); div.className='chronicle-entry';
-  const th=w.artUrl?`<div class="chronicle-thumb"><img src="${w.artUrl}" alt=""></div>`:`<div class="chronicle-thumb"></div>`;
-  const taleBtn=`<button class="chronicle-tale-btn" id="tale-btn-${state.round}" onclick="openTaleWriter(${state.round})">⚔️ Write</button>`;
-  div.innerHTML=`${th}<div style="flex:1"><div class="chronicle-round">Tournament ${toRoman(state.round)}</div><div class="chronicle-text"><span class="chronicle-album">${name}</span>${w.artist?' by '+w.artist:''} — borne by ${w.owner} — claimed the throne in its ${a} battle${ww>1?' after '+ww+' tourneys':''}</div><div style="text-align:right">${taleBtn}</div></div>`;
-  el.insertBefore(div,el.firstChild);
-  state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:ww,artUrl:w.artUrl});
+  state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:weightOf(w),artUrl:w.artUrl});
+  renderHistory(); fillHistoryArt();
 }
 
-function toRoman(n){return['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'][n-1]||String(n);}
-
-
-
-function respinWheel(){
-  document.getElementById('winner-overlay').classList.remove('show');
-  if(state.chronicle.length) state.chronicle.shift();
-  const el=document.getElementById('chronicle');
-  const first=el.querySelector('.chronicle-entry');
-  if(first) first.remove();
-  lastWinner=null;
-  spinning=false;
-  spinWheel();
-}
+function toRoman(n){return String(n);}
 
 function vacateSeat(n){
   n.artist='';n.album='';n.enteredRound=null;n.artUrl=null;n.sealed=false;
@@ -1290,7 +978,8 @@ function vacateSeat(n){
 // empty seat can be filled any time before the next spin; survivors simply
 // carry their weight forward (it is derived from the round they entered).
 function closeWinner(){
-  document.getElementById('winner-overlay').classList.remove('show');
+  if(lastWinner===null) return;
+  hideResult();
   vacateSeat(state.nominees[lastWinner]);
   lastWinner=null;
   state.round++;
@@ -1298,14 +987,15 @@ function closeWinner(){
 }
 
 // Retire any seat before the next spin; the new nominee enters at 1×.
+// Retire any seat before the next spin; the new nominee enters at 1×.
 function replaceCard(idx){
-  if(spinning) return;
+  if(spinning||lastWinner!==null) return;
   const n=state.nominees[idx];
   const name=n.album||n.artist||'this seat';
   if(!confirm(`Retire "${name}" and open ${n.owner}'s seat?`)) return;
   clearTimeout(artTimers[idx]);
   vacateSeat(n);
-  saveState(); renderNominees(); drawWheel(); updateSpinButton();
+  saveState(); renderNominees(); updateSpinButton();
 }
 
 function esc(s){ return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -1324,6 +1014,8 @@ function fi(idx,field,val){
     const cacheKey=(n.artist+'|||'+n.album).toLowerCase();
     delete artCache[cacheKey];
   }
+  const ttl=document.getElementById('ttl-'+idx);
+  if(ttl) ttl.textContent=n.album.trim()||'Open seat';
   updateSealButton(idx);
   drawWheel();
   saveState();   // keeps typing from being treated as "nothing unsaved"
@@ -1333,7 +1025,7 @@ function fi(idx,field,val){
   else {
     clearTimeout(artTimers[idx]);
     if(!n.artist.trim()||!n.album.trim())
-      setArtPreview(idx,'<span class="art-placeholder">Fill both fields to fetch cover art</span>');
+      setArtPreview(idx,'<span class="art-placeholder">+</span>');
   }
 }
 
@@ -1343,158 +1035,211 @@ function fi(idx,field,val){
 
 // Manual correction only. Weight is derived, so nudging it moves the round the
 // album is considered to have entered; it can never go below 1×.
+// Manual correction only. Weight is derived, so nudging it moves the round the
+// album is considered to have entered; it can never go below 1×.
 function adjustWeight(idx, delta){
   const n=state.nominees[idx];
-  if(!n.sealed||spinning||n.enteredRound==null) return;
+  if(!n.sealed||spinning||lastWinner!==null||n.enteredRound==null) return;
   n.enteredRound=Math.min(state.round, n.enteredRound-delta);
-  const wt=weightOf(n);
-  const card=document.getElementById('card-'+idx);
-  if(card){
-    card.querySelectorAll('.pip').forEach((p,j)=>p.classList.toggle('active',j<wt));
-    const wlabel=card.querySelector('.weight-label');
-    if(wlabel) wlabel.textContent=wt+'× weight';
-    const wval=document.getElementById('wval-'+idx);
-    if(wval) wval.textContent=wt+'×';
-    const wdn=document.getElementById('wdn-'+idx);
-    if(wdn) wdn.disabled=wt<=1;
+  saveState(); renderNominees();
+}
+
+
+
+const ICON={
+  b:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.7-9.4-9.6A5.2 5.2 0 0 1 12 6.4a5.2 5.2 0 0 1 9.4 4.5c-1.9 4.9-9.4 9.6-9.4 9.6z"/></svg>',
+  e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.2l-2.1 5.5-5.5 2.1 2.1-5.5z"/></svg>'
+};
+const KIND={b:{name:'Beloved',sub:'An album you would stand behind'},e:{name:'Exploring',sub:'One you want to dig into'}};
+// the first three seats are everyone's beloved pick, the last three their exploring pick
+const kindOf=i=>i<3?'b':'e';
+const GROUP_KEY='wheelOfFates_group';
+let groupBy=(()=>{ try{ return localStorage.getItem(GROUP_KEY)==='person'?'person':'type'; }catch(e){ return 'type'; } })();
+function setGroupBy(v){ groupBy=v; try{ localStorage.setItem(GROUP_KEY,v); }catch(e){} renderNominees(); }
+const totalWeight=()=>state.nominees.reduce((s,n)=>s+weightOf(n),0);
+const PAL=[['#2b2540','#c2b8f0'],['#3d3a22','#e6dc84'],['#1f3440','#9fd0e3'],['#40222f','#f0a8c8'],['#1f3d30','#93dcb0'],['#40302a','#e8bd96']];
+function initialsTile(n){
+  const a=n.artist||n.album||'?';
+  const w=String(a).replace(/^(the|a)\s+/i,'').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const ini=((w[0]?.[0]||'')+(w.length>1?w[1][0]:(w[0]?.[1]||''))).toUpperCase()||'?';
+  const [bg,fg]=PAL[[...a].reduce((s,c)=>s+c.charCodeAt(0),0)%PAL.length];
+  return `<span class="ini" style="background:${bg};color:${fg}">${esc(ini)}</span>`;
+}
+function artInner(n){
+  if(n.artUrl) return `<img src="${esc(n.artUrl)}" alt="cover" />`;
+  if(n.sealed) return initialsTile(n);
+  if(n.artist&&n.album) return '<span class="art-loading">Seeking cover…</span>';
+  return '<span class="art-placeholder">+</span>';
+}
+function seatRow(i,withPill){
+  const n=state.nominees[i], o=ownerColor(n.owner), k=kindOf(i), wt=weightOf(n), T=totalWeight();
+  const lock=spinning||lastWinner!==null;
+  const empty=!n.sealed&&!n.artist&&!n.album;
+  const pct=Math.round(wt/T*1000)/10;
+  const kindLbl=withPill?`<span class="pill">${ICON[k]}${KIND[k].name}</span>`:`<span>${KIND[k].name}</span>`;
+  const meta=`<div class="meta"><i class="ownerdot" style="--own:${o.c}"></i><b>${esc(n.owner)}</b>${kindLbl}</div>`;
+  const art=`<div class="cv" id="ap-${i}">${artInner(n)}</div>`;
+  if(n.sealed){
+    return `<article class="seat" id="card-${i}" style="--own:${o.c}">${art}
+      <div class="info">${meta}<h3>${esc(n.album)}</h3><p>${esc(n.artist)}</p></div>
+      <div class="wt"><b id="wval-${i}">${wt}×</b><span>${pct}% of the wheel</span><div class="bar2"><i style="width:${pct}%"></i></div></div>
+      <div class="acts">
+        <button type="button" class="ghost sm icon" id="wdn-${i}" onclick="adjustWeight(${i},-1)" aria-label="Lower weight" ${wt<=1||lock?'disabled':''}>−</button>
+        <button type="button" class="ghost sm icon" onclick="adjustWeight(${i},1)" aria-label="Raise weight" ${lock?'disabled':''}>+</button>
+        <button type="button" class="ghost sm" onclick="unsealCard(${i})" ${lock?'disabled':''}>Edit</button>
+        <button type="button" class="ghost sm" onclick="replaceCard(${i})" ${lock?'disabled':''}>Replace</button>
+      </div></article>`;
   }
-  saveState();
-  drawWheel();
+  const canSeal=n.artist.trim()!==''&&n.album.trim()!=='';
+  return `<article class="seat${empty?' open':''}" id="card-${i}" style="--own:${o.c}">${art}
+    <div class="info">${meta}<h3 id="ttl-${i}">${esc(n.album.trim()||'Open seat')}</h3></div>
+    <div class="wt"><b>${empty||n.enteredRound==null?'1×':wt+'×'}</b><span>${empty||n.enteredRound==null?'when sealed':pct+'% of the wheel'}</span></div>
+    <div class="form">
+      <div><label for="a${i}">Artist</label><input id="a${i}" data-field="artist" value="${esc(n.artist)}" placeholder="Artist name" autocomplete="off" oninput="fi(${i},'artist',this.value)"></div>
+      <div><label for="b${i}">Album</label><input id="b${i}" data-field="album" value="${esc(n.album)}" placeholder="Album title" autocomplete="off" oninput="fi(${i},'album',this.value)"></div>
+      <div class="row"><span class="note">${empty?'Add it any time before the next spin.':'Seal it to lock the pick in.'}</span>
+        <button type="button" class="primary sm" id="seal-${i}" onclick="sealCard(${i})" ${canSeal&&!lock?'':'disabled'}>Seal this pick</button></div>
+    </div></article>`;
 }
-
-function exportState(){
-  const data=JSON.stringify({
-    round:state.round,
-    nominees:state.nominees.map(n=>({...n,artUrl:null})),
-    chronicle:state.chronicle,
-  },null,2);
-  const blob=new Blob([data],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download='wheel-of-fates-save.json'; a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importState(event){
-  const file=event.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(!data.nominees||!Array.isArray(data.nominees)) throw new Error('Invalid save file');
-      normalizeState(data);
-      state.round=data.round;
-      state.nominees=data.nominees;
-      state.chronicle=data.chronicle;
-      saveState();
-      document.getElementById('round-display').textContent='Round '+toRoman(state.round);
-      document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
-      renderNominees();
-      restoreChronicle();
-      drawWheel();
-      updateSpinButton();
-      alert('Save loaded — Round '+toRoman(state.round));
-    }catch(err){ alert('Failed to load save: '+err.message); }
-  };
-  reader.readAsText(file);
-  event.target.value='';
-}
-
 function renderNominees(){
-  const grid=document.getElementById('nominees-grid'); grid.innerHTML='';
-  state.nominees.forEach((n,i)=>{
-    const [,accent]=COLORS[i%COLORS.length];
-    const wt=weightOf(n);
-    const pips=Array.from({length:5},(_,j)=>`<span class="pip ${j<wt?'active':''}"></span>`).join('');
-    let artHtml;
-    if(n.artUrl) artHtml=`<img src="${esc(n.artUrl)}" alt="cover" />`;
-    else if(n.sealed) artHtml=`<span class="art-error">No art found</span>`;
-    else if(n.artist&&n.album) artHtml=`<span class="art-loading">Seeking cover…</span>`;
-    else artHtml=`<span class="art-placeholder">Fill both fields to fetch cover art</span>`;
-
-    const card=document.createElement('div');
-    card.className='nominee-card'+(n.sealed?' sealed':'');
-    card.id='card-'+i;
-    card.style.borderTopColor=accent;
-    const canSeal=!n.sealed&&n.artist.trim()!==''&&n.album.trim()!=='';
-    card.innerHTML=`
-      <div class="card-header">
-        <div class="nominee-owner">${n.owner} · Seat ${['I','II','III','IV','V','VI'][i]}</div>
-        <div class="sealed-badge">✦ Sealed</div>
-      </div>
-      <div class="art-preview" id="ap-${i}">${artHtml}</div>
-      <div class="field-group">
-        <div class="field-row">
-          <label class="field-label">Artist</label>
-          <input class="field-input" type="text" placeholder="Artist name…" value="${esc(n.artist)}"
-            data-field="artist"
-            oninput="fi(${i},'artist',this.value)" onblur="saveState()" ${n.sealed?'readonly':''} />
-        </div>
-        <div class="field-row">
-          <label class="field-label">Album</label>
-          <input class="field-input" type="text" placeholder="Album title…" value="${esc(n.album)}"
-            data-field="album"
-            oninput="fi(${i},'album',this.value)" onblur="saveState()" ${n.sealed?'readonly':''} />
-        </div>
-      </div>
-      <div class="weight-row">
-        ${pips}<span class="weight-label">${wt}× weight</span>
-        <div class="weight-ctrl">
-          <button class="w-btn" id="wdn-${i}" onclick="adjustWeight(${i},-1)" ${wt<=1?'disabled':''}>−</button>
-          <span class="w-val" id="wval-${i}">${wt}×</span>
-          <button class="w-btn" onclick="adjustWeight(${i},1)">+</button>
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="seal-btn ${canSeal?'visible':''}" id="seal-${i}" onclick="sealCard(${i})">✦ Seal this Champion</button>
-        <button class="unlock-btn" onclick="unsealCard(${i})">Edit</button>
-        <button class="unlock-btn replace-btn" onclick="replaceCard(${i})">Replace</button>
-      </div>`;
-    grid.appendChild(card);
-
-    // If card has both fields and isn't sealed, trigger art fetch
-    if(!n.sealed&&n.artist&&n.album&&!n.artUrl) scheduleArtFetch(i);
-  });
+  const grid=document.getElementById('nominees-grid');
+  const idx=[0,1,2,3,4,5];
+  const sw=`<div class="gb"><span>Group by</span><div class="seg"><button type="button" aria-pressed="${groupBy==='type'}" onclick="setGroupBy('type')">Pick type</button><button type="button" aria-pressed="${groupBy==='person'}" onclick="setGroupBy('person')">Person</button></div></div>`;
+  let html;
+  if(groupBy==='type'){
+    html=['b','e'].map(k=>`<section class="group"><div class="ghead"><h2>${ICON[k]}${KIND[k].name}</h2><span>${KIND[k].sub}</span></div>${idx.filter(i=>kindOf(i)===k).map(i=>seatRow(i,false)).join('')}</section>`).join('');
+  } else {
+    const owners=[...new Set(state.nominees.map(n=>n.owner))];
+    html=owners.map(name=>`<section class="group"><div class="ghead"><h2><i class="ownerdot" style="--own:${ownerColor(name).c}"></i>${esc(name)}</h2><span>Beloved and exploring</span></div>${idx.filter(i=>state.nominees[i].owner===name).sort((a,b)=>kindOf(a)<kindOf(b)?-1:1).map(i=>seatRow(i,true)).join('')}</section>`).join('');
+  }
+  grid.innerHTML=sw+html;
+  // unsealed seats with both fields filled: look for a cover; sealed seats: restore covers after a reload
+  state.nominees.forEach((n,i)=>{ if(!n.sealed&&n.artist&&n.album&&!n.artUrl) scheduleArtFetch(i); });
+  hydrateArt();
   drawWheel();
+  updateSpinButton();
 }
 
-function restoreChronicle(){
-  if(!state.chronicle?.length) return;
-  const el=document.getElementById('chronicle'); el.querySelector('.empty-chronicle')?.remove();
-  [...state.chronicle].reverse().forEach(e=>{
-    const adj=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
-    const a=adj[e.round-1]||e.round+'th';
-    const div=document.createElement('div'); div.className='chronicle-entry';
-    const thumbId=`chronicle-thumb-${e.round}`;
-    // Apply hard-coded override — wins over any cached/fetched URL for known entries
-    const _overrideKey=(e.artist+'|||'+e.album).toLowerCase();
-    if(CHRONICLE_ART_OVERRIDES[_overrideKey]) e.artUrl=CHRONICLE_ART_OVERRIDES[_overrideKey];
-    const th=e.artUrl
-      ?`<div class="chronicle-thumb" id="${thumbId}"><img src="${e.artUrl}" alt=""></div>`
-      :`<div class="chronicle-thumb" id="${thumbId}"></div>`;
-    const taleBtn=e.tale
-      ?`<button class="chronicle-tale-btn has-tale" id="tale-btn-${e.round}" onclick="openTaleReader(${e.round})">📜 Read</button>`
-      :`<button class="chronicle-tale-btn" id="tale-btn-${e.round}" onclick="openTaleWriter(${e.round})">⚔️ Write</button>`;
-    div.innerHTML=`${th}<div style="flex:1"><div class="chronicle-round">Tournament ${toRoman(e.round)}</div><div class="chronicle-text"><span class="chronicle-album">${e.album}</span>${e.artist?' by '+e.artist:''} — borne by ${e.owner} — claimed the throne in its ${a} battle${e.rounds>1?' after '+e.rounds+' tourneys':''}</div><div style="text-align:right">${taleBtn}</div></div>`;
-    el.insertBefore(div,el.firstChild);
+// Cover art is never saved, so sealed seats look their covers up again after every load.
+// Lookups are spaced out to stay inside MusicBrainz's one-request-a-second limit.
+const artPending=new Set();
+function loadWheelImage(url){
+  if(imgCache[url]) return;
+  const img=new Image(); img.crossOrigin='anonymous';
+  img.onload=()=>{ imgCache[url]=img; drawWheel(); };
+  img.onerror=()=>console.warn('[WheelOfFates] Image load failed:',url);
+  img.src=url;
+}
+function hydrateArt(){
+  let delay=0;
+  state.nominees.forEach((n,i)=>{
+    if(!n.sealed||!n.artist||!n.album) return;
+    if(n.artUrl){ loadWheelImage(n.artUrl); return; }
+    const key=(n.artist+'|||'+n.album).toLowerCase();
+    if(artPending.has(key)||artCache[key]===null) return;
+    const cached=artCache[key];
+    artPending.add(key);
+    setTimeout(async()=>{
+      const r=cached||await fetchArtUrl(n.artist,n.album);
+      artPending.delete(key);
+      const cur=state.nominees[i];
+      if(!r?.url||!cur||!cur.sealed||cur.album!==n.album||cur.artist!==n.artist) return;
+      cur.artUrl=r.url; loadWheelImage(r.url); cacheLocal();
+      setArtPreview(i,`<img src="${esc(r.url)}" alt="cover" />`);
+      drawWheel();
+    },delay);
+    if(!cached) delay+=1100;
   });
-  // Fetch cover art for any chronicle entries that are missing it
-  state.chronicle.forEach(e=>{
-    if(!e.artUrl && e.artist && e.album){
-      fetchArtUrl(e.artist, e.album).then(result=>{
-        if(!result?.url) return;
+}
+
+let histAll=false;
+function toggleHistory(){ histAll=!histAll; renderHistory(); }
+function renderHistory(){
+  const el=document.getElementById('chronicle'), list=state.chronicle||[], LIMIT=8;
+  document.getElementById('hist-count').textContent=list.length?`${histAll||list.length<=LIMIT?list.length:LIMIT} of ${list.length}`:'';
+  if(!list.length){ el.innerHTML='<div class="empty">No results yet. The first spin shows up here.</div>'; }
+  else el.innerHTML=(histAll?list:list.slice(0,LIMIT)).map(e=>{
+    // Hard-coded override wins over any cached/fetched URL for known entries
+    const ok=(e.artist+'|||'+e.album).toLowerCase();
+    if(CHRONICLE_ART_OVERRIDES[ok]) e.artUrl=CHRONICLE_ART_OVERRIDES[ok];
+    const th=`<div class="th" id="chronicle-thumb-${e.round}">${e.artUrl?`<img src="${esc(e.artUrl)}" alt="">`:''}</div>`;
+    const tale=e.tale
+      ?`<button type="button" class="ghost sm tale-btn has-tale" id="tale-btn-${e.round}" onclick="openTaleReader(${e.round})">Read tale</button>`
+      :`<button type="button" class="ghost sm tale-btn" id="tale-btn-${e.round}" onclick="openTaleWriter(${e.round})">Write tale</button>`;
+    return `<div class="h"><span class="rd">${e.round}</span>${th}<div style="min-width:0"><div class="ti">${esc(e.album)}</div><div class="ar">${e.artist?esc(e.artist)+' · ':''}<i class="ownerdot" style="--own:${ownerColor(e.owner).c};width:8px;height:8px"></i>${esc(e.owner)} · ${e.rounds}× at win</div></div><div class="hb">${tale}</div></div>`;
+  }).join('');
+  const more=document.getElementById('hist-more');
+  more.hidden=list.length<=LIMIT;
+  more.textContent=histAll?'Show recent only':`Show all ${list.length}`;
+}
+let histArtBusy=false;
+async function fillHistoryArt(){
+  if(histArtBusy) return; histArtBusy=true;
+  try{
+    for(const e of [...state.chronicle]){
+      if(e.artUrl||!e.artist||!e.album) continue;
+      const result=await fetchArtUrl(e.artist,e.album);
+      if(result?.url){
         e.artUrl=result.url;
         const thumb=document.getElementById(`chronicle-thumb-${e.round}`);
-        if(thumb) thumb.innerHTML=`<img src="${result.url}" alt="">`;
+        if(thumb) thumb.innerHTML=`<img src="${esc(result.url)}" alt="">`;
         saveState(); // persist so it doesn't need re-fetching next session
-      });
+      }
+      await new Promise(r=>setTimeout(r,1100));
     }
-  });
+  } finally { histArtBusy=false; }
+}
+function restoreChronicle(){ renderHistory(); fillHistoryArt(); }
+
+// Result card (shown under the wheel after a spin, until it is accepted or re-spun)
+function showResult(idx){
+  const w=state.nominees[idx], ww=weightOf(w), name=w.album||w.artist||'(Unnamed)';
+  const pct=Math.round(ww/totalWeight()*1000)/10;
+  document.getElementById('result-round').textContent='Round '+state.round+' result';
+  document.getElementById('winner-album-name').textContent=name;
+  document.getElementById('winner-artist-name').textContent=w.artist||'';
+  document.getElementById('winner-champion-name').textContent=`${w.owner}'s ${KIND[kindOf(idx)].name.toLowerCase()} pick · ${ww}× · ${pct}% chance`;
+  document.getElementById('winner-lore').innerHTML=LORE[Math.floor(Math.random()*LORE.length)](esc(name),esc(w.owner),ww);
+  document.getElementById('result-art').innerHTML=w.artUrl?`<img src="${esc(w.artUrl)}" alt="cover" />`:initialsTile(w);
+  document.getElementById('result').hidden=false;
+  document.getElementById('spinbar').hidden=true;
+}
+function hideResult(){
+  document.getElementById('result').hidden=true;
+  document.getElementById('spinbar').hidden=false;
+}
+// A spin is recorded the moment it lands. If the page is reloaded before the result
+// is accepted, bring the result card back instead of letting the next spin double-record it.
+function restoreUnacceptedResult(){
+  hideResult(); lastWinner=null;
+  const e=state.chronicle[0];
+  if(e&&e.round===state.round){
+    const idx=state.nominees.findIndex(n=>n.sealed&&n.album===e.album&&n.artist===e.artist&&n.owner===e.owner);
+    if(idx>=0){ lastWinner=idx; showResult(idx); }
+  }
+  renderNominees();
 }
 
-document.getElementById('round-display').textContent='Round '+toRoman(state.round);
+// Menu and help
+function toggleMenu(ev){
+  ev.stopPropagation();
+  const pop=document.getElementById('menu-pop'), btn=document.getElementById('menu-btn');
+  pop.hidden=!pop.hidden; btn.setAttribute('aria-expanded',String(!pop.hidden));
+}
+document.addEventListener('click',ev=>{
+  const pop=document.getElementById('menu-pop'); if(!pop||pop.hidden) return;
+  if(!ev.target.closest('.menuwrap')||ev.target.closest('#menu-pop button')){ pop.hidden=true; document.getElementById('menu-btn').setAttribute('aria-expanded','false'); }
+});
+function openHelp(){ document.getElementById('help-overlay').classList.add('show'); }
+function closeHelp(){ document.getElementById('help-overlay').classList.remove('show'); }
+document.addEventListener('keydown',ev=>{
+  if(ev.key!=='Escape') return;
+  ['help-overlay','connect-overlay','tale-writer-overlay','tale-reader-overlay'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
+});
+
+document.getElementById('round-display').textContent=state.round;
 renderNominees();
-restoreChronicle();
+restoreChronicle(); restoreUnacceptedResult();
 drawWheel();
 updateSpinButton();
 
@@ -1502,134 +1247,6 @@ updateSpinButton();
 // (unsaved local edits are pushed first; otherwise the cloud copy is pulled).
 syncOnLoad();
 </script>
-
-
-<!-- SCROLL OF LORE -->
-<div class="scroll-overlay" id="scroll-overlay" onclick="closeScroll()"></div>
-
-<div class="scroll-tab" id="scroll-tab" onclick="openScroll()" title="The Scroll of Lore">
-  <div class="scroll-tab-roll"></div>
-  <div class="scroll-tab-body">
-    <span class="scroll-tab-icon">📜</span>
-    <span class="scroll-tab-label">How to Play</span>
-  </div>
-  <div class="scroll-tab-roll"></div>
-</div>
-
-<div class="scroll-panel" id="scroll-panel">
-  <div class="scroll-panel-inner">
-    <div class="scroll-roll-top"></div>
-    <div class="scroll-content">
-      <div class="scroll-title">The Scroll of Lore</div>
-      <div class="scroll-subtitle">A guide for the initiated</div>
-      <div class="scroll-divider">⸻✦⸻</div>
-
-      <div class="scroll-body">
-
-        <div class="scroll-section-head">I. The Assembly</div>
-        <p>Three champions gather — <strong>Baxter</strong>, <strong>Chris</strong>, and <strong>Erik</strong> — each bearing two album nominees into the tournament hall. Enter your <em>artist</em> and <em>album</em> into each of your two seats. The Wheel shall seek the cover art from the archives.</p>
-
-        <div class="scroll-section-head">II. The Sealing</div>
-        <p>When your champion is named and its cover art retrieved, press <em>✦ Seal this Champion</em> to lock it in. The canonical title and artist shall be inscribed from the archives at the moment of sealing. Only when all six seats are sealed may the Wheel be invoked.</p>
-        <p>Should you wish to reconsider, press <em>Edit</em> to unseal and try again.</p>
-
-        <div class="scroll-section-head">III. The Spinning</div>
-        <p>One among you shall press <em>Decree the Fates</em>. The Wheel turns, weighted by the burden each album carries — long-suffering nominees spin with greater fortune than fresh recruits. When the Wheel rests, the chosen album is revealed with all due ceremony.</p>
-
-        <div class="scroll-section-head">IV. The Weighing</div>
-        <p>After the winner is proclaimed, the roster must be reformed for the next tourney:</p>
-        <p><strong>The winner's owner</strong> must nominate a new album to fill the vacant seat. Their remaining album keeps its weight but earns no bonus for the round.</p>
-        <p><strong>The other two champions</strong> may choose for each of their surviving albums: <em>Keep</em> it, and it grows heavier by one weight — making it more likely to be chosen in future tourneys. Or <em>Replace</em> it with a new nomination, which enters at ordinary weight.</p>
-
-        <div class="scroll-section-head">V. The Weight of Years</div>
-        <p>Weight is earned through patience. An album that survives one tourney spins with <strong>2×</strong> the fortune of a newcomer. Two tourneys: <strong>3×</strong>. The longer an album waits, the more the Fates favour it — but replace it, and all accumulated fortune is lost.</p>
-
-        <div class="scroll-section-head">VI. The Chronicle</div>
-        <p>Every tournament is recorded in the <em>Chronicle of Battles</em> below the wheel. The history of champions, their owners, and how long they waited before glory is preserved for all to witness.</p>
-
-        <div class="scroll-divider">⸻✦⸻</div>
-        <p style="text-align:center;font-style:italic;color:#6a4010;font-size:12px;">May the Fates be ever in your favour.<br>Or at least tolerably so.</p>
-
-        <div class="scroll-close" onclick="closeScroll()">✦ Roll up the Scroll ✦</div>
-      </div>
-    </div>
-    <div class="scroll-roll-bottom"></div>
-  </div>
-</div>
-
-<div class="connect-overlay" id="connect-overlay" onclick="if(event.target===this)closeConnect()">
-  <div class="connect-modal" role="dialog" aria-labelledby="connect-title">
-    <div class="connect-title" id="connect-title">☁️ Connect to GitHub</div>
-    <p class="connect-lead">The wheel saves to a file in your repo as you work, so every change is backed up and can be rolled back. Paste the access token once on each device.</p>
-    <form id="connect-form" autocomplete="off" onsubmit="submitConnect(event)">
-      <label class="connect-label" for="c-token">Access token</label>
-      <input class="connect-input" id="c-token" type="password" autocapitalize="none" spellcheck="false" placeholder="Paste once per device">
-      <details class="connect-details">
-        <summary>Repository details</summary>
-        <div class="connect-grid">
-          <div><label class="connect-label" for="c-owner">GitHub username</label><input class="connect-input" id="c-owner" autocapitalize="none" spellcheck="false" required></div>
-          <div><label class="connect-label" for="c-repo">Repo</label><input class="connect-input" id="c-repo" autocapitalize="none" spellcheck="false" required></div>
-          <div><label class="connect-label" for="c-path">File in the repo</label><input class="connect-input" id="c-path" autocapitalize="none" spellcheck="false" required></div>
-          <div><label class="connect-label" for="c-branch">Branch</label><input class="connect-input" id="c-branch" autocapitalize="none" spellcheck="false" required></div>
-        </div>
-      </details>
-      <p class="connect-err" id="connect-err" role="alert" hidden></p>
-      <div class="connect-btns">
-        <button class="modal-btn" type="submit" id="c-go" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008">Connect</button>
-        <button class="modal-btn" type="button" onclick="closeConnect()" style="flex:1;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)">Close</button>
-      </div>
-      <button class="connect-forget" type="button" id="c-forget" onclick="forgetDevice()" hidden>Forget the token on this device</button>
-    </form>
-    <details class="connect-details connect-how">
-      <summary>How to make the access token</summary>
-      <ol>
-        <li>On GitHub, open Settings, then Developer settings, then Personal access tokens, then Fine-grained tokens.</li>
-        <li>Choose Generate new token and name it something like Wheel of Fates. Set an expiry you are comfortable with.</li>
-        <li>Under Repository access, choose Only select repositories and pick the-wheel-of-fate.</li>
-        <li>Under Permissions, Repository permissions, set Contents to Read and write.</li>
-        <li>Generate the token, copy it, and paste it above. GitHub only shows it once.</li>
-      </ol>
-      The token stays in this browser only, and it can touch that one repo and nothing else.
-    </details>
-  </div>
-</div>
-
-<div class="tale-overlay" id="tale-writer-overlay" onclick="if(event.target===this)closeTaleWriter()">
-  <div class="tale-writer-modal">
-    <div class="tale-writer-header">⚔️ Inscribe the Tale</div>
-    <div class="tale-writer-info" id="tale-writer-info"></div>
-    <textarea class="tale-textarea" id="tale-textarea" placeholder="Write the tale of this battle..."></textarea>
-    <div class="tale-writer-btns">
-      <button class="modal-btn" style="flex:1" onclick="rerollTale()">🎲 Re-roll</button>
-      <button class="modal-btn" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008" onclick="saveTaleFromWriter()">✓ Save the Tale</button>
-      <button class="modal-btn" style="flex:1;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)" onclick="closeTaleWriter()">✕</button>
-    </div>
-  </div>
-</div>
-
-<div class="tale-overlay" id="tale-reader-overlay" onclick="if(event.target===this)closeTaleReader()">
-  <div class="tale-reader-modal">
-    <div class="tale-reader-art" id="tale-reader-art-panel">
-      <div class="tale-reader-no-art" id="tale-reader-no-art"></div>
-      <img id="tale-reader-art-img" src="" alt="" style="display:none">
-      <div class="tale-reader-art-overlay"></div>
-      <div class="tale-reader-art-title">
-        <div class="winner-header-label" id="tale-reader-round-label"></div>
-        <div class="winner-album" id="tale-reader-album-label"></div>
-        <div class="winner-artist" id="tale-reader-artist-label"></div>
-      </div>
-    </div>
-    <div class="tale-reader-body">
-      <div class="winner-ornament">✦ ✦ ✦</div>
-      <div class="tale-reader-text" id="tale-reader-text"></div>
-      <div class="tale-reader-btns">
-        <button class="modal-btn" style="flex:1" onclick="openTaleWriterFromReader()">✏️ Edit</button>
-        <button class="modal-btn" style="flex:1" onclick="exportTaleImage()">📸 Save</button>
-        <button class="modal-btn" style="flex:1;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)" onclick="closeTaleReader()">✕ Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 function exportState(){
@@ -1661,11 +1278,11 @@ function importState(input){
       state.nominees = data.nominees;
       state.chronicle = data.chronicle;
       saveState();
-      document.getElementById('round-display').textContent = 'Round ' + toRoman(state.round);
+      document.getElementById('round-display').textContent=state.round;
       renderNominees();
       const el = document.getElementById('chronicle');
       el.innerHTML = '<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
-      restoreChronicle();
+      restoreChronicle(); restoreUnacceptedResult();
       drawWheel();
       updateSpinButton();
       // Clear the file input so the same file can be re-imported if needed
@@ -1678,18 +1295,6 @@ function importState(input){
   reader.readAsText(file);
 }
 
-function openScroll(){
-  document.getElementById('scroll-panel').classList.add('open');
-  document.getElementById('scroll-overlay').classList.add('open');
-  document.getElementById('scroll-tab').style.opacity='0';
-  document.getElementById('scroll-tab').style.pointerEvents='none';
-}
-function closeScroll(){
-  document.getElementById('scroll-panel').classList.remove('open');
-  document.getElementById('scroll-overlay').classList.remove('open');
-  document.getElementById('scroll-tab').style.opacity='1';
-  document.getElementById('scroll-tab').style.pointerEvents='all';
-}
 
 // ── UTILITY HELPERS ─────────────────────────────────────
 
@@ -1735,113 +1340,13 @@ async function loadImageForCanvas(url){
 
 async function exportWinnerCard(){
   if(lastWinner===null) return;
-  await document.fonts.ready;
   const w=state.nominees[lastWinner];
-  const CW=600,CH=750,AH=300;
-  const canvas=document.createElement('canvas');
-  canvas.width=CW; canvas.height=CH;
-  const c=canvas.getContext('2d');
-
-  // Art section (top 300px)
-  const img=w.artUrl?await loadImageForCanvas(w.artUrl):null;
-  if(img){
-    // object-fit:cover center-crop
-    const sw=img.naturalWidth,sh=img.naturalHeight;
-    const scale=Math.max(CW/sw,AH/sh);
-    const dw=sw*scale,dh=sh*scale;
-    const sx=(dw-CW)/2,sy=(dh-AH)/2;
-    c.drawImage(img,(CW-dw)/2-sx+sx,(AH-dh)/2-sy+sy,dw,dh);
-    // Simplify: center-crop by adjusting source rect
-    const srcScale=Math.max(CW/sw,AH/sh);
-    const srcW=CW/srcScale,srcH=AH/srcScale;
-    c.clearRect(0,0,CW,AH);
-    c.drawImage(img,(sw-srcW)/2,(sh-srcH)/2,srcW,srcH,0,0,CW,AH);
-  } else {
-    const grd=c.createLinearGradient(0,0,CW,AH);
-    grd.addColorStop(0,'#3a1a00'); grd.addColorStop(1,'#1a0800');
-    c.fillStyle=grd; c.fillRect(0,0,CW,AH);
-  }
-  // Dark gradient overlay fading to parchment
-  const ovg=c.createLinearGradient(0,0,0,AH);
-  ovg.addColorStop(0,'rgba(0,0,0,0.35)');
-  ovg.addColorStop(0.55,'rgba(20,8,0,0.65)');
-  ovg.addColorStop(1,'#c8a96e');
-  c.fillStyle=ovg; c.fillRect(0,0,CW,AH);
-
-  // Text on art (bottom-aligned)
-  let ty=AH-10;
-  // Artist
-  c.font='italic 15px "EB Garamond",serif';
-  c.fillStyle='rgba(255,220,160,0.85)';
-  c.textAlign='center'; c.textBaseline='bottom';
-  c.fillText(w.artist||'',CW/2,ty);
-  ty-=20;
-  // Album (bold Cinzel 26px, word-wrapped)
-  c.font='bold 26px "Cinzel",serif';
-  c.fillStyle='#fff8e8';
-  c.textAlign='center'; c.textBaseline='bottom';
-  const albumWords=(w.album||w.artist||'(Unnamed)').split(' ');
-  let aLines=[],aLine='';
-  for(const aw of albumWords){
-    const test=aLine?aLine+' '+aw:aw;
-    if(c.measureText(test).width>CW-80&&aLine){ aLines.push(aLine); aLine=aw; }
-    else aLine=test;
-  }
-  if(aLine) aLines.push(aLine);
-  ty-=(aLines.length-1)*32;
-  for(let li=0;li<aLines.length;li++){
-    c.fillText(aLines[li],CW/2,ty+li*32);
-  }
-  ty-=24;
-  // "THE WHEEL HAS SPOKEN"
-  c.font='10px "Cinzel",serif';
-  c.fillStyle='rgba(255,220,140,0.8)';
-  c.letterSpacing='4px';
-  c.textBaseline='bottom';
-  c.fillText('THE WHEEL HAS SPOKEN',CW/2,ty);
-  c.letterSpacing='0px';
-
-  // Parchment body (below art)
-  const bodyY=AH;
-  const brdg=c.createLinearGradient(0,bodyY,0,CH);
-  brdg.addColorStop(0,'#e8d5a0'); brdg.addColorStop(1,'#c8a96e');
-  c.fillStyle=brdg; c.fillRect(0,bodyY,CW,CH-bodyY);
-
-  let by=bodyY+26;
-  // Ornament
-  c.font='12px "EB Garamond",serif';
-  c.fillStyle='rgba(90,48,0,0.7)';
-  c.textAlign='center'; c.textBaseline='top';
-  c.fillText('✦  ✦  ✦',CW/2,by); by+=28;
-  // Champion + round line
-  c.font='italic 14px "EB Garamond",serif';
-  c.fillStyle='#5a3000';
-  c.textAlign='center'; c.textBaseline='top';
-  const champLine=`Champion of ${w.owner} · ${weightOf(w)>1?weightOf(w)+' tourneys endured':'First tourney'} · Tournament ${toRoman(state.round)}`;
-  c.fillText(champLine,CW/2,by); by+=24;
-  // Divider
-  c.strokeStyle='rgba(100,60,10,0.3)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(40,by); c.lineTo(CW-40,by); c.stroke(); by+=14;
-  // Lore text
-  const loreText=stripHtml(document.getElementById('winner-lore').innerHTML);
-  c.font='italic 13px "EB Garamond",serif';
-  c.fillStyle='#2a1200';
-  c.textAlign='left'; c.textBaseline='top';
-  fillTextWrapped(c,loreText,40,by,CW-80,20); by+=100;
-  // Footer divider
-  const footerY=CH-28;
-  c.strokeStyle='rgba(100,60,10,0.25)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(40,footerY-8); c.lineTo(CW-40,footerY-8); c.stroke();
-  // Footer text
-  c.font='8px "Cinzel",serif';
-  c.fillStyle='rgba(90,48,0,0.5)';
-  c.textAlign='center'; c.textBaseline='top';
-  c.fillText('WHEEL OF FATES · ALBUM DISCUSSION CLUB',CW/2,footerY);
-
-  const link=document.createElement('a');
-  link.download=`winner-tournament-${toRoman(state.round)}.png`;
-  link.href=canvas.toDataURL('image/png');
-  link.click();
+  await shareCard({
+    art:w.artUrl, kicker:`ROUND ${state.round} RESULT`, title:w.album||w.artist||'(Unnamed)', artist:w.artist||'',
+    line:`${w.owner}'s ${KIND[kindOf(lastWinner)].name.toLowerCase()} pick · ${weightOf(w)}× weight`,
+    body:stripHtml(document.getElementById('winner-lore').innerHTML),
+    file:`result-round-${state.round}.png`, height:750
+  });
 }
 
 // ── TALE TEMPLATES ───────────────────────────────────────
@@ -1868,8 +1373,8 @@ function openTaleWriter(round){
   taleWriterRound=round;
   taleTemplateIdx=0;
   const info=document.getElementById('tale-writer-info');
-  const artHtml=entry.artUrl?`<div class="tale-writer-art"><img src="${esc(entry.artUrl)}" alt=""></div>`:'';
-  info.innerHTML=`${artHtml}<div><div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--p-ink-mid);margin-bottom:3px">Tournament ${toRoman(round)}</div><div style="font-size:14px;font-weight:600;color:var(--p-ink)">${esc(entry.album)}</div><div style="font-size:12px;font-style:italic;color:var(--p-ink-mid)">${esc(entry.artist||'')} · ${esc(entry.owner)}</div></div>`;
+  const artHtml=entry.artUrl?`<div class="tw-art"><img src="${esc(entry.artUrl)}" alt=""></div>`:'';
+  info.innerHTML=`${artHtml}<div><p class="eyebrow">Round ${round}</p><div class="tw-title">${esc(entry.album)}</div><div class="tw-sub">${esc(entry.artist||'')} · ${esc(entry.owner)}</div></div>`;
   const ta=document.getElementById('tale-textarea');
   ta.value=entry.tale||TALE_TEMPLATES[0](entry);
   document.getElementById('tale-writer-overlay').classList.add('show');
@@ -1887,11 +1392,11 @@ function saveTaleFromWriter(){
   if(!entry) return;
   entry.tale=document.getElementById('tale-textarea').value.trim();
   saveState();
-  // Update the button in the chronicle list
+  // Update the button in the history list
   const btn=document.getElementById('tale-btn-'+taleWriterRound);
   if(btn){
-    btn.textContent='📜 Read';
-    btn.className='chronicle-tale-btn has-tale';
+    btn.textContent='Read tale';
+    btn.className='ghost sm tale-btn has-tale';
     btn.setAttribute('onclick','openTaleReader('+taleWriterRound+')');
   }
   closeTaleWriter();
@@ -1905,13 +1410,10 @@ function openTaleReader(round){
   const entry=state.chronicle.find(e=>e.round===round);
   if(!entry||!entry.tale) return;
   taleReaderRound=round;
-  const adj=ordinalLong(entry.round);
-  // Art
   const rImg=document.getElementById('tale-reader-art-img');
-  const rNoBg=document.getElementById('tale-reader-no-art');
-  if(entry.artUrl){ rImg.src=entry.artUrl; rImg.style.display='block'; rNoBg.style.display='none'; }
-  else { rImg.style.display='none'; rNoBg.style.display='block'; }
-  document.getElementById('tale-reader-round-label').textContent='Tournament '+toRoman(round);
+  if(entry.artUrl){ rImg.src=entry.artUrl; rImg.style.display='block'; }
+  else { rImg.style.display='none'; }
+  document.getElementById('tale-reader-round-label').textContent='Round '+round;
   document.getElementById('tale-reader-album-label').textContent=entry.album;
   document.getElementById('tale-reader-artist-label').textContent=entry.artist||'';
   document.getElementById('tale-reader-text').textContent=entry.tale;
@@ -1932,71 +1434,59 @@ async function exportTaleImage(){
   if(taleReaderRound===null) return;
   const entry=state.chronicle.find(e=>e.round===taleReaderRound);
   if(!entry||!entry.tale) return;
+  await shareCard({
+    art:entry.artUrl, kicker:`ROUND ${entry.round}`, title:entry.album, artist:entry.artist||'',
+    line:`${entry.owner} · ${entry.rounds}× at win`, body:entry.tale,
+    file:`tale-round-${entry.round}.png`, height:680
+  });
+}
+
+function respinWheel(){
+  if(state.chronicle.length) state.chronicle.shift();
+  renderHistory();
+  lastWinner=null; hideResult();
+  spinning=false;
+  saveState();
+  renderNominees();
+  spinWheel();
+}
+
+// One card layout for both "save as image" exports.
+async function shareCard({art,kicker,title,artist,line,body,file,height}){
   await document.fonts.ready;
-  const CW=600,CH=680,AH=280;
-  const canvas=document.createElement('canvas');
-  canvas.width=CW; canvas.height=CH;
-  const c=canvas.getContext('2d');
-
-  const img=await loadImageForCanvas(entry.artUrl||null);
+  const CW=600,CH=height,AH=290;
+  const cv=document.createElement('canvas'); cv.width=CW; cv.height=CH;
+  const c=cv.getContext('2d');
+  c.fillStyle='#171313'; c.fillRect(0,0,CW,CH);
+  const img=await loadImageForCanvas(art||null);
   if(img){
-    const sw=img.naturalWidth,sh=img.naturalHeight;
-    const srcScale=Math.max(CW/sw,AH/sh);
-    const srcW=CW/srcScale,srcH=AH/srcScale;
+    const sw=img.naturalWidth,sh=img.naturalHeight,sc=Math.max(CW/sw,AH/sh),srcW=CW/sc,srcH=AH/sc;
     c.drawImage(img,(sw-srcW)/2,(sh-srcH)/2,srcW,srcH,0,0,CW,AH);
-  } else {
-    const grd=c.createLinearGradient(0,0,CW,AH);
-    grd.addColorStop(0,'#3a1a00'); grd.addColorStop(1,'#1a0800');
-    c.fillStyle=grd; c.fillRect(0,0,CW,AH);
-  }
-  const ovg=c.createLinearGradient(0,0,0,AH);
-  ovg.addColorStop(0,'rgba(0,0,0,0.35)');
-  ovg.addColorStop(0.55,'rgba(20,8,0,0.65)');
-  ovg.addColorStop(1,'#c8a96e');
-  c.fillStyle=ovg; c.fillRect(0,0,CW,AH);
-
-  let ty=AH-10;
-  c.font='italic 15px "EB Garamond",serif';
-  c.fillStyle='rgba(255,220,160,0.85)';
-  c.textAlign='center'; c.textBaseline='bottom';
-  c.fillText(entry.artist||'',CW/2,ty); ty-=20;
-  c.font='bold 24px "Cinzel",serif';
-  c.fillStyle='#fff8e8';
-  c.textAlign='center'; c.textBaseline='bottom';
-  c.fillText(entry.album,CW/2,ty); ty-=24;
-  c.font='10px "Cinzel",serif';
-  c.fillStyle='rgba(255,220,140,0.8)';
-  c.textBaseline='bottom';
-  c.fillText('TOURNAMENT '+toRoman(entry.round),CW/2,ty);
-
-  const bodyY=AH;
-  const brdg=c.createLinearGradient(0,bodyY,0,CH);
-  brdg.addColorStop(0,'#e8d5a0'); brdg.addColorStop(1,'#c8a96e');
-  c.fillStyle=brdg; c.fillRect(0,bodyY,CW,CH-bodyY);
-
-  let by=bodyY+18;
-  c.font='12px "EB Garamond",serif';
-  c.fillStyle='rgba(90,48,0,0.7)';
-  c.textAlign='center'; c.textBaseline='top';
-  c.fillText('✦  ✦  ✦',CW/2,by); by+=26;
-  c.strokeStyle='rgba(100,60,10,0.3)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(40,by); c.lineTo(CW-40,by); c.stroke(); by+=14;
-  c.font='italic 13px "EB Garamond",serif';
-  c.fillStyle='#2a1200';
-  c.textAlign='left'; c.textBaseline='top';
-  fillTextWrapped(c,entry.tale,40,by,CW-80,20);
-  const footerY=CH-28;
-  c.strokeStyle='rgba(100,60,10,0.25)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(40,footerY-8); c.lineTo(CW-40,footerY-8); c.stroke();
-  c.font='8px "Cinzel",serif';
-  c.fillStyle='rgba(90,48,0,0.5)';
-  c.textAlign='center'; c.textBaseline='top';
-  c.fillText('WHEEL OF FATES · ALBUM DISCUSSION CLUB',CW/2,footerY);
-
-  const link=document.createElement('a');
-  link.download=`tale-tournament-${toRoman(entry.round)}.png`;
-  link.href=canvas.toDataURL('image/png');
-  link.click();
+  } else { const g=c.createLinearGradient(0,0,CW,AH); g.addColorStop(0,'#3a1a14'); g.addColorStop(1,'#0e0c0c'); c.fillStyle=g; c.fillRect(0,0,CW,AH); }
+  const ov=c.createLinearGradient(0,0,0,AH);
+  ov.addColorStop(0,'rgba(14,12,12,0.25)'); ov.addColorStop(0.6,'rgba(14,12,12,0.7)'); ov.addColorStop(1,'#171313');
+  c.fillStyle=ov; c.fillRect(0,0,CW,AH);
+  // titles over the art, bottom-aligned
+  c.textAlign='left'; c.textBaseline='bottom';
+  let y=AH-14;
+  c.font='15px "Source Serif 4",Georgia,serif'; c.fillStyle='#a99d90'; c.fillText(artist,32,y); y-=24;
+  c.font='600 30px "Source Serif 4",Georgia,serif'; c.fillStyle='#f2eadf';
+  const words=title.split(' '), lines=[]; let cur='';
+  for(const wd of words){ const t=cur?cur+' '+wd:wd; if(c.measureText(t).width>CW-64&&cur){ lines.push(cur); cur=wd; } else cur=t; }
+  if(cur) lines.push(cur);
+  for(let i=lines.length-1;i>=0;i--){ c.fillText(lines[i],32,y); y-=36; }
+  c.font='700 15px "Barlow Condensed","Arial Narrow",sans-serif'; c.fillStyle='#f0a13a';
+  c.letterSpacing='2px'; c.fillText(kicker,32,y); c.letterSpacing='0px';
+  // body
+  let by=AH+22;
+  c.textBaseline='top'; c.font='14px ui-sans-serif,system-ui,sans-serif'; c.fillStyle='#a99d90';
+  c.fillText(line,32,by); by+=30;
+  c.strokeStyle='#322828'; c.lineWidth=1; c.beginPath(); c.moveTo(32,by); c.lineTo(CW-32,by); c.stroke(); by+=18;
+  c.font='italic 15px "Source Serif 4",Georgia,serif'; c.fillStyle='#f2eadf';
+  fillTextWrapped(c,body,32,by,CW-64,23);
+  c.font='600 12px "Barlow Condensed","Arial Narrow",sans-serif'; c.fillStyle='#6f6458'; c.letterSpacing='2px'; c.textAlign='center';
+  c.fillText('WHEEL OF FATES',CW/2,CH-26); c.letterSpacing='0px';
+  const a=document.createElement('a'); a.download=file; a.href=cv.toDataURL('image/png'); a.click();
 }
 </script>
 </body>
