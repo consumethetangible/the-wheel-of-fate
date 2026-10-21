@@ -17,7 +17,7 @@
       "owner": "Chris",
       "enteredRound": 23,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Beasts of Bourbon",
       "canonicalAlbum": "Sour Mash"
     },
