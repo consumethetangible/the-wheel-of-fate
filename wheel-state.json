@@ -13,13 +13,13 @@
     },
     {
       "artist": "Beasts of Bourbon",
-      "album": "black milk",
+      "album": "Black Milk",
       "owner": "Chris",
-      "enteredRound": null,
-      "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "enteredRound": 23,
+      "artUrl": "https://coverartarchive.org/release/7c336c3c-1463-40c5-8dd2-5eac5e48bb2f/16955839449-500.jpg",
+      "sealed": true,
+      "canonicalArtist": "Beasts of Bourbon",
+      "canonicalAlbum": "Black Milk"
     },
     {
       "artist": "new kingdom",
@@ -28,8 +28,8 @@
       "enteredRound": null,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "New Kingdom",
+      "canonicalAlbum": "Paradise Don't Come Cheap"
     },
     {
       "artist": "Cannibal Ox",
