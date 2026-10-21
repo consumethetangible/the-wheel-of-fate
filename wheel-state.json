@@ -7,13 +7,13 @@
       "owner": "Baxter",
       "weight": 6,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Robert Hood",
-      "canonicalAlbum": "Minimal Nation"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
-      "artist": "Tower of Power",
-      "album": "Tower of Power",
+      "artist": "",
+      "album": "",
       "owner": "Chris",
       "weight": 4,
       "artUrl": null,
@@ -27,9 +27,9 @@
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "New Kingdom",
-      "canonicalAlbum": "Paradise Don't Come Cheap"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Cannibal Ox",
@@ -37,9 +37,9 @@
       "owner": "Baxter",
       "weight": 2,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Cannibal Ox",
-      "canonicalAlbum": "The Cold Vein"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Squarepusher",
@@ -57,7 +57,7 @@
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
