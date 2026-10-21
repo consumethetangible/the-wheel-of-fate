@@ -12,12 +12,12 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "Beasts of Bourbon",
-      "album": "Sour Mash",
+      "artist": "",
+      "album": "",
       "owner": "Chris",
-      "enteredRound": 23,
-      "artUrl": "https://i.ytimg.com/vi/nVRzxGe_7UI/maxresdefault.jpg",
-      "sealed": true,
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
