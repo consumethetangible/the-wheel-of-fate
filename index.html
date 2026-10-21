@@ -243,35 +243,6 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
 .chronicle-tale-btn:hover { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.06); }
 .chronicle-tale-btn.has-tale { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.08); }
 
-/* SWAP */
-.swap-section {
-  display:none; width:100%; max-width:740px;
-  background: linear-gradient(160deg, #e0cc90 0%, #ccaa60 100%);
-  border:1px solid var(--p-border); border-top:3px solid var(--p-ink-mid);
-  padding:20px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.2);
-}
-.swap-section.show { display:block; }
-.swap-instructions { font-size:13px; font-style:italic; color:var(--p-ink-mid); margin-bottom:16px; line-height:1.7; text-align:center; }
-.swap-actions { display:flex; flex-direction:column; gap:8px; }
-.swap-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border:1px solid var(--p-border-dim); background:rgba(255,255,255,0.1); gap:10px; flex-wrap:wrap; }
-.swap-row-name { flex:1; font-size:14px; font-style:italic; min-width:100px; color:var(--p-ink); }
-.swap-row-owner { font-family:'Cinzel',serif; font-size:10px; color:var(--p-ink-mid); letter-spacing:1px; min-width:60px; }
-.swap-row-weight { font-size:12px; color:var(--p-ink-dim); min-width:50px; text-align:right; }
-.swap-toggle { display:flex; gap:4px; flex-wrap:wrap; }
-.swap-btn { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; padding:5px 10px; border:1px solid var(--p-border-dim); background:rgba(0,0,0,0.06); color:var(--p-ink-mid); cursor:pointer; transition:all 0.15s; }
-.swap-btn.selected { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.12); font-weight:600; }
-.swap-done-btn {
-  font-family:'Cinzel',serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;
-  padding:12px 24px;
-  background: linear-gradient(180deg, #b07030 0%, #7a4810 100%);
-  border:1px solid #5a3008; color:#fff8e8;
-  cursor:pointer; margin-top:16px; width:100%; transition:all 0.2s;
-  box-shadow:0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
-  text-shadow:0 1px 2px rgba(0,0,0,0.4);
-}
-.swap-done-btn:hover { background: linear-gradient(180deg, #c08040 0%, #8a5820 100%); }
-
 /* CHRONICLE */
 .chronicle-section { width:100%; max-width:740px; padding-bottom:32px; }
 .chronicle-scroll {
@@ -554,13 +525,6 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
       <div class="nominees-grid" id="nominees-grid"></div>
     </div>
 
-    <div class="swap-section" id="swap-section">
-      <div class="section-title">After the Tournament</div>
-      <div class="swap-instructions" id="swap-instructions"></div>
-      <div class="swap-actions" id="swap-actions"></div>
-      <button class="swap-done-btn" onclick="finalizeSwaps()">✦ Seal the New Roster ✦</button>
-    </div>
-
     <div class="chronicle-section">
       <div class="section-title">The Chronicle of Battles</div>
       <div class="chronicle-scroll" id="chronicle">
@@ -693,17 +657,41 @@ async function _doSaveCloudState(payload, isRetry){
 
 function defaultNominees(){
   return[
-    {artist:'',album:'',owner:'Baxter',weight:1,artUrl:null,sealed:false},
-    {artist:'',album:'',owner:'Chris', weight:1,artUrl:null,sealed:false},
-    {artist:'',album:'',owner:'Erik',  weight:1,artUrl:null,sealed:false},
-    {artist:'',album:'',owner:'Baxter',weight:1,artUrl:null,sealed:false},
-    {artist:'',album:'',owner:'Chris', weight:1,artUrl:null,sealed:false},
-    {artist:'',album:'',owner:'Erik',  weight:1,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Baxter',enteredRound:null,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Chris', enteredRound:null,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Erik',  enteredRound:null,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Baxter',enteredRound:null,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Chris', enteredRound:null,artUrl:null,sealed:false},
+    {artist:'',album:'',owner:'Erik',  enteredRound:null,artUrl:null,sealed:false},
   ];
 }
 
+// Weight is never stored. It is derived from the round an album took its seat:
+// 1× on arrival, +1 for every tourney it sits through. state.round is the
+// tourney about to be spun, so a seat filled this round reads 1×.
+function weightOf(n){
+  return n.enteredRound==null ? 1 : Math.max(1, state.round-n.enteredRound+1);
+}
+
+// Brings any saved shape (older saves stored a plain "weight") up to the
+// derived model. Idempotent, so it is safe to run on every load and import.
+function normalizeState(s){
+  s.round=s.round||1;
+  s.nominees.forEach(n=>{
+    n.artUrl=null;
+    if(n.sealed===undefined) n.sealed=false;
+    if(n.enteredRound===undefined){
+      const empty=!n.artist&&!n.album;
+      n.enteredRound=empty?null:s.round-((n.weight||1)-1);
+    }
+    delete n.weight;
+  });
+  s.chronicle=s.chronicle||[];
+  return s;
+}
+
 function loadState(){
-  try{ const s=JSON.parse(localStorage.getItem(SAVED_KEY)); if(s) return s; }catch(e){}
+  try{ const s=JSON.parse(localStorage.getItem(SAVED_KEY)); if(s&&Array.isArray(s.nominees)) return normalizeState(s); }catch(e){}
   return null;
 }
 function saveState(){
@@ -718,10 +706,10 @@ function saveState(){
 
 function applyCloudState(cloud){
   if(!cloud || !Array.isArray(cloud.nominees)) return;
-  cloud.nominees.forEach(n=>{ n.artUrl=null; if(n.sealed===undefined) n.sealed=false; });
-  state.round=cloud.round||1;
+  normalizeState(cloud);
+  state.round=cloud.round;
   state.nominees=cloud.nominees;
-  state.chronicle=cloud.chronicle||[];
+  state.chronicle=cloud.chronicle;
   try{ localStorage.setItem(SAVED_KEY,JSON.stringify({round:state.round,nominees:state.nominees,chronicle:state.chronicle})); }catch(e){}
   document.getElementById('round-display').textContent='Round '+toRoman(state.round);
   renderNominees();
@@ -734,9 +722,9 @@ function applyCloudState(cloud){
 
 let state=loadState()||{round:1,nominees:defaultNominees(),chronicle:[]};
 // artUrl is always session-only; sealed state persists
-state.nominees.forEach(n=>{ n.artUrl=null; if(n.sealed===undefined) n.sealed=false; });
+normalizeState(state);
 
-let spinning=false, lastWinner=null, swapDecisions={};
+let spinning=false, lastWinner=null;
 const artCache={}, imgCache={}, artTimers={};
 
 // Hard-coded cover art for past champions that MusicBrainz can't reliably find.
@@ -871,6 +859,7 @@ function sealCard(idx){
   }
 
   n.sealed=true;
+  if(n.enteredRound==null) n.enteredRound=state.round;
   if(card) card.classList.add('sealed');
   updateSealButton(idx);
   saveState();
@@ -928,10 +917,10 @@ const ctx=canvas.getContext('2d');
 let wheelAngle=0;
 
 function slices(){
-  const tot=state.nominees.reduce((s,n)=>s+n.weight,0);
+  const tot=state.nominees.reduce((s,n)=>s+weightOf(n),0);
   let out=[],pos=0;
   state.nominees.forEach((n,i)=>{
-    const span=n.weight/tot*Math.PI*2;
+    const span=weightOf(n)/tot*Math.PI*2;
     out.push({start:pos,end:pos+span,i,n}); pos+=span;
   });
   return out;
@@ -979,13 +968,14 @@ function drawWheel(){
       ctx.restore();
     }
     // Weight stars always shown, near the outer edge of the slice
-    if(s.n.weight>1){
+    const sw=weightOf(s.n);
+    if(sw>1){
       const tr=r*0.78, tx=cx+Math.cos(mid)*tr, ty=cy+Math.sin(mid)*tr;
       ctx.save(); ctx.translate(tx,ty); ctx.rotate(mid+Math.PI/2);
       ctx.font='11px EB Garamond,serif';
       ctx.fillStyle='rgba(201,151,58,0.85)';
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('★'.repeat(Math.min(s.n.weight,5)),0,0);
+      ctx.fillText('★'.repeat(Math.min(sw,5)),0,0);
       ctx.restore();
     }
   });
@@ -1010,10 +1000,11 @@ function spinWheel(){
 function revealWinner(){
   const idx=winnerIdx(), w=state.nominees[idx]; lastWinner=idx;
   const name=w.album||w.artist||'the Unnamed Champion';
-  const lore=LORE[Math.floor(Math.random()*LORE.length)](name,w.owner,w.weight);
+  const ww=weightOf(w);
+  const lore=LORE[Math.floor(Math.random()*LORE.length)](name,w.owner,ww);
   document.getElementById('winner-album-name').textContent=w.album||w.artist||'(Unnamed)';
   document.getElementById('winner-artist-name').textContent=w.artist||'';
-  document.getElementById('winner-champion-name').textContent=`Champion of ${w.owner} · ${w.weight>1?w.weight+' tourneys endured':'First tourney'}`;
+  document.getElementById('winner-champion-name').textContent=`Champion of ${w.owner} · ${ww>1?ww+' tourneys endured':'First tourney'}`;
   document.getElementById('winner-lore').innerHTML=lore;
   const heroImg=document.getElementById('winner-art-img'), noBg=document.getElementById('winner-no-bg');
   if(w.artUrl){ heroImg.src=w.artUrl; heroImg.style.display='block'; noBg.style.display='none'; }
@@ -1027,12 +1018,13 @@ function addEntry(w){
   const name=w.album||w.artist||'(unnamed)';
   const adj=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
   const a=adj[state.round-1]||state.round+'th';
+  const ww=weightOf(w);
   const div=document.createElement('div'); div.className='chronicle-entry';
   const th=w.artUrl?`<div class="chronicle-thumb"><img src="${w.artUrl}" alt=""></div>`:`<div class="chronicle-thumb"></div>`;
   const taleBtn=`<button class="chronicle-tale-btn" id="tale-btn-${state.round}" onclick="openTaleWriter(${state.round})">⚔️ Write</button>`;
-  div.innerHTML=`${th}<div style="flex:1"><div class="chronicle-round">Tournament ${toRoman(state.round)}</div><div class="chronicle-text"><span class="chronicle-album">${name}</span>${w.artist?' by '+w.artist:''} — borne by ${w.owner} — claimed the throne in its ${a} battle${w.weight>1?' after '+w.weight+' tourneys':''}</div><div style="text-align:right">${taleBtn}</div></div>`;
+  div.innerHTML=`${th}<div style="flex:1"><div class="chronicle-round">Tournament ${toRoman(state.round)}</div><div class="chronicle-text"><span class="chronicle-album">${name}</span>${w.artist?' by '+w.artist:''} — borne by ${w.owner} — claimed the throne in its ${a} battle${ww>1?' after '+ww+' tourneys':''}</div><div style="text-align:right">${taleBtn}</div></div>`;
   el.insertBefore(div,el.firstChild);
-  state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:w.weight,artUrl:w.artUrl});
+  state.chronicle.unshift({round:state.round,album:name,artist:w.artist,owner:w.owner,rounds:ww,artUrl:w.artUrl});
 }
 
 function toRoman(n){return['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV'][n-1]||String(n);}
@@ -1050,44 +1042,30 @@ function respinWheel(){
   spinWheel();
 }
 
-function closeWinner(){ document.getElementById('winner-overlay').classList.remove('show'); showSwapUI(); }
-
-function showSwapUI(){
-  const winOwner=state.nominees[lastWinner].owner; swapDecisions={};
-  document.getElementById('swap-instructions').innerHTML=`<em>The winning album departs. ${winOwner}'s remaining album holds its weight but earns no bonus. The others may keep (gaining +1 weight) or replace (back to 1×).</em>`;
-  const actions=document.getElementById('swap-actions'); actions.innerHTML='';
-  state.nominees.forEach((n,i)=>{
-    const name=n.album||n.artist||'(unnamed)';
-    if(i===lastWinner){
-      swapDecisions[i]='new';
-      actions.innerHTML+=`<div class="swap-row"><span class="swap-row-owner">${n.owner}</span><span class="swap-row-name" style="color:var(--gold-dim);font-style:italic">⟵ Vacant throne — new champion required</span></div>`;
-    } else {
-      const noBonus=n.owner===winOwner; swapDecisions[i]=noBonus?'keep-no-weight':'keep';
-      const kl=noBonus?'Keep (1× stays)':`Keep (+1 → ${n.weight+1}×)`;
-      const row=document.createElement('div'); row.className='swap-row';
-      row.innerHTML=`<span class="swap-row-owner">${n.owner}</span><span class="swap-row-name"><em>${name}</em></span><span class="swap-row-weight">${n.weight}× now</span><div class="swap-toggle"><button class="swap-btn selected" id="bk${i}" onclick="setSwap(${i},'keep')">${kl}</button><button class="swap-btn" id="bs${i}" onclick="setSwap(${i},'swap')">Replace (1×)</button></div>`;
-      actions.appendChild(row);
-    }
-  });
-  document.getElementById('swap-section').classList.add('show');
-  document.getElementById('swap-section').scrollIntoView({behavior:'smooth',block:'start'});
+function vacateSeat(n){
+  n.artist='';n.album='';n.enteredRound=null;n.artUrl=null;n.sealed=false;
+  n.canonicalArtist=null;n.canonicalAlbum=null;
 }
 
-function setSwap(i,d){
-  swapDecisions[i]=d;
-  document.getElementById('bk'+i)?.classList.toggle('selected',d==='keep'||d==='keep-no-weight');
-  document.getElementById('bs'+i)?.classList.toggle('selected',d==='swap');
-}
-
-function finalizeSwaps(){
-  state.nominees.forEach((n,i)=>{
-    if(i===lastWinner){ n.artist='';n.album='';n.weight=1;n.artUrl=null;n.sealed=false;n.canonicalArtist=null;n.canonicalAlbum=null; }
-    else if(swapDecisions[i]==='keep') n.weight++;
-    else if(swapDecisions[i]==='swap'){ n.artist='';n.album='';n.weight=1;n.artUrl=null;n.sealed=false;n.canonicalArtist=null;n.canonicalAlbum=null; }
-  });
+// Accepting the decree retires the winner and starts the next tourney. The
+// empty seat can be filled any time before the next spin; survivors simply
+// carry their weight forward (it is derived from the round they entered).
+function closeWinner(){
+  document.getElementById('winner-overlay').classList.remove('show');
+  vacateSeat(state.nominees[lastWinner]);
+  lastWinner=null;
   state.round++;
-  document.getElementById('round-display').textContent='Round '+toRoman(state.round);
-  document.getElementById('swap-section').classList.remove('show');
+  saveState(); renderNominees(); drawWheel(); updateSpinButton();
+}
+
+// Retire any seat before the next spin; the new nominee enters at 1×.
+function replaceCard(idx){
+  if(spinning) return;
+  const n=state.nominees[idx];
+  const name=n.album||n.artist||'this seat';
+  if(!confirm(`Retire "${name}" and open ${n.owner}'s seat?`)) return;
+  clearTimeout(artTimers[idx]);
+  vacateSeat(n);
   saveState(); renderNominees(); drawWheel(); updateSpinButton();
 }
 
@@ -1123,19 +1101,22 @@ function fi(idx,field,val){
 
 
 
+// Manual correction only. Weight is derived, so nudging it moves the round the
+// album is considered to have entered; it can never go below 1×.
 function adjustWeight(idx, delta){
   const n=state.nominees[idx];
-  if(!n.sealed||spinning) return;
-  n.weight=Math.max(1, n.weight+delta);
+  if(!n.sealed||spinning||n.enteredRound==null) return;
+  n.enteredRound=Math.min(state.round, n.enteredRound-delta);
+  const wt=weightOf(n);
   const card=document.getElementById('card-'+idx);
   if(card){
-    card.querySelectorAll('.pip').forEach((p,j)=>p.classList.toggle('active',j<n.weight));
+    card.querySelectorAll('.pip').forEach((p,j)=>p.classList.toggle('active',j<wt));
     const wlabel=card.querySelector('.weight-label');
-    if(wlabel) wlabel.textContent=n.weight+'× weight';
+    if(wlabel) wlabel.textContent=wt+'× weight';
     const wval=document.getElementById('wval-'+idx);
-    if(wval) wval.textContent=n.weight+'×';
+    if(wval) wval.textContent=wt+'×';
     const wdn=document.getElementById('wdn-'+idx);
-    if(wdn) wdn.disabled=n.weight<=1;
+    if(wdn) wdn.disabled=wt<=1;
   }
   saveState();
   drawWheel();
@@ -1161,9 +1142,10 @@ function importState(event){
     try{
       const data=JSON.parse(e.target.result);
       if(!data.nominees||!Array.isArray(data.nominees)) throw new Error('Invalid save file');
-      state.round=data.round||1;
-      state.nominees=data.nominees.map(n=>({...n,artUrl:null,sealed:n.sealed||false}));
-      state.chronicle=data.chronicle||[];
+      normalizeState(data);
+      state.round=data.round;
+      state.nominees=data.nominees;
+      state.chronicle=data.chronicle;
       saveState();
       document.getElementById('round-display').textContent='Round '+toRoman(state.round);
       document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
@@ -1182,7 +1164,8 @@ function renderNominees(){
   const grid=document.getElementById('nominees-grid'); grid.innerHTML='';
   state.nominees.forEach((n,i)=>{
     const [,accent]=COLORS[i%COLORS.length];
-    const pips=Array.from({length:5},(_,j)=>`<span class="pip ${j<n.weight?'active':''}"></span>`).join('');
+    const wt=weightOf(n);
+    const pips=Array.from({length:5},(_,j)=>`<span class="pip ${j<wt?'active':''}"></span>`).join('');
     let artHtml;
     if(n.artUrl) artHtml=`<img src="${esc(n.artUrl)}" alt="cover" />`;
     else if(n.sealed) artHtml=`<span class="art-error">No art found</span>`;
@@ -1215,16 +1198,17 @@ function renderNominees(){
         </div>
       </div>
       <div class="weight-row">
-        ${pips}<span class="weight-label">${n.weight}× weight</span>
+        ${pips}<span class="weight-label">${wt}× weight</span>
         <div class="weight-ctrl">
-          <button class="w-btn" id="wdn-${i}" onclick="adjustWeight(${i},-1)" ${n.weight<=1?'disabled':''}>−</button>
-          <span class="w-val" id="wval-${i}">${n.weight}×</span>
+          <button class="w-btn" id="wdn-${i}" onclick="adjustWeight(${i},-1)" ${wt<=1?'disabled':''}>−</button>
+          <span class="w-val" id="wval-${i}">${wt}×</span>
           <button class="w-btn" onclick="adjustWeight(${i},1)">+</button>
         </div>
       </div>
       <div class="card-actions">
         <button class="seal-btn ${canSeal?'visible':''}" id="seal-${i}" onclick="sealCard(${i})">✦ Seal this Champion</button>
         <button class="unlock-btn" onclick="unsealCard(${i})">Edit</button>
+        <button class="unlock-btn replace-btn" onclick="replaceCard(${i})">Replace</button>
       </div>`;
     grid.appendChild(card);
 
@@ -1400,10 +1384,10 @@ function importState(input){
       const data = JSON.parse(e.target.result);
       if(!data.nominees || !Array.isArray(data.nominees)) throw new Error('Invalid file');
       // Merge in — reset artUrls since images are session-only
-      data.nominees.forEach(n => { n.artUrl = null; if(n.sealed===undefined) n.sealed=false; });
-      state.round = data.round || 1;
+      normalizeState(data);
+      state.round = data.round;
       state.nominees = data.nominees;
-      state.chronicle = data.chronicle || [];
+      state.chronicle = data.chronicle;
       saveState();
       document.getElementById('round-display').textContent = 'Round ' + toRoman(state.round);
       renderNominees();
@@ -1561,7 +1545,7 @@ async function exportWinnerCard(){
   c.font='italic 14px "EB Garamond",serif';
   c.fillStyle='#5a3000';
   c.textAlign='center'; c.textBaseline='top';
-  const champLine=`Champion of ${w.owner} · ${w.weight>1?w.weight+' tourneys endured':'First tourney'} · Tournament ${toRoman(state.round)}`;
+  const champLine=`Champion of ${w.owner} · ${weightOf(w)>1?weightOf(w)+' tourneys endured':'First tourney'} · Tournament ${toRoman(state.round)}`;
   c.fillText(champLine,CW/2,by); by+=24;
   // Divider
   c.strokeStyle='rgba(100,60,10,0.3)'; c.lineWidth=1;

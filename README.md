@@ -11,8 +11,8 @@ A weighted random selection wheel for group listening clubs. Members nominate al
 - **Cover art** fetched automatically from MusicBrainz and the Cover Art Archive
 - **Canonical titles** — artist and album names are standardized from MusicBrainz at the point of sealing
 - **Chronicle of Battles** — a running history of every tournament result with cover art thumbnails
-- **Post-spin roster management** — after each pick, surviving nominees can be kept (gaining +1 weight) or replaced (resetting to 1×)
-- **Manual weight adjustment** — sealed cards expose +/− controls so weights can be corrected when syncing across devices
+- **Roster management** — replace any seat before the next spin; survivors gain weight automatically
+- **Manual weight correction** — sealed cards expose +/− controls for fixing a weight by hand
 - **Re-spin option** — dismiss a result and spin again without recording it
 - **Rules sidebar** — an unfurling parchment scroll explaining the full system
 
@@ -20,14 +20,13 @@ A weighted random selection wheel for group listening clubs. Members nominate al
 
 ## How the weighting works
 
-Every album starts at **1× weight**. After a round where it wasn't chosen:
+Weight is automatic. Every album enters at **1× weight**, and gains **+1 for every tourney it sits through** without being chosen (2×, 3×, 4×…). Nothing is stored or clicked: each seat remembers the round its album arrived (`enteredRound`) and the wheel works the weight out from that.
 
-- **Keep it** → weight increases by 1 (2×, 3×, 4×…)
-- **Replace it** → new album enters at 1×
+- **Keep it** → do nothing; it just gets heavier
+- **Replace it** → press *Replace* on its card any time before the next spin; the empty seat can be filled whenever you have a pick, and a new album enters at 1×
+- The winner leaves after each spin and its seat opens up
 
-The wheel allocates slice size proportionally to weight, so a 3× album occupies three times as much of the wheel as a 1× album. Cover art fills the slice width proportionally, so heavier albums are visually larger.
-
-The owner of the winning album fills their vacant seat with a new nomination. Their remaining album stays at its current weight but earns no bonus that round.
+The wheel allocates slice size proportionally to weight, so a 3× album occupies three times as much of the wheel as a 1× album. Cover art fills the slice width proportionally, so heavier albums are visually larger. The +/− buttons on sealed cards are a manual correction only (they shift the stored round).
 
 ---
 
@@ -38,7 +37,7 @@ The owner of the winning album fills their vacant seat with a new nomination. Th
 3. Press **✦ Seal this Champion** to lock in the entry — canonical names are applied at this point
 4. Once all six seats are sealed, press **Decree the Fates** to spin
 5. Accept the result or re-spin
-6. Use the post-spin panel to keep or replace surviving nominees, then seal the new roster for the next round
+6. Fill the vacated seat whenever you have a pick (before the next spin), and replace any other seat you want to swap out
 
 State (nominees, weights, round number, chronicle) persists in `localStorage` between sessions. Cover art does not persist — it re-fetches each session from MusicBrainz.
 

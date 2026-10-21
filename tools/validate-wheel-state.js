@@ -91,8 +91,14 @@ function main() {
       errors.push(`${label}: "owner" must be one of ${VALID_OWNERS.join('/')} (got: ${JSON.stringify(n.owner)})`);
     }
 
-    if (typeof n.weight !== 'number' || !Number.isInteger(n.weight) || n.weight < 1) {
-      errors.push(`${label}: "weight" must be a whole number ≥ 1 (got: ${JSON.stringify(n.weight)})`);
+    if ('weight' in n) {
+      errors.push(`${label}: "weight" is no longer stored — it is derived from "enteredRound"`);
+    }
+    if (n.enteredRound !== null && (!Number.isInteger(n.enteredRound) || n.enteredRound > data.round)) {
+      errors.push(`${label}: "enteredRound" must be a whole number ≤ the current round ${data.round}, or null for an empty seat (got: ${JSON.stringify(n.enteredRound)})`);
+    }
+    if (n.enteredRound === null && n.sealed) {
+      errors.push(`${label}: is marked sealed but has no "enteredRound"`);
     }
 
     if (typeof n.sealed !== 'boolean') {

@@ -1,11 +1,11 @@
 {
-  "round": 19,
+  "round": 23,
   "nominees": [
     {
       "artist": "Robert Hood",
       "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 6,
+      "enteredRound": 17,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Robert Hood",
@@ -15,7 +15,7 @@
       "artist": "Beasts of Bourbon",
       "album": "Sour Mash",
       "owner": "Chris",
-      "weight": 1,
+      "enteredRound": 23,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Beasts of Bourbon",
@@ -25,7 +25,7 @@
       "artist": "New Kingdom",
       "album": "Paradise Don't Come Cheap",
       "owner": "Erik",
-      "weight": 2,
+      "enteredRound": 22,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "New Kingdom",
@@ -35,7 +35,7 @@
       "artist": "Cannibal Ox",
       "album": "The Cold Vein",
       "owner": "Baxter",
-      "weight": 3,
+      "enteredRound": 21,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Cannibal Ox",
@@ -45,7 +45,7 @@
       "artist": "Squarepusher",
       "album": "Feed Me Weird Things",
       "owner": "Chris",
-      "weight": 4,
+      "enteredRound": 20,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Squarepusher",
@@ -55,7 +55,7 @@
       "artist": "Oscillations",
       "album": "I Can See it Coming",
       "owner": "Erik",
-      "weight": 2,
+      "enteredRound": 22,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": null,
@@ -64,7 +64,15 @@
   ],
   "chronicle": [
     {
-      "round": 19,
+      "round": 22,
+      "album": "Tower of Power",
+      "artist": "Tower of Power",
+      "owner": "Chris",
+      "rounds": 3,
+      "artUrl": null
+    },
+    {
+      "round": 21,
       "album": "Tune International",
       "artist": "Candy Machine",
       "owner": "Baxter",
@@ -72,7 +80,7 @@
       "artUrl": null
     },
     {
-      "round": 19,
+      "round": 20,
       "album": "Delta Dawn",
       "artist": "Tanya Tucker",
       "owner": "Erik",
