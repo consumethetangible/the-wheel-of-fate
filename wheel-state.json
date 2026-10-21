@@ -13,13 +13,13 @@
     },
     {
       "artist": "Beasts of Bourbon",
-      "album": "Little Animals",
+      "album": "black milk",
       "owner": "Chris",
       "enteredRound": null,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": "Beasts of Bourbon",
-      "canonicalAlbum": "Little Animals"
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "New Kingdom",
