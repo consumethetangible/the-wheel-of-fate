@@ -27,7 +27,7 @@
       "owner": "Erik",
       "enteredRound": 22,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
