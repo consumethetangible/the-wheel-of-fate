@@ -5,7 +5,7 @@
       "artist": "Robert Hood",
       "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 4,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Robert Hood",
@@ -45,7 +45,7 @@
       "artist": "Squarepusher",
       "album": "Feed Me Weird Things",
       "owner": "Chris",
-      "weight": 3,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Squarepusher",
@@ -53,11 +53,11 @@
     },
     {
       "artist": "Oscillations",
-      "album": "I Can See it Coming",
+      "album": "I Can See",
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
