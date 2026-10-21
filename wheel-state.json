@@ -12,12 +12,12 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "glass hammer",
-      "album": "rogue",
+      "artist": "Glass Hammer",
+      "album": "Rogue",
       "owner": "Chris",
-      "enteredRound": null,
-      "artUrl": null,
-      "sealed": false,
+      "enteredRound": 23,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ea/89/f7/ea89f7d0-969e-ec49-20ce-f6812312d3cf/769051224925.jpg/600x600bb.jpg",
+      "sealed": true,
       "canonicalArtist": "Glass Hammer",
       "canonicalAlbum": "Rogue"
     },
