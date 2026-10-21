@@ -16,10 +16,10 @@
       "album": "Sour Mash",
       "owner": "Chris",
       "enteredRound": 23,
-      "artUrl": null,
+      "artUrl": "https://i.ytimg.com/vi/nVRzxGe_7UI/maxresdefault.jpg",
       "sealed": true,
-      "canonicalArtist": "Beasts of Bourbon",
-      "canonicalAlbum": "Sour Mash"
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "New Kingdom",
