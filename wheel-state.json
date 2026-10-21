@@ -13,13 +13,13 @@
     },
     {
       "artist": "Beasts of Bourbon",
-      "album": "sour mash",
+      "album": "Little Animals",
       "owner": "Chris",
       "enteredRound": null,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Beasts of Bourbon",
+      "canonicalAlbum": "Little Animals"
     },
     {
       "artist": "New Kingdom",
