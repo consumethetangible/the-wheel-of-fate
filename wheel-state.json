@@ -7,9 +7,9 @@
       "owner": "Baxter",
       "enteredRound": 17,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Robert Hood",
-      "canonicalAlbum": "Minimal Nation"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Beasts of Bourbon",
@@ -17,7 +17,7 @@
       "owner": "Chris",
       "enteredRound": 23,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": "Beasts of Bourbon",
       "canonicalAlbum": "Sour Mash"
     },
@@ -27,9 +27,9 @@
       "owner": "Erik",
       "enteredRound": 22,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "New Kingdom",
-      "canonicalAlbum": "Paradise Don't Come Cheap"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Cannibal Ox",
@@ -37,9 +37,9 @@
       "owner": "Baxter",
       "enteredRound": 21,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Cannibal Ox",
-      "canonicalAlbum": "The Cold Vein"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Squarepusher",
@@ -47,7 +47,7 @@
       "owner": "Chris",
       "enteredRound": 20,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": "Squarepusher",
       "canonicalAlbum": "Feed Me Weird Things"
     },
@@ -57,7 +57,7 @@
       "owner": "Erik",
       "enteredRound": 22,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
