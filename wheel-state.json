@@ -7,9 +7,9 @@
       "owner": "Baxter",
       "enteredRound": 17,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Robert Hood",
-      "canonicalAlbum": "Minimal Nation"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Beasts of Bourbon",
