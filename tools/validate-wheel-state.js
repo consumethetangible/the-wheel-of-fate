@@ -114,7 +114,11 @@ function main() {
     }
 
     if (n.artUrl !== null && n.artUrl !== undefined) {
-      warnings.push(`${label}: "artUrl" should normally be null when saved (cover art is always re-fetched) — found a value instead`);
+      if (typeof n.artUrl !== 'string' || !/^https:\/\//.test(n.artUrl)) {
+        errors.push(`${label}: "artUrl" must be null or an https address (got: ${JSON.stringify(n.artUrl)})`);
+      } else if (!n.sealed) {
+        warnings.push(`${label}: has a cover address but is not sealed — it is ignored until the pick is sealed`);
+      }
     }
 
     if (n.sealed && n.artist && n.album) {

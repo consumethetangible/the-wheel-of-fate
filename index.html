@@ -110,6 +110,16 @@ input[type=file]{display:none}
 .seat.open{border-style:dashed;border-color:var(--amber);background:rgba(240,161,58,.05)}
 .cv{grid-area:cv;width:64px;height:64px;border-radius:8px;overflow:hidden;background:var(--field);border:1px solid var(--line);display:grid;place-items:center;flex:none}
 .cv img{width:100%;height:100%;object-fit:cover;display:block}
+button.cv{padding:0;min-height:0;background:var(--field);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+button.cv:hover:not(:disabled){border-color:var(--amber)}
+button.cv:disabled{opacity:1;cursor:default}
+.lrow{display:flex;gap:8px;align-items:center}
+.cmsg{text-align:left;min-height:1.4em;margin:8px 0 0}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin:8px 0 12px}
+.fopt{display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;padding:8px;min-height:0;height:auto}
+.fopt img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block;background:var(--field)}
+.fopt strong{font:600 13.5px/1.25 var(--serif);overflow-wrap:anywhere}
+.fopt em{font-style:normal;font-size:12px;color:var(--mute);overflow-wrap:anywhere}
 .cv .ini{width:100%;height:100%;display:grid;place-items:center;font:700 22px/1 var(--head);letter-spacing:.04em}
 .cv .art-loading,.cv .art-error,.cv .art-placeholder{font-size:11px;color:var(--mute);text-align:center;padding:4px;line-height:1.2}
 .cv .art-placeholder{font-size:22px;color:var(--amber)}
@@ -303,6 +313,31 @@ input[type=file]{display:none}
       </ol>
       The token stays in this browser only, and it can touch that one repo and nothing else.
     </details>
+  </div>
+</div>
+
+<div class="overlay" id="cover-overlay" onclick="if(event.target===this)closeCoverPicker()">
+  <div class="modal" role="dialog" aria-labelledby="cover-title" style="max-width:640px">
+    <h2 id="cover-title">Pick a cover</h2>
+    <p class="lead" id="cover-for"></p>
+    <div id="cover-results"></div>
+    <label class="mlabel" for="cover-link">Or paste a link</label>
+    <div class="lrow">
+      <input id="cover-link" type="text" autocapitalize="none" spellcheck="false" autocomplete="off" placeholder="Apple Music, YouTube or Bandcamp link, or an image address"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();useCoverLink()}" onpaste="setTimeout(useCoverLink,0)">
+      <button type="button" class="primary sm" onclick="useCoverLink()">Use</button>
+    </div>
+    <p class="hint cmsg" id="cover-msg" role="status"></p>
+    <details class="details">
+      <summary>Where do I find a link?</summary>
+      <ul>
+        <li><b>Apple Music.</b> Right-click the album, Share, Copy Link. This always works, even for albums search cannot find.</li>
+        <li><b>YouTube.</b> Paste a link to a video from the album. If the video shows the album cover, that is what you get.</li>
+        <li><b>Bandcamp.</b> Paste the album page link. If that fails, right-click the cover, choose Copy Image Address, and paste that instead.</li>
+        <li><b>Anything else.</b> A link to the picture itself also works.</li>
+      </ul>
+    </details>
+    <div class="mrow"><button type="button" class="ghost" onclick="closeCoverPicker()">Close</button></div>
   </div>
 </div>
 
@@ -656,8 +691,9 @@ function weightOf(n){
 function normalizeState(s){
   s.round=s.round||1;
   s.nominees.forEach(n=>{
-    n.artUrl=null;
     if(n.sealed===undefined) n.sealed=false;
+    // a sealed pick keeps its cover address; anything else starts without one
+    n.artUrl=(n.sealed&&typeof n.artUrl==='string'&&/^https:\/\//.test(n.artUrl))?n.artUrl:null;
     if(n.enteredRound===undefined){
       const empty=!n.artist&&!n.album;
       n.enteredRound=empty?null:s.round-((n.weight||1)-1);
@@ -669,32 +705,24 @@ function normalizeState(s){
 }
 
 function loadState(){
-  try{
-    const s=JSON.parse(localStorage.getItem(SAVED_KEY));
-    if(s&&Array.isArray(s.nominees)){
-      const arts=s.nominees.map(n=>n.artUrl);
-      normalizeState(s);
-      s.nominees.forEach((n,i)=>{ n.artUrl=n.sealed&&typeof arts[i]==='string'?arts[i]:null; });
-      return s;
-    }
-  }catch(e){}
+  try{ const s=JSON.parse(localStorage.getItem(SAVED_KEY)); if(s&&Array.isArray(s.nominees)) return normalizeState(s); }catch(e){}
   return null;
 }
-// forDevice=true keeps each sealed seat's cover address so a reload does not have to look
-// every cover up again. The copy that goes to GitHub never carries cover addresses.
-function snapshot(forDevice){
+// Sealed seats keep their cover address, so every device shows the same cover and a reload
+// does not have to look each one up again.
+function snapshot(){
   return {
     round:state.round,
-    nominees:state.nominees.map(n=>({...n,artUrl:forDevice&&n.sealed?n.artUrl:null})),
+    nominees:state.nominees.map(n=>({...n,artUrl:n.sealed?n.artUrl:null})),
     chronicle:state.chronicle,
   };
 }
 // Refreshes this device's copy only. Used when a cover is found, which is not an edit.
-function cacheLocal(){ try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot(true))); }catch(e){} }
+function cacheLocal(){ try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){} }
 
 // now=true skips the debounce (spin result, accepted decree).
 function saveState(now){
-  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot(true))); }catch(e){}
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){}
   markDirty(now===true);
 }
 
@@ -711,11 +739,11 @@ function applyCloudState(cloud){
   // keep covers already on screen for seats that did not change
   const known={};
   state.nominees.forEach(n=>{ if(n.artUrl) known[(n.artist+'|||'+n.album).toLowerCase()]=n.artUrl; });
-  cloud.nominees.forEach(n=>{ if(n.sealed) n.artUrl=known[(n.artist+'|||'+n.album).toLowerCase()]||null; });
+  cloud.nominees.forEach(n=>{ if(n.sealed&&!n.artUrl) n.artUrl=known[(n.artist+'|||'+n.album).toLowerCase()]||null; });
   state.round=cloud.round;
   state.nominees=cloud.nominees;
   state.chronicle=cloud.chronicle;
-  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot(true))); }catch(e){}
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){}
   document.getElementById('round-display').textContent=state.round;
   renderNominees();
   document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
@@ -744,7 +772,7 @@ const CHRONICLE_ART_OVERRIDES={
 // ── ART FETCH via iTunes Search API ─────────────────────────────────────────
 // iTunes is explicitly CORS-open, works from file:// with no API key needed.
 // Returns { url, canonicalArtist, canonicalAlbum } or null
-async function fetchArtUrl(artist,album){
+async function fetchMusicBrainzArt(artist,album){
   const key=(artist+'|||'+album).toLowerCase();
   if(key in artCache) return artCache[key];
   try{
@@ -761,7 +789,7 @@ async function fetchArtUrl(artist,album){
       if(!caa || !(caa.front || caa.artwork || caa.count>0)) continue;
       const canonicalArtist=rel['artist-credit']?.[0]?.artist?.name||null;
       const canonicalAlbum=rel.title||null;
-      const url=`https://coverartarchive.org/release/${rel.id}/front-250`;
+      const url=`https://coverartarchive.org/release/${rel.id}/front-500`;
       const result={url,canonicalArtist,canonicalAlbum};
       artCache[key]=result;
       return result;
@@ -770,7 +798,7 @@ async function fetchArtUrl(artist,album){
     // Probe via Image load — the browser handles CORS/redirects transparently.
     // Returns on the first release whose image actually loads (non-404).
     for(const rel of(data.releases||[])){
-      const url=`https://coverartarchive.org/release/${rel.id}/front-250`;
+      const url=`https://coverartarchive.org/release/${rel.id}/front-500`;
       const loaded=await new Promise(resolve=>{
         const img=new Image();
         img.onload=()=>resolve(true);
@@ -792,6 +820,187 @@ async function fetchArtUrl(artist,album){
   artCache[key]=null;
   return null;
 }
+
+// ── Cover lookup: Apple Music first, MusicBrainz as the backup ──────────────
+// Apple's search (the iTunes Search API) needs no key and allows browser requests.
+// Its matching is picky, so it is asked several ways and the answers are compared
+// loosely (accents, case, punctuation and edition tags like "(Deluxe)" are ignored).
+const FOLDMAP={'ø':'o','æ':'ae','œ':'oe','ß':'ss','đ':'d','ł':'l','ð':'d','þ':'th'};
+const fold=s=>String(s||'').toLowerCase().replace(/[øæœßđłðþ]/g,m=>FOLDMAP[m]).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').trim();
+const baseTitle=t=>fold(String(t).replace(/\s-\s(EP|Single)$/i,'').replace(/\s*[\(\[].*?[\)\]]/g,''));
+const cleanName=t=>String(t).replace(/\s-\s(EP|Single)$/i,'').trim();
+const enc=encodeURIComponent, sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const bigArt=u=>u.replace(/\d+x\d+bb/,'600x600bb');
+
+async function appleGet(path){
+  const r=await fetch('https://itunes.apple.com'+path);
+  if(!r.ok) throw new Error('Apple Music said '+r.status);
+  return (await r.json()).results||[];
+}
+const asCand=x=>(x.artworkUrl100&&x.collectionName)?{id:String(x.collectionId||''),artist:x.artistName||'',name:x.collectionName,date:(x.releaseDate||'').slice(0,10),art:x.artworkUrl100}:null;
+const isArtist=(artist,c)=>{ const fa=fold(artist), fx=fold(c.artist); return !!fa&&!!fx&&(fx.includes(fa)||fa.includes(fx)); };
+function isMatch(artist,album,c){
+  const fb=baseTitle(album), n=baseTitle(c.name);
+  return isArtist(artist,c)&&!!n&&!!fb&&(n===fb||n.includes(fb)||fb.includes(n));
+}
+// full=true keeps going to build a list for the picker; otherwise it stops at the first confident match.
+async function appleCandidates(artist,album,full){
+  const found=new Map(), q1=[artist,album].filter(Boolean).join(' ');
+  const add=list=>list.map(asCand).filter(Boolean).forEach(c=>{ const k=c.id||(c.artist+'|'+c.name); if(!found.has(k)) found.set(k,c); });
+  const plain=baseTitle(album), alt=plain&&plain!==fold(album)?[artist,plain].filter(Boolean).join(' '):'';
+  const steps=[`/search?term=${enc(q1)}&media=music&entity=album&limit=10&country=us`];
+  if(alt) steps.push(`/search?term=${enc(alt)}&media=music&entity=album&limit=10&country=us`);
+  if(album) steps.push(`/search?term=${enc(album)}&media=music&entity=album&attribute=albumTerm&limit=25&country=us`);
+  if(artist) steps.push(`/search?term=${enc(artist)}&media=music&entity=album&attribute=artistTerm&limit=50&country=us`);
+  steps.push(`/search?term=${enc(q1)}&media=music&entity=song&limit=20&country=us`);
+  for(let k=0;k<steps.length;k++){
+    if(k) await sleep(350);
+    try{ add(await appleGet(steps[k])); }catch(e){ if(!found.size&&k===0) throw e; break; }
+    if(!full&&[...found.values()].some(c=>isMatch(artist,album,c))) break;
+  }
+  const exact=c=>baseTitle(c.name)===baseTitle(album);
+  const score=c=>(isMatch(artist,album,c)?3:isArtist(artist,c)?2:1)*2+(exact(c)?1:0);
+  return [...found.values()].sort((a,b)=>score(b)-score(a));
+}
+// Names are rewritten to Apple's spelling only when the title matches exactly once edition
+// tags are ignored. A looser match still gets its cover, but never renames your pick.
+async function lookupApple(artist,album){
+  const best=(await appleCandidates(artist,album,false)).find(c=>isMatch(artist,album,c));
+  if(!best) return null;
+  const strong=baseTitle(best.name)===baseTitle(album)&&isArtist(artist,best);
+  return {url:bigArt(best.art),canonicalArtist:strong?best.artist:null,canonicalAlbum:strong?cleanName(best.name):null};
+}
+async function fetchArtUrl(artist,album){
+  const key=(artist+'|||'+album).toLowerCase();
+  if(key in artCache) return artCache[key];
+  let result=null;
+  try{ result=await lookupApple(artist,album); }catch(e){ console.warn('[WheelOfFates] Apple lookup failed',e); }
+  if(!result){ try{ result=await fetchMusicBrainzArt(artist,album); }catch(e){} }
+  artCache[key]=result||null;
+  return artCache[key];
+}
+
+// ── Cover from a pasted link ────────────────────────────────────────────────
+function probeImage(url,cors){
+  return new Promise(res=>{
+    const img=new Image(); if(cors) img.crossOrigin='anonymous';
+    img.onload=()=>res(img.naturalWidth>=150?img:null);
+    img.onerror=()=>res(null);
+    img.src=url.replace(/^http:\/\//i,'https://');
+    setTimeout(()=>res(null),8000);
+  });
+}
+async function imageFromAddress(url){
+  const img=await probeImage(url,false);
+  if(!img) throw new Error('That address did not load as a picture. Paste the link to the image itself, or an Apple Music, YouTube or Bandcamp album link.');
+  return {url:url.replace(/^http:\/\//i,'https://')};
+}
+// An Apple Music link works even when search cannot find the album.
+async function appleFromLink(link){
+  const m=String(link).match(/\/(\d{6,})(?:[/?#]|$)/)||String(link).match(/[?&]i=(\d+)/);
+  if(!m) throw new Error('That does not look like an Apple Music album link.');
+  const cc=(String(link).match(/music\.apple\.com\/([a-z]{2})\//i)||[])[1];
+  const res=await appleGet(`/lookup?id=${m[1]}${cc?'&country='+cc:''}`);
+  const hit=res.map(asCand).find(Boolean);
+  if(!hit) throw new Error('Apple Music did not return a cover for that link.');
+  return {url:bigArt(hit.art),canonicalArtist:hit.artist,canonicalAlbum:cleanName(hit.name)};
+}
+// YouTube: a video link gives its thumbnail. Many album videos use the cover, centered; the wheel and
+// the seat crop to the middle square, so the cover is what shows.
+async function youtubeCover(u){
+  const id=(u.href.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/)||[])[1];
+  if(id){
+    for(const name of ['maxresdefault','mqdefault']){
+      const url=`https://i.ytimg.com/vi/${id}/${name}.jpg`;
+      if(await probeImage(url,false)) return {url};
+    }
+    throw new Error('YouTube did not have a thumbnail for that video.');
+  }
+  try{
+    const r=await fetch('https://www.youtube.com/oembed?format=json&url='+enc(u.href));
+    const j=r.ok?await r.json():null;
+    if(j&&j.thumbnail_url) return imageFromAddress(j.thumbnail_url);
+  }catch(e){}
+  throw new Error('Could not read that YouTube link. Paste a link to one video from the album, or the image address.');
+}
+// Pages cannot read other sites directly, so Bandcamp goes through a free public relay.
+// If the relay is down, the message says how to copy the image address instead.
+async function pageImage(href){
+  const relays=[x=>'https://api.allorigins.win/raw?url='+enc(x),x=>'https://api.codetabs.com/v1/proxy/?quest='+enc(x)];
+  let html=null;
+  for(const relay of relays){
+    try{ const r=await fetch(relay(href)); if(r.ok){ const t=await r.text(); if(t.length>200){ html=t; break; } } }catch(e){}
+  }
+  if(!html) throw new Error('Could not read that page. On Bandcamp, right-click the cover, choose Copy Image Address, and paste that here instead.');
+  const m=html.match(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["']/i)||html.match(/<meta[^>]+content=["']([^"']+)["'][^>]*property=["']og:image["']/i);
+  if(!m) throw new Error('That page does not list a cover image. Paste the image address instead.');
+  let url=m[1].replace(/&amp;/g,'&');
+  if(/bcbits\.com/.test(url)) url=url.replace(/_\d+\.(jpg|png)/i,'_10.$1');   // Bandcamp's large size
+  return imageFromAddress(url);
+}
+async function coverFromLink(raw){
+  const text=String(raw||'').trim();
+  if(!text) throw new Error('Paste a link first.');
+  let u; try{ u=new URL(text); }catch(e){ throw new Error('That does not look like a link.'); }
+  const host=u.hostname.replace(/^www\./,'');
+  if(/(^|\.)apple\.com$/.test(host)) return appleFromLink(text);
+  if(/(^|\.)(youtube\.com|youtu\.be)$/.test(host)) return youtubeCover(u);
+  if(/(^|\.)bandcamp\.com$/.test(host)) return pageImage(u.href);
+  if(/\.(png|jpe?g|webp|gif)(\?|#|$)/i.test(u.pathname)||/(^|\.)(bcbits\.com|mzstatic\.com|ytimg\.com)$/.test(host)) return imageFromAddress(u.href);
+  try{ return await pageImage(u.href); }catch(e){ return imageFromAddress(u.href); }   // custom Bandcamp domains and other pages
+}
+
+// ── Cover picker ────────────────────────────────────────────────────────────
+let coverIdx=null, coverToken=0, coverBusy=false;
+function openCoverPicker(i){
+  if(spinning||lastWinner!==null) return;
+  const n=state.nominees[i]; coverIdx=i; const tok=++coverToken;
+  const has=(n.artist||'').trim()&&(n.album||'').trim();
+  document.getElementById('cover-for').textContent=has?`${n.artist} · ${n.album}`:'Type an artist and album in the seat first, or just paste a link below.';
+  document.getElementById('cover-link').value=''; setCoverMsg('');
+  const box=document.getElementById('cover-results');
+  box.innerHTML=has?'<p class="hint">Searching Apple Music…</p>':'';
+  document.getElementById('cover-overlay').classList.add('show');
+  document.getElementById('cover-link').focus();
+  if(!has) return;
+  const card=c=>`<button type="button" class="fopt" data-cand="${esc(JSON.stringify({u:bigArt(c.art),a:c.artist,n:c.name}))}"><img src="${esc(c.art)}" alt=""><strong>${esc(cleanName(c.name))}</strong><em>${esc(c.artist)}${c.date?' · '+esc(c.date.slice(0,4)):''}</em></button>`;
+  appleCandidates(n.artist,n.album,true).then(res=>{
+    if(tok!==coverToken) return;
+    const hits=res.filter(c=>isMatch(n.artist,n.album,c)), rest=res.filter(c=>!hits.includes(c)).slice(0,12);
+    let html=hits.length?`<div class="fgrid">${hits.slice(0,12).map(card).join('')}</div>`:'<p class="hint">No exact match in Apple’s search. New and indie releases are often missing even when they exist. Paste a link below and it will work.</p>';
+    if(rest.length) html+=`<button type="button" class="ghost sm" id="cover-more">Show closest guesses (${rest.length})</button><div class="fgrid" id="cover-rest" hidden>${rest.map(card).join('')}</div>`;
+    box.innerHTML=html;
+    const more=document.getElementById('cover-more');
+    if(more) more.onclick=()=>{ document.getElementById('cover-rest').hidden=false; more.remove(); };
+  }).catch(()=>{ if(tok===coverToken) box.innerHTML='<p class="hint">Could not reach Apple Music. Paste a link below instead.</p>'; });
+}
+function closeCoverPicker(){ coverToken++; coverIdx=null; document.getElementById('cover-overlay').classList.remove('show'); }
+function setCoverMsg(t){ document.getElementById('cover-msg').textContent=t; }
+function applyPickedCover(i,r){
+  const n=state.nominees[i]; if(!n) return;
+  n.artUrl=r.url;
+  // An explicit pick (a result or an Apple Music link) takes the chosen spelling right away.
+  if(r.canonicalArtist) n.artist=r.canonicalArtist;
+  if(r.canonicalAlbum) n.album=r.canonicalAlbum;
+  n.canonicalArtist=r.canonicalArtist||null; n.canonicalAlbum=r.canonicalAlbum||null;
+  artCache[(n.artist+'|||'+n.album).toLowerCase()]=r;
+  loadWheelImage(r.url);
+  closeCoverPicker(); saveState(); renderNominees();
+}
+async function useCoverLink(){
+  if(coverBusy||coverIdx===null) return;
+  const i=coverIdx, v=document.getElementById('cover-link').value;
+  if(!v.trim()) return;
+  coverBusy=true; setCoverMsg('Looking that up…');
+  try{ const r=await coverFromLink(v); if(coverIdx===i) applyPickedCover(i,r); }
+  catch(e){ setCoverMsg(e.message||'Could not use that link.'); }
+  finally{ coverBusy=false; }
+}
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('.fopt'); if(!b||coverIdx===null) return;
+  let c; try{ c=JSON.parse(b.dataset.cand); }catch(e){ return; }
+  applyPickedCover(coverIdx,{url:c.u,canonicalArtist:c.a,canonicalAlbum:cleanName(c.n)});
+});
 
 function scheduleArtFetch(idx){
   clearTimeout(artTimers[idx]);
@@ -903,7 +1112,8 @@ function drawWheel(){
       // the album art fills the slice: turn the slice to point up, then cover its chord width
       ctx.clip(); ctx.translate(cx,cy); ctx.rotate(mid+Math.PI/2);
       const chord=2*r*Math.sin(Math.min(span,Math.PI)/2), sz=Math.max(chord,r)*1.08;
-      ctx.drawImage(img,-sz/2,-r,sz,sz);
+      const q=Math.min(img.naturalWidth,img.naturalHeight), qx=(img.naturalWidth-q)/2, qy=(img.naturalHeight-q)/2;
+      ctx.drawImage(img,qx,qy,q,q,-sz/2,-r,sz,sz);   // middle square, so wide thumbnails are not stretched
       ctx.rotate(-(mid+Math.PI/2)); ctx.translate(-cx,-cy);
       ctx.fillStyle='rgba(0,0,0,.2)'; ctx.fillRect(0,0,W,W);
     } else { ctx.fillStyle=has?o.d:'#110e0e'; ctx.fill(); }
@@ -1078,7 +1288,7 @@ function seatRow(i,withPill){
   const pct=Math.round(wt/T*1000)/10;
   const kindLbl=withPill?`<span class="pill">${ICON[k]}${KIND[k].name}</span>`:`<span>${KIND[k].name}</span>`;
   const meta=`<div class="meta"><i class="ownerdot" style="--own:${o.c}"></i><b>${esc(n.owner)}</b>${kindLbl}</div>`;
-  const art=`<div class="cv" id="ap-${i}">${artInner(n)}</div>`;
+  const art=`<button type="button" class="cv" id="ap-${i}" onclick="openCoverPicker(${i})" title="Find or change the cover" aria-label="Find or change the cover" ${lock?'disabled':''}>${artInner(n)}</button>`;
   if(n.sealed){
     return `<article class="seat" id="card-${i}" style="--own:${o.c}">${art}
       <div class="info">${meta}<h3>${esc(n.album)}</h3><p>${esc(n.artist)}</p></div>
@@ -1088,6 +1298,7 @@ function seatRow(i,withPill){
         <button type="button" class="ghost sm icon" onclick="adjustWeight(${i},1)" aria-label="Raise weight" ${lock?'disabled':''}>+</button>
         <button type="button" class="ghost sm" onclick="unsealCard(${i})" ${lock?'disabled':''}>Edit</button>
         <button type="button" class="ghost sm" onclick="replaceCard(${i})" ${lock?'disabled':''}>Replace</button>
+        ${n.artUrl?'':`<button type="button" class="ghost sm" onclick="openCoverPicker(${i})" ${lock?'disabled':''}>Find cover</button>`}
       </div></article>`;
   }
   const canSeal=n.artist.trim()!==''&&n.album.trim()!=='';
@@ -1098,6 +1309,7 @@ function seatRow(i,withPill){
       <div><label for="a${i}">Artist</label><input id="a${i}" data-field="artist" value="${esc(n.artist)}" placeholder="Artist name" autocomplete="off" oninput="fi(${i},'artist',this.value)"></div>
       <div><label for="b${i}">Album</label><input id="b${i}" data-field="album" value="${esc(n.album)}" placeholder="Album title" autocomplete="off" oninput="fi(${i},'album',this.value)"></div>
       <div class="row"><span class="note">${empty?'Add it any time before the next spin.':'Seal it to lock the pick in.'}</span>
+        <button type="button" class="ghost sm" onclick="openCoverPicker(${i})" ${lock?'disabled':''}>Find cover</button>
         <button type="button" class="primary sm" id="seal-${i}" onclick="sealCard(${i})" ${canSeal&&!lock?'':'disabled'}>Seal this pick</button></div>
     </div></article>`;
 }
@@ -1125,10 +1337,14 @@ function renderNominees(){
 const artPending=new Set();
 function loadWheelImage(url){
   if(imgCache[url]) return;
-  const img=new Image(); img.crossOrigin='anonymous';
-  img.onload=()=>{ imgCache[url]=img; drawWheel(); };
-  img.onerror=()=>console.warn('[WheelOfFates] Image load failed:',url);
-  img.src=url;
+  // try a CORS-clean load first (needed for the save-as-image cards), then fall back to a plain one
+  const attempt=cors=>{
+    const img=new Image(); if(cors) img.crossOrigin='anonymous';
+    img.onload=()=>{ imgCache[url]=img; drawWheel(); };
+    img.onerror=()=>{ if(cors) attempt(false); else console.warn('[WheelOfFates] Image load failed:',url); };
+    img.src=url;
+  };
+  attempt(true);
 }
 function hydrateArt(){
   let delay=0;
@@ -1234,7 +1450,8 @@ function openHelp(){ document.getElementById('help-overlay').classList.add('show
 function closeHelp(){ document.getElementById('help-overlay').classList.remove('show'); }
 document.addEventListener('keydown',ev=>{
   if(ev.key!=='Escape') return;
-  ['help-overlay','connect-overlay','tale-writer-overlay','tale-reader-overlay'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
+  ['help-overlay','connect-overlay','tale-writer-overlay','tale-reader-overlay','cover-overlay'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
+  coverIdx=null; coverToken++;
 });
 
 document.getElementById('round-display').textContent=state.round;
