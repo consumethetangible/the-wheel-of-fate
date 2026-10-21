@@ -7,19 +7,19 @@
       "owner": "Baxter",
       "weight": 6,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Robert Hood",
+      "canonicalAlbum": "Minimal Nation"
     },
     {
-      "artist": "",
-      "album": "",
+      "artist": "Nirvana",
+      "album": "Incesticide",
       "owner": "Chris",
-      "weight": 4,
+      "weight": 1,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Nirvana",
+      "canonicalAlbum": "Incesticide"
     },
     {
       "artist": "New Kingdom",
@@ -27,9 +27,9 @@
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "New Kingdom",
+      "canonicalAlbum": "Paradise Don't Come Cheap"
     },
     {
       "artist": "Cannibal Ox",
@@ -37,9 +37,9 @@
       "owner": "Baxter",
       "weight": 2,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Cannibal Ox",
+      "canonicalAlbum": "The Cold Vein"
     },
     {
       "artist": "Squarepusher",
@@ -53,11 +53,11 @@
     },
     {
       "artist": "Oscillations",
-      "album": "I Can See",
+      "album": "I Can See it Coming",
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
