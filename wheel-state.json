@@ -6,8 +6,8 @@
       "album": "Minimal",
       "owner": "Baxter",
       "enteredRound": 17,
-      "artUrl": null,
-      "sealed": false,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/cd/12/ed/cd12ed3b-6879-74ce-18c5-18dd5c72cf34/mzi.ugxsyblg.jpg/600x600bb.jpg",
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
@@ -36,7 +36,7 @@
       "album": "The Cold Vein",
       "owner": "Baxter",
       "enteredRound": 21,
-      "artUrl": null,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/57/07/8d/57078d9f-a0d7-2a25-3153-3a8d4a60da01/859768260405_cover.jpg/600x600bb.jpg",
       "sealed": true,
       "canonicalArtist": "Cannibal Ox",
       "canonicalAlbum": "The Cold Vein"
@@ -46,7 +46,7 @@
       "album": "Feed Me Weird Things",
       "owner": "Chris",
       "enteredRound": 20,
-      "artUrl": null,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/6b/b7/75/6bb775e9-2db5-607a-ef3f-cfbaad3de956/0801061347512.jpg/600x600bb.jpg",
       "sealed": true,
       "canonicalArtist": "Squarepusher",
       "canonicalAlbum": "Feed Me Weird Things"
@@ -56,7 +56,7 @@
       "album": "I Can See it Coming",
       "owner": "Erik",
       "enteredRound": 22,
-      "artUrl": null,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/60/3e/7b/603e7bc0-5d6d-efd2-6a98-2857b322eca9/6283.jpg/600x600bb.jpg",
       "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
