@@ -7,9 +7,9 @@
       "owner": "Baxter",
       "weight": 6,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Robert Hood",
+      "canonicalAlbum": "Minimal Nation"
     },
     {
       "artist": "Tower of Power",
@@ -17,9 +17,9 @@
       "owner": "Chris",
       "weight": 4,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Tower of Power",
-      "canonicalAlbum": "Tower of Power"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "New Kingdom",
@@ -57,7 +57,7 @@
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
