@@ -5,11 +5,11 @@
       "artist": "Robert Hood",
       "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 5,
+      "weight": 6,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Robert Hood",
+      "canonicalAlbum": "Minimal Nation"
     },
     {
       "artist": "Tower of Power",
@@ -17,7 +17,7 @@
       "owner": "Chris",
       "weight": 4,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": "Tower of Power",
       "canonicalAlbum": "Tower of Power"
     },
@@ -35,7 +35,7 @@
       "artist": "Cannibal Ox",
       "album": "The Cold Vein",
       "owner": "Baxter",
-      "weight": 1,
+      "weight": 2,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Cannibal Ox",
@@ -45,11 +45,11 @@
       "artist": "Squarepusher",
       "album": "Feed Me Weird Things",
       "owner": "Chris",
-      "weight": 2,
+      "weight": 3,
       "artUrl": null,
-      "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "sealed": true,
+      "canonicalArtist": "Squarepusher",
+      "canonicalAlbum": "Feed Me Weird Things"
     },
     {
       "artist": "The Oscillations",
