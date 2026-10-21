@@ -117,6 +117,8 @@ button.cv:disabled{opacity:1;cursor:default}
 .src{font-size:12px;color:var(--mute);white-space:nowrap}
 .src.diag{white-space:normal}
 .nocov{display:grid;place-items:center;width:100%;aspect-ratio:1;border-radius:6px;background:var(--field);color:var(--mute);font-size:12px}
+.qrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+@media (max-width:560px){.qrow{grid-template-columns:1fr}}
 .sub{font:700 16px/1 var(--head);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);margin:14px 0 4px}
 .menufoot{padding:8px 10px 4px;font-size:11px;color:var(--mute);border-top:1px solid var(--line);margin-top:4px}
 .cmsg{text-align:left;min-height:1.4em;margin:8px 0 0}
@@ -148,17 +150,29 @@ button.cv:disabled{opacity:1;cursor:default}
 .form .row{grid-column:1 / -1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .form .note{color:var(--mute);font-size:13px;flex:1 1 200px}
 
-.hist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
-.hist .h{display:grid;grid-template-columns:36px 40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px}
+.historysec{max-width:1240px;margin:0 auto;padding:0 18px calc(40px + var(--sb));display:flex;flex-direction:column;gap:8px}
+/* the list scrolls inside a fixed-height frame; the scrollbar is drawn so it stays visible on a Mac */
+.hist{border:1px solid var(--line);border-radius:12px;background:var(--surface);max-height:min(60vh,520px);min-height:120px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.hist::-webkit-scrollbar{width:11px}
+.hist::-webkit-scrollbar-track{background:transparent}
+.hist::-webkit-scrollbar-thumb{background:var(--line2);border-radius:6px;border:2px solid var(--surface)}
+.hist .hhead,.hist .h{display:grid;grid-template-columns:48px 52px minmax(0,2.4fr) minmax(0,1fr) 110px auto;gap:14px;align-items:center;padding:10px 16px}
+.hist .hhead{position:sticky;top:0;z-index:1;background:var(--raised);border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding-top:8px;padding-bottom:8px}
 .hist .h+.h{border-top:1px solid var(--line)}
-.hist .rd{font:700 20px/1 var(--head);color:var(--mute);font-variant-numeric:tabular-nums}
-.hist .th{width:40px;height:40px;border-radius:6px;overflow:hidden;background:var(--field);border:1px solid var(--line)}
+.hist .rd{font:700 22px/1 var(--head);color:var(--mute);font-variant-numeric:tabular-nums}
+.hist .th{width:52px;height:52px;min-height:0;padding:0;border-radius:8px;overflow:hidden;background:var(--field);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer}
+.hist .th:hover{border-color:var(--amber)}
 .hist .th img{width:100%;height:100%;object-fit:cover;display:block}
-.hist .ti{font:600 15px/1.25 var(--serif);overflow-wrap:anywhere}
-.hist .ar{color:var(--mute);font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hist .th .ini{width:100%;height:100%;display:grid;place-items:center;font:700 18px/1 var(--head);letter-spacing:.04em}
+.hist .ti{font:600 16px/1.25 var(--serif);overflow-wrap:anywhere}
+.hist .ar{color:var(--mute);font-size:13.5px;overflow-wrap:anywhere}
+.hist .mt{display:contents}
+.hist .ow{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:14px}
+.hist .wn{font:700 22px/1 var(--head);color:var(--amber);font-variant-numeric:tabular-nums}
+.hist .wn small{font:400 12px var(--ui);color:var(--mute)}
+.hist .hb{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
 .hist .empty{display:block;padding:16px;color:var(--mute)}
 .hist .tale-btn.has-tale{border-color:var(--amber);color:var(--amber)}
-.histmore{align-self:flex-start}
 
 /* ---------- dialogs ---------- */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.74);z-index:60;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
@@ -202,8 +216,14 @@ button.cv:disabled{opacity:1;cursor:default}
   .wt{min-width:72px} .wt b{font-size:30px}
   .acts{justify-content:flex-start}
   .form{grid-column:1 / -1;grid-template-columns:1fr}
-  .hist .h{grid-template-columns:30px 36px minmax(0,1fr);}
-  .hist .h .hb{grid-column:3}
+  .hist .hhead{display:none}
+  .hist .h{grid-template-columns:30px 44px minmax(0,1fr);gap:4px 12px;padding:12px 14px}
+  .hist .th{width:44px;height:44px;grid-row:span 2}
+  .hist .rd{font-size:18px;grid-row:span 2}
+  .hist .mt{display:flex;gap:12px;align-items:baseline;grid-column:3}
+  .hist .wn{font-size:18px}
+  .hist .hb{grid-column:3;justify-content:flex-start}
+  .historysec{padding-left:14px;padding-right:14px}
   .cgrid{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){.dot.pending{animation:none}}
@@ -261,13 +281,13 @@ button.cv:disabled{opacity:1;cursor:default}
 
   <div class="side">
     <div class="seats" id="nominees-grid"></div>
-    <section class="group">
-      <div class="ghead"><h2>History</h2><span id="hist-count"></span></div>
-      <div class="hist" id="chronicle"></div>
-      <button type="button" class="ghost sm histmore" id="hist-more" onclick="toggleHistory()" hidden></button>
-    </section>
   </div>
 </main>
+
+<section class="historysec" aria-labelledby="hist-title">
+  <div class="ghead"><h2 id="hist-title">History</h2><span id="hist-count"></span></div>
+  <div class="hist" id="chronicle" tabindex="0" aria-label="Past results, scrollable"></div>
+</section>
 
 <div class="overlay" id="help-overlay" onclick="if(event.target===this)closeHelp()">
   <div class="modal" role="dialog" aria-labelledby="help-title">
@@ -327,6 +347,12 @@ button.cv:disabled{opacity:1;cursor:default}
   <div class="modal" role="dialog" aria-labelledby="cover-title" style="max-width:640px">
     <h2 id="cover-title">Pick a cover</h2>
     <p class="lead" id="cover-for"></p>
+    <div class="qrow">
+      <div><label class="mlabel" for="cover-q-artist">Artist</label><input id="cover-q-artist" type="text" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();runCoverSearch()}"></div>
+      <div><label class="mlabel" for="cover-q-album">Album</label><input id="cover-q-album" type="text" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();runCoverSearch()}"></div>
+      <button type="button" class="ghost sm" onclick="runCoverSearch()">Search again</button>
+    </div>
+    <p class="hint cmsg" style="margin-top:4px">Change the spelling above to search differently. This only changes the search, not the saved entry.</p>
     <div id="cover-results"></div>
     <div id="cover-mb"></div>
     <label class="mlabel" for="cover-link">Or paste a link</label>
@@ -1008,42 +1034,68 @@ async function coverFromLink(raw){
 }
 
 // ── Cover picker ────────────────────────────────────────────────────────────
-let coverIdx=null, coverToken=0, coverBusy=false;
-function openCoverPicker(i){
-  if(spinning||lastWinner!==null) return;
-  const n=state.nominees[i]; coverIdx=i; const tok=++coverToken;
-  const has=(n.artist||'').trim()&&(n.album||'').trim();
-  document.getElementById('cover-for').textContent=(has?`${n.artist} · ${n.album}`:'Type an artist and album in the seat first, or just paste a link below.')+(n.artUrl?`. Current cover: ${coverSource(n.artUrl)}.`:'');
+let coverTarget=null, coverToken=0, coverBusy=false;
+const sameTarget=(a,b)=>!!a&&!!b&&a.kind===b.kind&&a.i===b.i&&a.round===b.round;
+// What the picker is working on: a seat (its pick) or a history entry (a past winner).
+function targetInfo(t){
+  if(t.kind==='seat'){
+    const n=state.nominees[t.i]; if(!n) return null;
+    return {artist:n.artist||'',album:n.album||'',artUrl:n.artUrl,who:`${n.owner}'s ${KIND[kindOf(t.i)].name.toLowerCase()} pick`};
+  }
+  const e=state.chronicle.find(x=>x.round===t.round); if(!e) return null;
+  return {artist:e.artist||'',album:e.album||'',artUrl:e.artUrl,who:`Round ${e.round} winner (${e.owner})`};
+}
+function openCoverPicker(i){ openCover({kind:'seat',i}); }
+function openHistoryCover(round){ openCover({kind:'hist',round}); }
+function openCover(t){
+  if(spinning||(t.kind==='seat'&&lastWinner!==null)) return;
+  const info=targetInfo(t); if(!info) return;
+  coverTarget=t;
+  document.getElementById('cover-q-artist').value=info.artist;
+  document.getElementById('cover-q-album').value=info.album;
+  document.getElementById('cover-for').textContent=info.who+(info.artUrl?`. Current cover: ${coverSource(info.artUrl)}.`:'. No cover yet.');
   document.getElementById('cover-link').value=''; setCoverMsg('');
-  const box=document.getElementById('cover-results'), mbBox=document.getElementById('cover-mb');
-  box.innerHTML=has?'<h3 class="sub">Apple Music</h3><p class="hint">Searching…</p>':'';
-  mbBox.innerHTML=has?'<h3 class="sub">MusicBrainz</h3><p class="hint">Searching…</p>':'';
   document.getElementById('cover-overlay').classList.add('show');
+  runCoverSearch();
   document.getElementById('cover-link').focus();
+}
+// Searches Apple Music and MusicBrainz for whatever is in the two boxes, which start as the pick's own words.
+function runCoverSearch(){
+  const tok=++coverToken;
+  const artist=document.getElementById('cover-q-artist').value.trim(), album=document.getElementById('cover-q-album').value.trim();
+  const has=artist&&album;
+  const box=document.getElementById('cover-results'), mbBox=document.getElementById('cover-mb');
+  box.innerHTML=has?'<h3 class="sub">Apple Music</h3><p class="hint">Searching…</p>':'<p class="hint">Type an artist and album above to search, or paste a link below.</p>';
+  mbBox.innerHTML=has?'<h3 class="sub">MusicBrainz</h3><p class="hint">Searching…</p>':'';
   if(!has) return;
   const card=c=>`<button type="button" class="fopt" data-cand="${esc(JSON.stringify({u:bigArt(c.art),a:c.artist,n:c.name}))}"><img src="${esc(c.art)}" alt=""><strong>${esc(cleanName(c.name))}</strong><em>${esc(c.artist)}${c.date?' · '+esc(c.date.slice(0,4)):''}</em></button>`;
-  appleCandidates(n.artist,n.album,true).then(res=>{
+  appleCandidates(artist,album,true).then(res=>{
     if(tok!==coverToken) return;
-    const hits=res.filter(c=>isMatch(n.artist,n.album,c)), rest=res.filter(c=>!hits.includes(c)).slice(0,12);
+    const hits=res.filter(c=>isMatch(artist,album,c)), rest=res.filter(c=>!hits.includes(c)).slice(0,12);
     let html='<h3 class="sub">Apple Music</h3>'+(hits.length?`<div class="fgrid">${hits.slice(0,12).map(card).join('')}</div>`:'<p class="hint">No exact match in Apple’s search. New and indie releases are often missing even when they exist.</p>');
     if(rest.length) html+=`<button type="button" class="ghost sm" id="cover-more">Show closest guesses (${rest.length})</button><div class="fgrid" id="cover-rest" hidden>${rest.map(card).join('')}</div>`;
     box.innerHTML=html;
     const more=document.getElementById('cover-more');
     if(more) more.onclick=()=>{ document.getElementById('cover-rest').hidden=false; more.remove(); };
   }).catch(e=>{ if(tok===coverToken) box.innerHTML=`<h3 class="sub">Apple Music</h3><p class="hint">Apple Music ${/said (\d+)/.test(e.message)?'answered HTTP '+RegExp.$1:'could not be reached'}.</p>`; });
-  mbSearch(`release:"${n.album}" AND artist:"${n.artist}"`).then(r=>{
+  mbSearch(`release:"${album}" AND artist:"${artist}"`).then(r=>{
     if(tok!==coverToken) return;
     if(r.error){ mbBox.innerHTML=`<h3 class="sub">MusicBrainz</h3><p class="hint">MusicBrainz ${esc(r.error)}.</p>`; return; }
     const withArt=r.rels.filter(mbHasArt), list=(withArt.length?withArt:r.rels).slice(0,12);
-    // a card whose cover does not exist removes itself
+    // a card whose cover does not exist says so
     const mcard=rel=>`<button type="button" class="fopt" data-mb="${esc(JSON.stringify({id:rel.id,a:mbCredit(rel),n:rel.title||''}))}"><img src="https://coverartarchive.org/release/${esc(rel.id)}/front-250" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'nocov',textContent:'No cover'}))"><strong>${esc(rel.title||'')}</strong><em>${esc(mbCredit(rel))}${rel.date?' · '+esc(String(rel.date).slice(0,4)):''}</em></button>`;
     mbBox.innerHTML='<h3 class="sub">MusicBrainz</h3>'+(list.length?`<div class="fgrid">${list.map(mcard).join('')}</div><p class="hint">MusicBrainz covers come from the Internet Archive and can take a few seconds to appear.</p>`:'<p class="hint">MusicBrainz found no releases with that title and artist.</p>');
   });
 }
-function closeCoverPicker(){ coverToken++; coverIdx=null; document.getElementById('cover-overlay').classList.remove('show'); }
+function closeCoverPicker(){ coverToken++; coverTarget=null; document.getElementById('cover-overlay').classList.remove('show'); }
 function setCoverMsg(t){ document.getElementById('cover-msg').textContent=t; }
-function applyPickedCover(i,r){
-  const n=state.nominees[i]; if(!n) return;
+function applyPickedCover(t,r){
+  if(t.kind==='hist'){     // a past winner keeps its name; only the cover changes
+    const e=state.chronicle.find(x=>x.round===t.round); if(!e) return;
+    e.artUrl=r.url; delete coverDiag[(e.artist+'|||'+e.album).toLowerCase()];
+    closeCoverPicker(); saveState(); renderHistory(); return;
+  }
+  const i=t.i, n=state.nominees[i]; if(!n) return;
   n.artUrl=r.url;
   // An explicit pick (a result or an Apple Music link) takes the chosen spelling right away.
   if(r.canonicalArtist) n.artist=r.canonicalArtist;
@@ -1054,28 +1106,28 @@ function applyPickedCover(i,r){
   closeCoverPicker(); saveState(); renderNominees();
 }
 async function useCoverLink(){
-  if(coverBusy||coverIdx===null) return;
-  const i=coverIdx, v=document.getElementById('cover-link').value;
+  if(coverBusy||!coverTarget) return;
+  const t=coverTarget, v=document.getElementById('cover-link').value;
   if(!v.trim()) return;
   coverBusy=true; setCoverMsg('Looking that up…');
-  try{ const r=await coverFromLink(v); if(coverIdx===i) applyPickedCover(i,r); }
+  try{ const r=await coverFromLink(v); if(sameTarget(coverTarget,t)) applyPickedCover(t,r); }
   catch(e){ setCoverMsg(e.message||'Could not use that link.'); }
   finally{ coverBusy=false; }
 }
 document.addEventListener('click',async ev=>{
-  const b=ev.target.closest('.fopt'); if(!b||coverIdx===null) return;
-  const i=coverIdx;
+  const b=ev.target.closest('.fopt'); if(!b||!coverTarget) return;
+  const t=coverTarget;
   if(b.dataset.mb){
     let m; try{ m=JSON.parse(b.dataset.mb); }catch(e){ return; }
     setCoverMsg('Getting that cover… (this can take up to 15 seconds)');
     const c=await coverArchiveCover(m.id);
-    if(coverIdx!==i) return;
+    if(!sameTarget(coverTarget,t)) return;
     if(!c.url){ setCoverMsg('That cover did not load: '+c.error+'.'); return; }
-    applyPickedCover(i,{url:c.url,canonicalArtist:m.a||null,canonicalAlbum:m.n||null});
+    applyPickedCover(t,{url:c.url,canonicalArtist:m.a||null,canonicalAlbum:m.n||null});
     return;
   }
   let c; try{ c=JSON.parse(b.dataset.cand); }catch(e){ return; }
-  applyPickedCover(i,{url:c.u,canonicalArtist:c.a,canonicalAlbum:cleanName(c.n)});
+  applyPickedCover(t,{url:c.u,canonicalArtist:c.a,canonicalAlbum:cleanName(c.n)});
 });
 
 function scheduleArtFetch(idx){
@@ -1463,25 +1515,30 @@ function hydrateArt(){
   });
 }
 
-let histAll=false;
-function toggleHistory(){ histAll=!histAll; renderHistory(); }
+const histBad=new Set();
+// A history cover that no longer loads is dropped, so the entry shows its initials and a Find cover button.
+function dropBadHistCover(round){
+  const e=state.chronicle.find(x=>x.round===round); if(!e||!e.artUrl) return;
+  LOG('history cover failed to load, dropping it:',e.artUrl);
+  histBad.add(e.artUrl); e.artUrl=null; renderHistory();
+}
 function renderHistory(){
-  const el=document.getElementById('chronicle'), list=state.chronicle||[], LIMIT=8;
-  document.getElementById('hist-count').textContent=list.length?`${histAll||list.length<=LIMIT?list.length:LIMIT} of ${list.length}`:'';
-  if(!list.length){ el.innerHTML='<div class="empty">No results yet. The first spin shows up here.</div>'; }
-  else el.innerHTML=(histAll?list:list.slice(0,LIMIT)).map(e=>{
+  const el=document.getElementById('chronicle'), list=state.chronicle||[], keep=el.scrollTop;
+  document.getElementById('hist-count').textContent=list.length?`${list.length} result${list.length===1?'':'s'}, newest first`:'';
+  if(!list.length){ el.innerHTML='<div class="empty">No results yet. The first spin shows up here.</div>'; return; }
+  el.innerHTML='<div class="hhead" aria-hidden="true"><span>Round</span><span></span><span>Album</span><span>Picked by</span><span>Weight</span><span></span></div>'+list.map(e=>{
     // Hard-coded override wins over any cached/fetched URL for known entries
     const ok=(e.artist+'|||'+e.album).toLowerCase();
-    if(CHRONICLE_ART_OVERRIDES[ok]) e.artUrl=CHRONICLE_ART_OVERRIDES[ok];
-    const th=`<div class="th" id="chronicle-thumb-${e.round}">${e.artUrl?`<img src="${esc(e.artUrl)}" alt="">`:''}</div>`;
+    if(CHRONICLE_ART_OVERRIDES[ok]&&!histBad.has(CHRONICLE_ART_OVERRIDES[ok])) e.artUrl=CHRONICLE_ART_OVERRIDES[ok];
+    const th=`<button type="button" class="th" id="chronicle-thumb-${e.round}" onclick="openHistoryCover(${e.round})" title="${e.artUrl?'Change the cover':'Find a cover'}" aria-label="${e.artUrl?'Change the cover':'Find a cover'} for round ${e.round}">${e.artUrl?`<img src="${esc(e.artUrl)}" alt="" onerror="dropBadHistCover(${e.round})">`:initialsTile(e)}</button>`;
     const tale=e.tale
       ?`<button type="button" class="ghost sm tale-btn has-tale" id="tale-btn-${e.round}" onclick="openTaleReader(${e.round})">Read tale</button>`
       :`<button type="button" class="ghost sm tale-btn" id="tale-btn-${e.round}" onclick="openTaleWriter(${e.round})">Write tale</button>`;
-    return `<div class="h"><span class="rd">${e.round}</span>${th}<div style="min-width:0"><div class="ti">${esc(e.album)}</div><div class="ar">${e.artist?esc(e.artist)+' · ':''}<i class="ownerdot" style="--own:${ownerColor(e.owner).c};width:8px;height:8px"></i>${esc(e.owner)} · ${e.rounds}× at win</div></div><div class="hb">${tale}</div></div>`;
+    const find=e.artUrl?'':`<button type="button" class="ghost sm" onclick="openHistoryCover(${e.round})">Find cover</button>`;
+    const diag=e.artUrl?null:coverDiag[ok];
+    return `<div class="h"><span class="rd">${e.round}</span>${th}<div class="tt"><div class="ti">${esc(e.album)}</div><div class="ar">${esc(e.artist||'')}${diag?` <span class="src diag">· No cover found. ${esc(diag)}</span>`:''}</div></div><div class="mt"><span class="ow"><i class="ownerdot" style="--own:${ownerColor(e.owner).c}"></i>${esc(e.owner)}</span><span class="wn">${e.rounds}×<small> at win</small></span></div><div class="hb">${find}${tale}</div></div>`;
   }).join('');
-  const more=document.getElementById('hist-more');
-  more.hidden=list.length<=LIMIT;
-  more.textContent=histAll?'Show recent only':`Show all ${list.length}`;
+  el.scrollTop=keep;
 }
 let histArtBusy=false;
 async function fillHistoryArt(){
@@ -1546,7 +1603,7 @@ function closeHelp(){ document.getElementById('help-overlay').classList.remove('
 document.addEventListener('keydown',ev=>{
   if(ev.key!=='Escape') return;
   ['help-overlay','connect-overlay','tale-writer-overlay','tale-reader-overlay','cover-overlay'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
-  coverIdx=null; coverToken++;
+  coverTarget=null; coverToken++;
 });
 
 document.getElementById('round-display').textContent=state.round;
@@ -1556,7 +1613,7 @@ drawWheel();
 updateSpinButton();
 
 // Which build is running: shown at the bottom of the ⋯ menu, and logged.
-const BUILD='cover archive fix, 21 Oct';
+const BUILD='history section, 21 Oct';
 document.getElementById('build-stamp').textContent='Build: '+BUILD;
 LOG('build:',BUILD);
 
