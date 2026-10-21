@@ -22,12 +22,12 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "New Kingdom",
-      "album": "Paradise Don't Come Cheap",
+      "artist": "",
+      "album": "",
       "owner": "Erik",
-      "enteredRound": 22,
-      "artUrl": "https://i.ytimg.com/vi/JhaqZEfbHGs/mqdefault.jpg",
-      "sealed": true,
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
