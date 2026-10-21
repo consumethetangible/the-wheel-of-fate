@@ -243,6 +243,31 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
 .chronicle-tale-btn:hover { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.06); }
 .chronicle-tale-btn.has-tale { border-color:var(--p-border); color:var(--p-gold); background:rgba(100,60,10,0.08); }
 
+/* SYNC BANNER + CONNECT PANEL */
+.sync-banner { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; padding:10px 18px; background:#4a2a10; color:#f5e6c0; border-bottom:2px solid #2a1200; font-size:14px; line-height:1.4; text-align:center; }
+.sync-banner[hidden] { display:none; }
+.sync-banner span { flex:1 1 280px; }
+.sync-banner button { font-family:'Cinzel',serif; font-size:10px; letter-spacing:1px; text-transform:uppercase; padding:7px 12px; border:1px solid #c9973a; background:rgba(0,0,0,0.25); color:#f5e6c0; cursor:pointer; }
+.sync-banner button:hover { background:rgba(201,151,58,0.3); }
+.connect-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:160; align-items:flex-start; justify-content:center; padding:20px; overflow:auto; }
+.connect-overlay.show { display:flex; }
+.connect-modal { background:linear-gradient(160deg,#e8d5a0 0%,#d4b87a 100%); border:2px solid var(--p-border); max-width:520px; width:100%; margin:4vh 0; box-shadow:0 20px 60px rgba(0,0,0,0.6); padding:24px; }
+.connect-title { font-family:'Cinzel',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--p-ink-mid); margin-bottom:12px; text-align:center; }
+.connect-lead { font-size:14px; line-height:1.6; color:var(--p-ink-mid); font-style:italic; margin-bottom:16px; text-align:center; }
+.connect-label { display:block; font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--p-ink-dim); margin:12px 0 2px; }
+.connect-input { width:100%; background:rgba(255,255,255,0.18); border:1px solid var(--p-border-dim); border-bottom:1px solid var(--p-border); color:var(--p-ink); font-family:'EB Garamond',serif; font-size:16px; padding:8px 10px; outline:none; }
+.connect-input:focus { border-color:var(--p-border); background:rgba(255,255,255,0.3); }
+.connect-details { margin-top:14px; font-size:14px; color:var(--p-ink-mid); }
+.connect-details summary { cursor:pointer; font-family:'Cinzel',serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--p-gold); padding:6px 0; }
+.connect-details ol { padding-left:20px; margin:8px 0; line-height:1.6; }
+.connect-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+.connect-err { margin-top:14px; padding:9px 12px; border:1px solid #a33; color:#7a1818; background:rgba(170,51,51,0.1); font-size:14px; }
+.connect-err[hidden], .connect-forget[hidden] { display:none; }
+.connect-btns { display:flex; gap:8px; margin-top:16px; }
+.connect-forget { display:block; margin:14px auto 0; background:none; border:none; color:var(--p-ink-dim); font-family:'EB Garamond',serif; font-size:13px; text-decoration:underline; cursor:pointer; }
+.connect-how { border-top:1px solid var(--p-border-dim); margin-top:18px; padding-top:6px; }
+@media (max-width:480px){ .connect-grid { grid-template-columns:1fr; } }
+
 /* CHRONICLE */
 .chronicle-section { width:100%; max-width:740px; padding-bottom:32px; }
 .chronicle-scroll {
@@ -506,8 +531,9 @@ canvas#wheel { width:320px; height:320px; border-radius:50%; filter:drop-shadow(
     <h1>The Wheel of Fates</h1>
     <div class="subtitle">Album Discussion Club — Tournament of the Listening Throne</div>
     <div class="round-badge" id="round-display">Round I</div>
-    <div id="sync-status" onclick="manageGhToken()" style="cursor:pointer;font-size:10px;letter-spacing:1px;margin-top:4px;opacity:0.85" title="Click to set or replace your GitHub sync token">☁️ Connecting…</div>
+    <div id="sync-status" onclick="openConnect()" style="cursor:pointer;font-size:10px;letter-spacing:1px;margin-top:4px;opacity:0.85" title="Click to connect or manage GitHub sync">☁️ Connecting…</div>
   </div>
+  <div id="sync-banner" class="sync-banner" role="alert" hidden></div>
   <div class="main">
     <div class="wheel-section">
       <div class="wheel-wrap">
@@ -580,22 +606,108 @@ const LORE=[
 const SAVED_KEY='wheelOfFates_v3';
 
 // ── Cloud sync (GitHub) ──────────────────────────────────────────────────
-// localStorage is now just a fast local cache for instant paint on load.
-// The GitHub repo file below is the real source of truth, so the state
-// survives even if Safari purges local storage on a site you haven't
-// visited in ~7 days.
-const GH_OWNER='consumethetangible';
-const GH_REPO='the-wheel-of-fate';
-const GH_BRANCH='main';
-const GH_STATE_PATH='wheel-state.json';
-const GH_TOKEN_KEY='wheelOfFates_ghToken';
+// localStorage is a fast local cache for instant paint, and it also holds any
+// edits that have not reached GitHub yet. The repo file is the source of truth.
+// Every save is made against the file version (sha) this device last loaded or
+// saved, so a change made elsewhere is detected instead of silently overwritten.
+const GH_DEFAULTS={owner:'consumethetangible',repo:'the-wheel-of-fate',path:'wheel-state.json',branch:'main'};
+const GH_CFG_KEY='wheelOfFates_ghCfg';
+const GH_TOKEN_KEY='wheelOfFates_ghToken';   // older single-token storage, migrated by readGhCfg()
+const GH_SHA_KEY='wheelOfFates_ghSha';       // file version this device last loaded or saved
+const DIRTY_KEY='wheelOfFates_dirty';        // local edits not yet confirmed saved to GitHub
+const SAVE_DELAY=1800;
 
-function getGhToken(){ return localStorage.getItem(GH_TOKEN_KEY)||null; }
+class Conflict extends Error {}
+class Offline extends Error {}
+class GhError extends Error { constructor(msg,status){ super(msg); this.status=status; } }
 
-function promptForGhToken(){
-  const t=prompt('Paste a GitHub token (fine-grained, scoped to the-wheel-of-fate repo, Contents: Read & Write):');
-  if(t && t.trim()){ localStorage.setItem(GH_TOKEN_KEY,t.trim()); return t.trim(); }
-  return null;
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+
+function readGhCfgDraft(){
+  let c=null; try{ c=JSON.parse(lsGet(GH_CFG_KEY)||'null'); }catch(e){}
+  if(!c){ const old=lsGet(GH_TOKEN_KEY); if(old) c={token:old}; }
+  return {...GH_DEFAULTS,...(c||{})};
+}
+function readGhCfg(){ const c=readGhCfgDraft(); return c.token?c:null; }
+function writeGhCfg(c){ lsSet(GH_CFG_KEY,JSON.stringify(c)); lsDel(GH_TOKEN_KEY); }
+
+const ghEnc=encodeURIComponent;
+const textToB64=t=>{ const bytes=new TextEncoder().encode(t); let bin=''; for(let i=0;i<bytes.length;i+=0x8000) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000)); return btoa(bin); };
+const b64ToText=b=>{ const bin=atob(b.replace(/\s/g,'')); const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0)); return new TextDecoder('utf-8').decode(bytes); };
+const ghUrl=c=>`https://api.github.com/repos/${ghEnc(c.owner)}/${ghEnc(c.repo)}/contents/${c.path.split('/').map(ghEnc).join('/')}`;
+const ghHdr=(c,extra={})=>({Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...extra});
+async function ghCall(url,opts){ try{ return await fetch(url,opts); }catch(_){ throw new Offline('Cannot reach GitHub. Check your connection.'); } }
+
+// A 401 means the token is bad. A 403 is not the same thing: GitHub also uses it
+// for rate limits, so the token is kept and the message is shown as is.
+async function ghProblem(res){
+  let msg=''; try{ msg=(await res.clone().json()).message||''; }catch(_){}
+  if(res.status===401) return new GhError('GitHub rejected the token. It may be expired or mistyped.',401);
+  if(res.status===403) return new GhError('GitHub refused the request. Either the token lacks Contents: Read and write on this repo, or GitHub is rate-limiting; wait a minute and try again. '+msg,403);
+  if(res.status===404) return new GhError('Not found. Check the username, repo, file name and branch, and that the token covers this repo.',404);
+  return new GhError(`GitHub error ${res.status}. ${msg}`,res.status);
+}
+
+// Resolves { data, version }. data is null when the file does not exist yet.
+async function ghLoad(cfg){
+  const res=await ghCall(ghUrl(cfg)+'?ref='+ghEnc(cfg.branch),{headers:ghHdr(cfg),cache:'no-store'});
+  if(res.status===404) return {data:null,version:null};
+  if(!res.ok) throw await ghProblem(res);
+  const j=await res.json();
+  if(j.encoding!=='base64'||typeof j.content!=='string') throw new GhError('GitHub did not return the file contents.',0);
+  let data; try{ data=JSON.parse(b64ToText(j.content)); }catch(_){ throw new GhError('The saved file on GitHub is not valid JSON.',0); }
+  return {data,version:j.sha};
+}
+
+// Saves against the version that was loaded. force re-reads the latest version
+// first, which is what "Overwrite with what is on screen" means.
+async function ghSave(cfg,text,ver,message,force){
+  const sha=force?(await ghLoad(cfg)).version:ver;
+  const res=await ghCall(ghUrl(cfg),{method:'PUT',headers:ghHdr(cfg,{'Content-Type':'application/json'}),
+    body:JSON.stringify({message,content:textToB64(text),sha:sha||undefined,branch:cfg.branch})});
+  if(res.status===409) throw new Conflict();
+  if(res.status===422){ let m=''; try{ m=(await res.clone().json()).message||''; }catch(_){} if(/sha|match/i.test(m)) throw new Conflict(); throw await ghProblem(res); }
+  if(!res.ok) throw await ghProblem(res);
+  return (await res.json()).content.sha;
+}
+
+// Unauthenticated read of the public copy. Only used when no token is saved.
+async function fetchPublicState(){
+  try{
+    const c=readGhCfgDraft();
+    const res=await fetch(`https://raw.githubusercontent.com/${ghEnc(c.owner)}/${ghEnc(c.repo)}/${ghEnc(c.branch)}/${c.path}?_=${Date.now()}`,{cache:'no-store'});
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ return null; }
+}
+
+// Structural checks (same spirit as tools/validate-wheel-state.js) so a bad blob
+// is never pushed to GitHub or applied from it.
+const VALID_OWNERS=['Baxter','Chris','Erik'];
+function validateState(d){
+  const errs=[];
+  if(!d||typeof d!=='object') return ['state is not an object'];
+  if(!Number.isInteger(d.round)||d.round<1) errs.push('"round" must be a whole number of 1 or more');
+  if(!Array.isArray(d.nominees)) errs.push('"nominees" must be a list');
+  else if(d.nominees.length!==6) errs.push(`expected 6 nominees, found ${d.nominees.length}`);
+  if(!Array.isArray(d.chronicle)) errs.push('"chronicle" must be a list');
+  if(errs.length) return errs;
+  d.nominees.forEach((n,i)=>{
+    const l=`Seat ${i+1}`;
+    if(!VALID_OWNERS.includes(n.owner)) errs.push(`${l}: unknown owner ${JSON.stringify(n.owner)}`);
+    if(n.enteredRound!==null&&(!Number.isInteger(n.enteredRound)||n.enteredRound>d.round)) errs.push(`${l}: "enteredRound" must be a whole number no later than round ${d.round}, or empty`);
+    if(typeof n.sealed!=='boolean') errs.push(`${l}: "sealed" must be true or false`);
+    if(typeof n.artist!=='string'||typeof n.album!=='string') errs.push(`${l}: artist and album must be text`);
+  });
+  d.chronicle.forEach((e,i)=>{
+    const l=`Chronicle entry ${i+1}`;
+    if(!Number.isInteger(e.round)||e.round<1) errs.push(`${l}: "round" must be a whole number of 1 or more`);
+    if(typeof e.album!=='string'||!e.album.trim()) errs.push(`${l}: "album" must not be empty`);
+    if(!VALID_OWNERS.includes(e.owner)) errs.push(`${l}: unknown owner ${JSON.stringify(e.owner)}`);
+  });
+  return errs;
 }
 
 function setSyncStatus(text,ok){
@@ -604,55 +716,172 @@ function setSyncStatus(text,ok){
   el.textContent=text;
   el.style.color = ok===false?'#a33':'var(--p-ink-mid)';
 }
+const nowTime=()=>new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
 
-function manageGhToken(){
-  if(getGhToken() && !confirm('Replace the saved GitHub sync token with a new one?')) return;
-  if(promptForGhToken()) saveState();
+function showSyncBanner(msg,actions=[]){
+  const el=document.getElementById('sync-banner');
+  el.replaceChildren();
+  const span=document.createElement('span'); span.textContent=msg; el.appendChild(span);
+  actions.filter(Boolean).forEach(a=>{
+    const b=document.createElement('button'); b.type='button'; b.textContent=a.label; b.onclick=a.run; el.appendChild(b);
+  });
+  el.hidden=false;
+}
+function hideSyncBanner(){ const el=document.getElementById('sync-banner'); el.hidden=true; el.replaceChildren(); }
+
+// ── Save pipeline ────────────────────────────────────────────────────────
+// dirty: local edits exist that GitHub has not confirmed (persisted, so a failed
+// save is retried on the next load instead of being overwritten by the cloud copy).
+// rev: bumps on every edit so an edit made during a save is never marked clean.
+// held: a conflict is waiting for a decision, so autosave stays quiet.
+let ghVersion=lsGet(GH_SHA_KEY)||null;
+let dirty=lsGet(DIRTY_KEY)==='1';
+let rev=0, saving=false, held=false, saveTimer=null;
+
+function markDirty(now){
+  dirty=true; rev++; lsSet(DIRTY_KEY,'1');
+  if(!readGhCfg()){ setSyncStatus('☁️ Not connected — click to set up',false); return; }
+  if(held) return;
+  clearTimeout(saveTimer);
+  if(now){ saveToCloud(); return; }
+  setSyncStatus('☁️ Unsaved changes…',null);
+  saveTimer=setTimeout(()=>saveToCloud(),SAVE_DELAY);
 }
 
-async function fetchCloudState(){
+function markClean(version){
+  ghVersion=version; if(version) lsSet(GH_SHA_KEY,version);
+  dirty=false; held=false; lsDel(DIRTY_KEY);
+}
+
+async function saveToCloud(force=false){
+  const cfg=readGhCfg();
+  if(!cfg||!dirty||(held&&!force)) return;
+  if(saving) return;
+  const payload=snapshot();
+  const problems=validateState(payload);
+  if(problems.length){
+    setSyncStatus('☁️ Not saved — the data looks wrong',false);
+    showSyncBanner('Not saved to GitHub because the wheel data failed a check ('+problems[0]+'). It is still kept on this device.');
+    return;
+  }
+  const at=rev;
+  saving=true; clearTimeout(saveTimer); setSyncStatus('☁️ Saving…',null);
   try{
-    const url=`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${GH_STATE_PATH}?_=${Date.now()}`;
-    const res=await fetch(url,{cache:'no-store'});
-    if(!res.ok) return null;
-    return await res.json();
-  }catch(e){ return null; }
-}
-
-// Cloud saves are queued so overlapping calls (e.g. tabbing through several
-// nominee fields, each firing its own onblur save) never race each other for
-// the file's SHA. Without this, two saves could both read the same starting
-// SHA, and whichever PUT lands second gets rejected with a 409 conflict.
-let _cloudSaveChain=Promise.resolve();
-function saveCloudState(payload){
-  _cloudSaveChain=_cloudSaveChain.then(()=>_doSaveCloudState(payload)).catch(()=>{});
-  return _cloudSaveChain;
-}
-
-async function _doSaveCloudState(payload, isRetry){
-  const token=getGhToken();
-  if(!token){ setSyncStatus('☁️ Not connected — click to set up',false); return; }
-  const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_STATE_PATH}`;
-  try{
-    let sha=null;
-    const getRes=await fetch(apiUrl+`?ref=${GH_BRANCH}`,{headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json'}});
-    if(getRes.ok){ sha=(await getRes.json()).sha; }
-    else if(getRes.status!==404){ setSyncStatus('☁️ Sync error — try again',false); return; }
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify(payload,null,2))));
-    const putRes=await fetch(apiUrl,{
-      method:'PUT',
-      headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},
-      body:JSON.stringify({message:`Wheel state — Round ${toRoman(payload.round)}`,content,sha,branch:GH_BRANCH}),
-    });
-    if(putRes.ok) setSyncStatus('☁️ Synced',true);
-    else if(putRes.status===401||putRes.status===403){ localStorage.removeItem(GH_TOKEN_KEY); setSyncStatus('☁️ Token invalid — click to reconnect',false); }
-    else if(putRes.status===409 && !isRetry){
-      // Someone else's write landed between our GET and PUT — grab the fresh
-      // SHA and try once more before giving up.
-      return _doSaveCloudState(payload, true);
+    const v=await ghSave(cfg,JSON.stringify(payload,null,2)+'\n',ghVersion,`Wheel state — Round ${toRoman(payload.round)}`,force);
+    ghVersion=v; lsSet(GH_SHA_KEY,v); held=false;
+    if(rev===at){ markClean(v); hideSyncBanner(); setSyncStatus(`☁️ Saved at ${nowTime()}`,true); }
+    else { hideSyncBanner(); saveTimer=setTimeout(()=>saveToCloud(),0); }   // edited mid-save: one follow-up
+  }catch(e){
+    if(e instanceof Conflict){
+      held=true;
+      setSyncStatus('☁️ Not saved — changed elsewhere',false);
+      showSyncBanner('The wheel was changed somewhere else (another device, or an edit on GitHub) since you opened it. Saving now would overwrite that.',[
+        {label:'Load the latest (drop my unsaved edits)',run:loadLatest},
+        {label:'Overwrite with what is on screen',run:()=>{ hideSyncBanner(); saveToCloud(true); }}]);
+    } else if(e instanceof Offline){
+      setSyncStatus('☁️ Offline — kept on this device, will retry',false);
+    } else {
+      setSyncStatus('☁️ Could not save',false);
+      showSyncBanner(e.message,[
+        {label:'Try again',run:()=>{ hideSyncBanner(); saveToCloud(); }},
+        e.status===401?{label:'Reconnect',run:openConnect}:null]);
     }
-    else setSyncStatus('☁️ Sync error — try again',false);
-  }catch(e){ setSyncStatus('☁️ Offline — saved locally only',false); }
+  }finally{ saving=false; }
+}
+
+// Applies a loaded { data, version } to the screen and marks this device in step with it.
+function acceptRemote(r,label){
+  if(!applyCloudState(r.data)) return false;
+  markClean(r.version); hideSyncBanner();
+  setSyncStatus(`☁️ ${label} at ${nowTime()}`,true);
+  return true;
+}
+
+async function loadLatest(){
+  const cfg=readGhCfg(); if(!cfg) return;
+  try{ hideSyncBanner(); const r=await ghLoad(cfg); if(r.data) acceptRemote(r,'Loaded the latest'); else markClean(null); }
+  catch(e){ showSyncBanner(e.message,[{label:'Try again',run:loadLatest}]); }
+}
+
+// Pulls the cloud copy when this device has nothing unsaved. With unsaved edits
+// it saves instead; the save itself detects whether the cloud moved on.
+async function refreshRemote(){
+  const cfg=readGhCfg();
+  if(!cfg||saving||held||spinning||lastWinner!==null) return;
+  if(dirty){ saveToCloud(); return; }
+  try{
+    const r=await ghLoad(cfg);
+    if(dirty||saving) return;   // an edit landed while we were fetching: do not clobber it
+    if(!r.data){ setSyncStatus('☁️ No cloud save yet — your next change creates it',true); return; }
+    if(r.version!==ghVersion) acceptRemote(r,'Updated from cloud');
+    else setSyncStatus('☁️ Synced',true);
+  }catch(e){
+    if(e instanceof Offline) setSyncStatus('☁️ Offline — showing the last saved copy',false);
+    else setSyncStatus('☁️ Could not check for updates',false);
+  }
+}
+
+async function syncOnLoad(){
+  if(!readGhCfg()){
+    setSyncStatus('☁️ Not connected — click to set up',false);
+    const cloud=await fetchPublicState();
+    if(cloud&&!dirty&&applyCloudState(cloud)) setSyncStatus('☁️ Read-only — click to connect and save',false);
+    return;
+  }
+  setSyncStatus('☁️ Checking for updates…',null);
+  await refreshRemote();
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){ if(dirty&&readGhCfg()&&!held){ clearTimeout(saveTimer); saveToCloud(); } }
+  else refreshRemote();
+});
+window.addEventListener('online',()=>{ if(dirty) saveToCloud(); else refreshRemote(); });
+window.addEventListener('beforeunload',e=>{ if(dirty&&readGhCfg()){ e.preventDefault(); e.returnValue=''; } });
+
+// ── Connect panel ────────────────────────────────────────────────────────
+function openConnect(err){
+  const c=readGhCfgDraft();
+  document.getElementById('c-owner').value=c.owner;
+  document.getElementById('c-repo').value=c.repo;
+  document.getElementById('c-path').value=c.path;
+  document.getElementById('c-branch').value=c.branch;
+  const t=document.getElementById('c-token');
+  t.value=''; t.placeholder=c.token?'Saved on this device. Leave blank to keep it.':'Paste once per device';
+  const e=document.getElementById('connect-err'); e.hidden=!(typeof err==='string'&&err); e.textContent=typeof err==='string'?err:'';
+  document.getElementById('c-forget').hidden=!c.token;
+  document.getElementById('connect-overlay').classList.add('show');
+  t.focus();
+}
+function closeConnect(){ document.getElementById('connect-overlay').classList.remove('show'); }
+
+async function submitConnect(ev){
+  ev.preventDefault();
+  const old=readGhCfgDraft();
+  const cfg={
+    owner:document.getElementById('c-owner').value.trim(),
+    repo:document.getElementById('c-repo').value.trim(),
+    path:document.getElementById('c-path').value.trim().replace(/^\/+/,''),
+    branch:document.getElementById('c-branch').value.trim()||'main',
+    token:document.getElementById('c-token').value.trim()||old.token||'',
+  };
+  if(!cfg.token){ openConnect('Paste your access token to connect.'); return; }
+  const go=document.getElementById('c-go'); go.disabled=true; go.textContent='Connecting…';
+  try{
+    const r=await ghLoad(cfg);          // proves the token and repo work before anything is stored
+    writeGhCfg(cfg); closeConnect(); held=false;
+    if(dirty) saveToCloud();            // unsaved local edits go first; the save detects if the cloud moved on
+    else if(r.data) acceptRemote(r,'Connected and loaded');
+    else setSyncStatus('☁️ Connected — no cloud save yet',true);
+  }catch(e){ openConnect(e.message); }
+  finally{ go.disabled=false; go.textContent='Connect'; }
+}
+
+function forgetDevice(){
+  if(!confirm('Forget the GitHub token on this device? Your wheel stays as it is; it just stops syncing here until you connect again.')) return;
+  lsDel(GH_CFG_KEY); lsDel(GH_TOKEN_KEY); lsDel(GH_SHA_KEY); ghVersion=null; held=false;
+  clearTimeout(saveTimer); hideSyncBanner(); closeConnect();
+  setSyncStatus('☁️ Not connected — click to set up',false);
 }
 
 function defaultNominees(){
@@ -694,30 +923,40 @@ function loadState(){
   try{ const s=JSON.parse(localStorage.getItem(SAVED_KEY)); if(s&&Array.isArray(s.nominees)) return normalizeState(s); }catch(e){}
   return null;
 }
-function saveState(){
-  const payload={
+function snapshot(){
+  return {
     round:state.round,
     nominees:state.nominees.map(n=>({...n,artUrl:null})),
     chronicle:state.chronicle,
   };
-  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(payload)); }catch(e){}
-  saveCloudState(payload);
+}
+// now=true skips the debounce (spin result, accepted decree).
+function saveState(now){
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){}
+  markDirty(now===true);
 }
 
+// Returns false (and leaves the screen alone) if the cloud copy is unusable.
 function applyCloudState(cloud){
-  if(!cloud || !Array.isArray(cloud.nominees)) return;
+  if(!cloud || !Array.isArray(cloud.nominees)) return false;
   normalizeState(cloud);
+  const problems=validateState(cloud);
+  if(problems.length){
+    setSyncStatus('☁️ Cloud copy looks wrong — not applied',false);
+    showSyncBanner('The saved file on GitHub failed a check ('+problems[0]+'), so it was not loaded. Your on-screen wheel is untouched.');
+    return false;
+  }
   state.round=cloud.round;
   state.nominees=cloud.nominees;
   state.chronicle=cloud.chronicle;
-  try{ localStorage.setItem(SAVED_KEY,JSON.stringify({round:state.round,nominees:state.nominees,chronicle:state.chronicle})); }catch(e){}
+  try{ localStorage.setItem(SAVED_KEY,JSON.stringify(snapshot())); }catch(e){}
   document.getElementById('round-display').textContent='Round '+toRoman(state.round);
   renderNominees();
   document.getElementById('chronicle').innerHTML='<div class="empty-chronicle">The chronicle awaits its first tale...</div>';
   restoreChronicle();
   drawWheel();
   updateSpinButton();
-  setSyncStatus('☁️ Synced',true);
+  return true;
 }
 
 let state=loadState()||{round:1,nominees:defaultNominees(),chronicle:[]};
@@ -1010,7 +1249,7 @@ function revealWinner(){
   if(w.artUrl){ heroImg.src=w.artUrl; heroImg.style.display='block'; noBg.style.display='none'; }
   else { heroImg.style.display='none'; noBg.style.display='block'; }
   document.getElementById('winner-overlay').classList.add('show');
-  addEntry(w); saveState();
+  addEntry(w); saveState(true);
 }
 
 function addEntry(w){
@@ -1055,7 +1294,7 @@ function closeWinner(){
   vacateSeat(state.nominees[lastWinner]);
   lastWinner=null;
   state.round++;
-  saveState(); renderNominees(); drawWheel(); updateSpinButton();
+  saveState(true); renderNominees(); drawWheel(); updateSpinButton();
 }
 
 // Retire any seat before the next spin; the new nominee enters at 1×.
@@ -1087,6 +1326,7 @@ function fi(idx,field,val){
   }
   updateSealButton(idx);
   drawWheel();
+  saveState();   // keeps typing from being treated as "nothing unsaved"
   // Only fetch when both fields have real content (at least 2 chars each)
   if(n.artist.trim().length>1 && n.album.trim().length>1)
     scheduleArtFetch(idx);
@@ -1258,14 +1498,9 @@ restoreChronicle();
 drawWheel();
 updateSpinButton();
 
-// Local state above is just for an instant paint. Now pull the
-// authoritative save from GitHub in the background.
-setSyncStatus(getGhToken()?'☁️ Checking for updates…':'☁️ Not connected — click to set up',null);
-fetchCloudState().then(cloud=>{
-  if(cloud) applyCloudState(cloud);
-  else if(getGhToken()) setSyncStatus('☁️ No cloud save yet',true);
-  else setSyncStatus('☁️ Not connected — click to set up',false);
-});
+// Local state above is just for an instant paint. Now reconcile with GitHub
+// (unsaved local edits are pushed first; otherwise the cloud copy is pulled).
+syncOnLoad();
 </script>
 
 
@@ -1319,6 +1554,43 @@ fetchCloudState().then(cloud=>{
       </div>
     </div>
     <div class="scroll-roll-bottom"></div>
+  </div>
+</div>
+
+<div class="connect-overlay" id="connect-overlay" onclick="if(event.target===this)closeConnect()">
+  <div class="connect-modal" role="dialog" aria-labelledby="connect-title">
+    <div class="connect-title" id="connect-title">☁️ Connect to GitHub</div>
+    <p class="connect-lead">The wheel saves to a file in your repo as you work, so every change is backed up and can be rolled back. Paste the access token once on each device.</p>
+    <form id="connect-form" autocomplete="off" onsubmit="submitConnect(event)">
+      <label class="connect-label" for="c-token">Access token</label>
+      <input class="connect-input" id="c-token" type="password" autocapitalize="none" spellcheck="false" placeholder="Paste once per device">
+      <details class="connect-details">
+        <summary>Repository details</summary>
+        <div class="connect-grid">
+          <div><label class="connect-label" for="c-owner">GitHub username</label><input class="connect-input" id="c-owner" autocapitalize="none" spellcheck="false" required></div>
+          <div><label class="connect-label" for="c-repo">Repo</label><input class="connect-input" id="c-repo" autocapitalize="none" spellcheck="false" required></div>
+          <div><label class="connect-label" for="c-path">File in the repo</label><input class="connect-input" id="c-path" autocapitalize="none" spellcheck="false" required></div>
+          <div><label class="connect-label" for="c-branch">Branch</label><input class="connect-input" id="c-branch" autocapitalize="none" spellcheck="false" required></div>
+        </div>
+      </details>
+      <p class="connect-err" id="connect-err" role="alert" hidden></p>
+      <div class="connect-btns">
+        <button class="modal-btn" type="submit" id="c-go" style="flex:2;background:linear-gradient(180deg,#b07030 0%,#7a4810 100%);border-color:#5a3008">Connect</button>
+        <button class="modal-btn" type="button" onclick="closeConnect()" style="flex:1;background:rgba(0,0,0,0.08);border-color:var(--p-border-dim);color:var(--p-ink-mid)">Close</button>
+      </div>
+      <button class="connect-forget" type="button" id="c-forget" onclick="forgetDevice()" hidden>Forget the token on this device</button>
+    </form>
+    <details class="connect-details connect-how">
+      <summary>How to make the access token</summary>
+      <ol>
+        <li>On GitHub, open Settings, then Developer settings, then Personal access tokens, then Fine-grained tokens.</li>
+        <li>Choose Generate new token and name it something like Wheel of Fates. Set an expiry you are comfortable with.</li>
+        <li>Under Repository access, choose Only select repositories and pick the-wheel-of-fate.</li>
+        <li>Under Permissions, Repository permissions, set Contents to Read and write.</li>
+        <li>Generate the token, copy it, and paste it above. GitHub only shows it once.</li>
+      </ol>
+      The token stays in this browser only, and it can touch that one repo and nothing else.
+    </details>
   </div>
 </div>
 
