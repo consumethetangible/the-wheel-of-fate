@@ -47,9 +47,9 @@
       "owner": "Chris",
       "weight": 2,
       "artUrl": null,
-      "sealed": true,
-      "canonicalArtist": "Squarepusher",
-      "canonicalAlbum": "Feed Me Weird Things"
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "The Oscillations",
