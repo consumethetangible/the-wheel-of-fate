@@ -146,6 +146,19 @@ function main() {
     if (typeof e.rounds !== 'number' || !Number.isInteger(e.rounds) || e.rounds < 0) {
       errors.push(`${label}: "rounds" (tourneys survived) must be a whole number ≥ 0`);
     }
+    // story fields are optional (older rounds are told on first view)
+    if (e.tale !== undefined && (typeof e.tale !== 'string' || e.tale.trim() === '')) {
+      errors.push(`${label}: "tale" must be non-empty text when present`);
+    }
+    if (e.voice !== undefined && typeof e.voice !== 'string') {
+      errors.push(`${label}: "voice" must be text when present`);
+    }
+    if (e.odds !== undefined && (typeof e.odds !== 'number' || e.odds < 0 || e.odds > 100)) {
+      errors.push(`${label}: "odds" must be a percentage from 0 to 100 when present`);
+    }
+    if (e.field !== undefined && !Array.isArray(e.field)) {
+      errors.push(`${label}: "field" must be a list when present`);
+    }
   });
 
   // Chronicle rounds shouldn't skip or repeat
