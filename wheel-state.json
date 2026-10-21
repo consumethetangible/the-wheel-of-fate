@@ -5,7 +5,7 @@
       "artist": "Robert Hood",
       "album": "Minimal Nation",
       "owner": "Baxter",
-      "weight": 6,
+      "weight": 4,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Robert Hood",
@@ -15,9 +15,9 @@
       "artist": "Tower of Power",
       "album": "Tower of Power",
       "owner": "Chris",
-      "weight": 4,
+      "weight": 6,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": "Tower of Power",
       "canonicalAlbum": "Tower of Power"
     },
@@ -35,7 +35,7 @@
       "artist": "Cannibal Ox",
       "album": "The Cold Vein",
       "owner": "Baxter",
-      "weight": 2,
+      "weight": 1,
       "artUrl": null,
       "sealed": true,
       "canonicalArtist": "Cannibal Ox",
@@ -53,11 +53,11 @@
     },
     {
       "artist": "Oscillations",
-      "album": "I Can See",
+      "album": "I Can See it Coming",
       "owner": "Erik",
       "weight": 1,
       "artUrl": null,
-      "sealed": true,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
