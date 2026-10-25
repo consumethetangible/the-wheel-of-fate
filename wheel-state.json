@@ -64,12 +64,53 @@
   ],
   "chronicle": [
     {
+      "round": 23,
+      "album": "Black Milk",
+      "artist": "Beasts of Bourbon",
+      "owner": "Chris",
+      "rounds": 1,
+      "artUrl": "https://coverartarchive.org/release/7c336c3c-1463-40c5-8dd2-5eac5e48bb2f/16955839449-500.jpg",
+      "kind": "beloved",
+      "odds": 5.6,
+      "field": [
+        {
+          "o": "Baxter",
+          "a": "Minimal",
+          "w": 7
+        },
+        {
+          "o": "Erik",
+          "a": "Paradise Don't Come Cheap",
+          "w": 1
+        },
+        {
+          "o": "Baxter",
+          "a": "The Cold Vein",
+          "w": 3
+        },
+        {
+          "o": "Chris",
+          "a": "Feed Me Weird Things",
+          "w": 4
+        },
+        {
+          "o": "Erik",
+          "a": "I Can See it Coming",
+          "w": 2
+        }
+      ],
+      "tale": "Job 23 complete. “Black Milk”, delivered by Chris. Meet at the usual place.",
+      "voice": "heist"
+    },
+    {
       "round": 22,
       "album": "Tower of Power",
       "artist": "Tower of Power",
       "owner": "Chris",
       "rounds": 3,
-      "artUrl": "https://coverartarchive.org/release/2e0820df-3ee5-4038-8f92-aa79a808efbc/front-250"
+      "artUrl": "https://coverartarchive.org/release/2e0820df-3ee5-4038-8f92-aa79a808efbc/front-250",
+      "tale": "Round 22: “Tower of Power” survives. Chris gets the last of the canned peaches.",
+      "voice": "zombie"
     },
     {
       "round": 21,
@@ -77,7 +118,9 @@
       "artist": "Candy Machine",
       "owner": "Baxter",
       "rounds": 3,
-      "artUrl": "https://www.konkurrent.nl/uploaded/thumbnails/db_file_img_16273_500xauto.jpg"
+      "artUrl": "https://www.konkurrent.nl/uploaded/thumbnails/db_file_img_16273_500xauto.jpg",
+      "tale": "At the lists of the Listening Throne, “Tune International” by Candy Machine, borne by Baxter, is proclaimed champion of Tournament 21. It waited two rounds beneath patient banners before the Wheel turned its golden face upon it. Baxter now holds nine crowns.",
+      "voice": "medieval"
     },
     {
       "round": 20,
@@ -85,7 +128,9 @@
       "artist": "Tanya Tucker",
       "owner": "Erik",
       "rounds": 5,
-      "artUrl": "https://coverartarchive.org/release/aa6d9899-217d-4974-84f2-956c8a19606d/front-250"
+      "artUrl": "https://coverartarchive.org/release/aa6d9899-217d-4974-84f2-956c8a19606d/front-250",
+      "tale": "Mission log 20. Long-range sensors report one winner: “Delta Dawn” by Tanya Tucker. Erik confirms the contact and plots a course for the next round. Baxter and Chris have been notified.",
+      "voice": "ship"
     },
     {
       "round": 19,
@@ -93,7 +138,9 @@
       "artist": "John Cale",
       "owner": "Erik",
       "rounds": 5,
-      "artUrl": "https://coverartarchive.org/release/02ecd195-1d94-4451-996d-16821d77e325/front-250"
+      "artUrl": "https://coverartarchive.org/release/02ecd195-1d94-4451-996d-16821d77e325/front-250",
+      "tale": "Here, on the open plains of the listening room, Erik has tracked “Fear” for four rounds. Now, in round 19, the herd parts, and “Fear” by John Cale steps into the light. Erik's tally rises to six.",
+      "voice": "doc"
     },
     {
       "round": 18,
@@ -101,7 +148,9 @@
       "artist": "Orang-Utan",
       "owner": "Chris",
       "rounds": 9,
-      "artUrl": "https://coverartarchive.org/release/5f3bdfdc-e8e9-4e1b-ba94-90192fc1a064/front-250"
+      "artUrl": "https://coverartarchive.org/release/5f3bdfdc-e8e9-4e1b-ba94-90192fc1a064/front-250",
+      "tale": "And “Orang-Utan” comes down the stretch at 9× weight! Chris has it in round 18! That's win number five for Chris, folks! Baxter and Erik will be thinking about this one all week.",
+      "voice": "sports"
     },
     {
       "round": 17,
@@ -109,7 +158,9 @@
       "artist": "The Futureheads",
       "owner": "Baxter",
       "rounds": 4,
-      "artUrl": "https://coverartarchive.org/release/8799f737-ef82-3736-ad52-43cdc1f82c92/front-250"
+      "artUrl": "https://coverartarchive.org/release/8799f737-ef82-3736-ad52-43cdc1f82c92/front-250",
+      "tale": "Round 17: “The Futureheads” by The Futureheads. Baxter does not remember choosing it. The wheel remembers.",
+      "voice": "cosmic"
     },
     {
       "round": 16,
@@ -117,7 +168,9 @@
       "artist": "John Fahey",
       "owner": "Baxter",
       "rounds": 14,
-      "artUrl": "https://coverartarchive.org/release/19e3f7fc-e138-44b1-9244-673669c428d1/front-250"
+      "artUrl": "https://coverartarchive.org/release/19e3f7fc-e138-44b1-9244-673669c428d1/front-250",
+      "tale": "Listen up! Baxter just put “The Great San Bernardino Birthday Party and Other Excursions” by John Fahey through the table in round 16. Nobody beats Baxter when the wheel is hungry. Nobody.",
+      "voice": "wrestling"
     },
     {
       "round": 15,
@@ -125,7 +178,9 @@
       "artist": "Wrathchild America",
       "owner": "Chris",
       "rounds": 8,
-      "artUrl": "https://coverartarchive.org/release/025c6ffd-3de8-45b9-b19e-2e0210dcf708/front-250"
+      "artUrl": "https://coverartarchive.org/release/025c6ffd-3de8-45b9-b19e-2e0210dcf708/front-250",
+      "tale": "The wheel never sleeps, and neither did Chris. For seven rounds, “3-D” by Wrathchild America sat in the dark, waiting on a call. Round 15 came around and the numbers fell its way. That makes four for Chris. The city never cares.",
+      "voice": "noir"
     },
     {
       "round": 14,
@@ -133,7 +188,9 @@
       "artist": "Ellen Fullman",
       "owner": "Erik",
       "rounds": 8,
-      "artUrl": "https://coverartarchive.org/release/1554e1ff-f04f-448a-a57e-cb4953d159a1/front-250"
+      "artUrl": "https://coverartarchive.org/release/1554e1ff-f04f-448a-a57e-cb4953d159a1/front-250",
+      "tale": "Transmission from the front, round 14: the machines have been pushed back. “The Long String Instrument” by Ellen Fullman holds the line for Erik at 8× weight. Baxter and Chris, if you can hear this, fall back to the shelter.",
+      "voice": "war"
     },
     {
       "round": 13,
@@ -141,7 +198,9 @@
       "artist": "Don Caballero",
       "owner": "Baxter",
       "rounds": 6,
-      "artUrl": "https://coverartarchive.org/release/9e6dcdf6-a702-4b45-9db4-6af1f53c6ce1/front-250"
+      "artUrl": "https://coverartarchive.org/release/9e6dcdf6-a702-4b45-9db4-6af1f53c6ce1/front-250",
+      "tale": "The Three gathered, as they always do, and the Wheel turned for the thirteenth time. When it stilled, “Don Caballero 2” by Don Caballero stood, and Baxter rose with it. Thus it is written.",
+      "voice": "myth"
     },
     {
       "round": 12,
@@ -149,7 +208,9 @@
       "artist": "Lovesliescrushing",
       "owner": "Erik",
       "rounds": 6,
-      "artUrl": "https://coverartarchive.org/release/f26cd7b5-6319-4a95-99d4-ba530e25d494/front-250"
+      "artUrl": "https://coverartarchive.org/release/f26cd7b5-6319-4a95-99d4-ba530e25d494/front-250",
+      "tale": "In round 12, the court finds for “Bloweyelashwish” by Lovesliescrushing. The petitioner, Erik, proved five rounds of patient waiting. The respondents, Baxter and Chris, are reminded that their picks were dismissed without prejudice. That is ruling number four for Erik. Court adjourned.",
+      "voice": "court"
     },
     {
       "round": 11,
@@ -157,7 +218,9 @@
       "artist": "Air",
       "owner": "Chris",
       "rounds": 7,
-      "artUrl": "https://coverartarchive.org/release/967fe54d-9486-4226-9342-bedcd9cc3a76/front-250"
+      "artUrl": "https://coverartarchive.org/release/967fe54d-9486-4226-9342-bedcd9cc3a76/front-250",
+      "tale": "LISTENING ROOM (AP) — “Moon Safari” by Air won round 11, club officials confirmed. The pick, submitted by Chris, carried a weight of 7×. Chris now has three wins. Baxter and Erik did not immediately respond to requests for comment.",
+      "voice": "ap"
     },
     {
       "round": 10,
@@ -165,7 +228,9 @@
       "artist": "Modulo 1000",
       "owner": "Erik",
       "rounds": 6,
-      "artUrl": "https://coverartarchive.org/release/b12f2aa7-08a4-4e66-afef-850933df80c5/front-250"
+      "artUrl": "https://coverartarchive.org/release/b12f2aa7-08a4-4e66-afef-850933df80c5/front-250",
+      "tale": "Hear ye! The heralds cry “Não Fale Com Paredes” victorious in Tournament 10, and the colours of Erik fly above all. That is the third laurel for Erik.",
+      "voice": "medieval"
     },
     {
       "round": 9,
@@ -173,7 +238,9 @@
       "artist": "Howlin' Wolf",
       "owner": "Baxter",
       "rounds": 9,
-      "artUrl": "https://coverartarchive.org/release/659de7d9-f5d8-4ac4-bc93-83230ff60729/front-250"
+      "artUrl": "https://coverartarchive.org/release/659de7d9-f5d8-4ac4-bc93-83230ff60729/front-250",
+      "tale": "Captain's log, round 9. The Wheel has spoken: “Moanin' in the Moonlight” by Howlin' Wolf, delivered by Baxter at 9× weight. Baxter's fleet now holds five systems.",
+      "voice": "ship"
     },
     {
       "round": 8,
@@ -181,7 +248,9 @@
       "artist": "The Go-Betweens",
       "owner": "Baxter",
       "rounds": 3,
-      "artUrl": "https://coverartarchive.org/release/715276a8-8b14-4c55-8744-7c6610ef5124/front-250"
+      "artUrl": "https://coverartarchive.org/release/715276a8-8b14-4c55-8744-7c6610ef5124/front-250",
+      "tale": "Round 8 forecast: a heavy system building at 3× weight has made landfall. “16 Lover's Lane” by The Go-Betweens arrived from Baxter's side of the map. Baxter is up to four on the season.",
+      "voice": "weather"
     },
     {
       "round": 7,
@@ -189,7 +258,9 @@
       "artist": "The Raincoats",
       "owner": "Erik",
       "rounds": 4,
-      "artUrl": "https://coverartarchive.org/release/7c4d0bd8-c87d-456c-b7c0-b21a6ef6cb24/front-250"
+      "artUrl": "https://coverartarchive.org/release/7c4d0bd8-c87d-456c-b7c0-b21a6ef6cb24/front-250",
+      "tale": "Scoreboard check, round 7: “The Raincoats” by The Raincoats takes it for Erik. The standings are about to look different.",
+      "voice": "sports"
     },
     {
       "round": 6,
@@ -197,7 +268,9 @@
       "artist": "Oliver Nelson",
       "owner": "Chris",
       "rounds": 3,
-      "artUrl": "https://coverartarchive.org/release/45415f82-a10c-4a35-aac9-1dd927f3e636/front-250"
+      "artUrl": "https://coverartarchive.org/release/45415f82-a10c-4a35-aac9-1dd927f3e636/front-250",
+      "tale": "Round 6: the crew gathered, and the plan was simple. Chris puts “The Blues and the Abstract Truth” by Oliver Nelson on the wheel and waits. It took two rounds, but the lock finally clicked. That is two jobs for Chris, and nobody got hurt. Much.",
+      "voice": "heist"
     },
     {
       "round": 5,
@@ -205,7 +278,9 @@
       "artist": "Julian Cope",
       "owner": "Erik",
       "rounds": 4,
-      "artUrl": "https://coverartarchive.org/release/37a4c633-0261-4430-bd09-65df20b514f4/front-250"
+      "artUrl": "https://coverartarchive.org/release/37a4c633-0261-4430-bd09-65df20b514f4/front-250",
+      "tale": "LADIES AND GENTLEMEN, YOUR WINNER OF ROUND 5: “PEGGY SUICIDE” BY JULIAN COPE, REPRESENTING ERIK! THREE ROUNDS IT WAITED IN THE BACK, AND TONIGHT THE WAIT IS OVER! BAXTER AND CHRIS, YOU CAN LOOK AWAY, BUT YOU CANNOT HIDE! ERIK IS NOW A ONE-TIME CHAMPION!",
+      "voice": "wrestling"
     },
     {
       "round": 4,
@@ -213,7 +288,9 @@
       "artist": "Funkadelic",
       "owner": "Baxter",
       "rounds": 2,
-      "artUrl": "https://coverartarchive.org/release/075943c5-d765-4c11-93ef-f958d5167621/front-250"
+      "artUrl": "https://coverartarchive.org/release/075943c5-d765-4c11-93ef-f958d5167621/front-250",
+      "tale": "Transmission from the front, round 4: the machines have been pushed back. “Free Your Mind and Your Ass Will Follow” by Funkadelic holds the line for Baxter at 2× weight. Chris and Erik, if you can hear this, fall back to the shelter.",
+      "voice": "war"
     },
     {
       "round": 3,
@@ -221,7 +298,9 @@
       "artist": "Bob Dylan",
       "owner": "Chris",
       "rounds": 1,
-      "artUrl": "https://coverartarchive.org/release/acc2a08d-5c3d-3f16-a5aa-20824c957f09/front-250"
+      "artUrl": "https://coverartarchive.org/release/acc2a08d-5c3d-3f16-a5aa-20824c957f09/front-250",
+      "tale": "In round 3, the Wheel slowed beyond all reason, and “Blonde on Blonde” by Bob Dylan rose from the deep. Chris had barely spoken its name, and still the thing answered. Chris has now won once and has not slept well since.",
+      "voice": "cosmic"
     },
     {
       "round": 2,
@@ -229,7 +308,9 @@
       "artist": "Minutemen",
       "owner": "Baxter",
       "rounds": 0,
-      "artUrl": "https://coverartarchive.org/release/396cd5db-a240-4111-bd64-140064a4a0e9/front-250"
+      "artUrl": "https://coverartarchive.org/release/396cd5db-a240-4111-bd64-140064a4a0e9/front-250",
+      "tale": "In the second age of the Wheel, Baxter spoke “Double Nickels on the Dime” by Minutemen into the sky, and the heavens listened. Two victories stand in the name of Baxter.",
+      "voice": "myth"
     },
     {
       "round": 1,
@@ -237,7 +318,9 @@
       "artist": "Bruce Springsteen",
       "owner": "Baxter",
       "rounds": 0,
-      "artUrl": "https://coverartarchive.org/release/b59fd226-d81b-4dac-872e-ff5587045588/front-250"
+      "artUrl": "https://coverartarchive.org/release/b59fd226-d81b-4dac-872e-ff5587045588/front-250",
+      "tale": "It was round 1, raining the way it only rains in a listening room. Baxter slid “Nebraska” by Bruce Springsteen across the table, and for once the wheel looked down. Nobody asked questions. Nobody ever does.",
+      "voice": "noir"
     }
   ]
 }
