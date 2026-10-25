@@ -13,13 +13,13 @@
     },
     {
       "artist": "koko taylor",
-      "album": "koko",
+      "album": "koko taylor",
       "owner": "Chris",
       "enteredRound": null,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Koko Taylor",
+      "canonicalAlbum": "Koko Taylor (Remastered)"
     },
     {
       "artist": "New Kingdom",
