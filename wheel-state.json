@@ -12,12 +12,12 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "koko taylor",
-      "album": "koko taylor",
+      "artist": "Koko Taylor",
+      "album": "Koko Taylor (Remastered)",
       "owner": "Chris",
-      "enteredRound": null,
-      "artUrl": null,
-      "sealed": false,
+      "enteredRound": 24,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/46/25/98/46259831-fb95-481b-63ae-a70e66d2d26d/06UMGIM02227.rgb.jpg/600x600bb.jpg",
+      "sealed": true,
       "canonicalArtist": "Koko Taylor",
       "canonicalAlbum": "Koko Taylor (Remastered)"
     },
