@@ -1,5 +1,5 @@
 {
-  "round": 23,
+  "round": 24,
   "nominees": [
     {
       "artist": "Robert Hood",
@@ -12,14 +12,14 @@
       "canonicalAlbum": null
     },
     {
-      "artist": "Beasts of Bourbon",
-      "album": "Black Milk",
+      "artist": "",
+      "album": "",
       "owner": "Chris",
-      "enteredRound": 23,
-      "artUrl": "https://coverartarchive.org/release/7c336c3c-1463-40c5-8dd2-5eac5e48bb2f/16955839449-500.jpg",
-      "sealed": true,
-      "canonicalArtist": "Beasts of Bourbon",
-      "canonicalAlbum": "Black Milk"
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "New Kingdom",
