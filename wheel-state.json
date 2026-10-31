@@ -64,45 +64,6 @@
   ],
   "chronicle": [
     {
-      "round": 24,
-      "album": "Feed Me Weird Things",
-      "artist": "Squarepusher",
-      "owner": "Chris",
-      "rounds": 5,
-      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/6b/b7/75/6bb775e9-2db5-607a-ef3f-cfbaad3de956/0801061347512.jpg/600x600bb.jpg",
-      "kind": "exploring",
-      "odds": 21.7,
-      "field": [
-        {
-          "o": "Baxter",
-          "a": "Minimal",
-          "w": 8
-        },
-        {
-          "o": "Chris",
-          "a": "Koko Taylor (Remastered)",
-          "w": 1
-        },
-        {
-          "o": "Erik",
-          "a": "Paradise Don't Come Cheap",
-          "w": 2
-        },
-        {
-          "o": "Baxter",
-          "a": "The Cold Vein",
-          "w": 4
-        },
-        {
-          "o": "Erik",
-          "a": "I Can See it Coming",
-          "w": 3
-        }
-      ],
-      "tale": "(AP) — “Feed Me Weird Things” wins round 24 for Chris. More to follow.",
-      "voice": "ap"
-    },
-    {
       "round": 23,
       "album": "Black Milk",
       "artist": "Beasts of Bourbon",
