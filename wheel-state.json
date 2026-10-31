@@ -64,6 +64,45 @@
   ],
   "chronicle": [
     {
+      "round": 24,
+      "album": "Minimal",
+      "artist": "Robert Hood",
+      "owner": "Baxter",
+      "rounds": 8,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/cd/12/ed/cd12ed3b-6879-74ce-18c5-18dd5c72cf34/mzi.ugxsyblg.jpg/600x600bb.jpg",
+      "kind": "beloved",
+      "odds": 34.8,
+      "field": [
+        {
+          "o": "Chris",
+          "a": "Koko Taylor (Remastered)",
+          "w": 1
+        },
+        {
+          "o": "Erik",
+          "a": "Paradise Don't Come Cheap",
+          "w": 2
+        },
+        {
+          "o": "Baxter",
+          "a": "The Cold Vein",
+          "w": 4
+        },
+        {
+          "o": "Chris",
+          "a": "Feed Me Weird Things",
+          "w": 5
+        },
+        {
+          "o": "Erik",
+          "a": "I Can See it Coming",
+          "w": 3
+        }
+      ],
+      "tale": "LISTENING ROOM (AP) — “Minimal” by Robert Hood won round 24, club officials confirmed. The pick, submitted by Baxter as a beloved selection, carried a weight of 8× and a 35% chance of winning. Chris's “Feed Me Weird Things” and Erik's “I Can See it Coming” also competed. Baxter now has ten wins. Chris and Erik did not immediately respond to requests for comment.",
+      "voice": "ap"
+    },
+    {
       "round": 23,
       "album": "Black Milk",
       "artist": "Beasts of Bourbon",
