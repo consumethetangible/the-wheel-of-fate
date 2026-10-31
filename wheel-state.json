@@ -1,13 +1,13 @@
 {
-  "round": 24,
+  "round": 25,
   "nominees": [
     {
-      "artist": "Robert Hood",
-      "album": "Minimal",
+      "artist": "",
+      "album": "",
       "owner": "Baxter",
-      "enteredRound": 17,
-      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/cd/12/ed/cd12ed3b-6879-74ce-18c5-18dd5c72cf34/mzi.ugxsyblg.jpg/600x600bb.jpg",
-      "sealed": true,
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
