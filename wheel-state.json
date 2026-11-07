@@ -1,15 +1,15 @@
 {
-  "round": 25,
+  "round": 26,
   "nominees": [
     {
-      "artist": "Cannibal Ox",
-      "album": "The Cold Vein (Deluxe Edition)",
+      "artist": "",
+      "album": "",
       "owner": "Baxter",
-      "enteredRound": 21,
-      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/57/07/8d/57078d9f-a0d7-2a25-3153-3a8d4a60da01/859768260405_cover.jpg/600x600bb.jpg",
-      "sealed": true,
-      "canonicalArtist": "Cannibal Ox",
-      "canonicalAlbum": "The Cold Vein (Deluxe Edition)"
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "Koko Taylor",
