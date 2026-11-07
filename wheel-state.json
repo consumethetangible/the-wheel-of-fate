@@ -64,6 +64,45 @@
   ],
   "chronicle": [
     {
+      "round": 25,
+      "album": "The Cold Vein (Deluxe Edition)",
+      "artist": "Cannibal Ox",
+      "owner": "Baxter",
+      "rounds": 5,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/57/07/8d/57078d9f-a0d7-2a25-3153-3a8d4a60da01/859768260405_cover.jpg/600x600bb.jpg",
+      "kind": "beloved",
+      "odds": 23.8,
+      "field": [
+        {
+          "o": "Chris",
+          "a": "Koko Taylor (Remastered)",
+          "w": 2
+        },
+        {
+          "o": "Erik",
+          "a": "Paradise Don't Come Cheap",
+          "w": 3
+        },
+        {
+          "o": "Baxter",
+          "a": "Exile On Main Street (2010 Remaster)",
+          "w": 1
+        },
+        {
+          "o": "Chris",
+          "a": "Feed Me Weird Things",
+          "w": 6
+        },
+        {
+          "o": "Erik",
+          "a": "I Can See it Coming",
+          "w": 4
+        }
+      ],
+      "tale": "The wheel never sleeps, and neither did Baxter. For four rounds, “The Cold Vein (Deluxe Edition)” by Cannibal Ox sat in the dark, waiting on a call. Round 25 came around and the numbers fell its way, 24% on the board. Chris's “Feed Me Weird Things” and Erik's “I Can See it Coming” went quiet. That makes eleven for Baxter. The city never cares.",
+      "voice": "noir"
+    },
+    {
       "round": 24,
       "album": "Minimal",
       "artist": "Robert Hood",
