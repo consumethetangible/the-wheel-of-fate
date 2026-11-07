@@ -32,14 +32,14 @@
       "canonicalAlbum": "Paradise Don't Come Cheap"
     },
     {
-      "artist": "Rolling Stones",
-      "album": "Exile on Main Str",
+      "artist": "The Rolling Stones",
+      "album": "Exile On Main Street (2010 Remaster)",
       "owner": "Baxter",
       "enteredRound": null,
       "artUrl": null,
       "sealed": false,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "The Rolling Stones",
+      "canonicalAlbum": "Exile On Main Street (2010 Remaster)"
     },
     {
       "artist": "Squarepusher",
