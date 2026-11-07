@@ -35,9 +35,9 @@
       "artist": "The Rolling Stones",
       "album": "Exile On Main Street (2010 Remaster)",
       "owner": "Baxter",
-      "enteredRound": null,
-      "artUrl": null,
-      "sealed": false,
+      "enteredRound": 25,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/b6/7b/df/b67bdff8-4e30-d46d-e869-fc0f38462f4c/08UMGIM15728.rgb.jpg/600x600bb.jpg",
+      "sealed": true,
       "canonicalArtist": "The Rolling Stones",
       "canonicalAlbum": "Exile On Main Street (2010 Remaster)"
     },
