@@ -64,6 +64,45 @@
   ],
   "chronicle": [
     {
+      "round": 26,
+      "album": "I Can See it Coming",
+      "artist": "Oscillations",
+      "owner": "Erik",
+      "rounds": 5,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/60/3e/7b/603e7bc0-5d6d-efd2-6a98-2857b322eca9/6283.jpg/600x600bb.jpg",
+      "kind": "exploring",
+      "odds": 22.7,
+      "field": [
+        {
+          "o": "Baxter",
+          "a": "Das Hohelied Salomos",
+          "w": 1
+        },
+        {
+          "o": "Chris",
+          "a": "Koko Taylor (Remastered)",
+          "w": 3
+        },
+        {
+          "o": "Erik",
+          "a": "Paradise Don't Come Cheap",
+          "w": 4
+        },
+        {
+          "o": "Baxter",
+          "a": "Exile On Main Street (2010 Remaster)",
+          "w": 2
+        },
+        {
+          "o": "Chris",
+          "a": "Feed Me Weird Things",
+          "w": 7
+        }
+      ],
+      "tale": "In the twenty-sixth age of the Wheel, Erik called a 5-fold weight upon “I Can See it Coming” by Oscillations, and the heavens bent. Chris's “Feed Me Weird Things” and Chris's “Koko Taylor (Remastered)” fell to ash. Eight victories stand in the name of Erik.",
+      "voice": "myth"
+    },
+    {
       "round": 25,
       "album": "The Cold Vein (Deluxe Edition)",
       "artist": "Cannibal Ox",
