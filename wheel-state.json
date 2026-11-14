@@ -2,14 +2,14 @@
   "round": 26,
   "nominees": [
     {
-      "artist": "popol vuh",
-      "album": "das Hohelied Salomes",
+      "artist": "Popol Vuh",
+      "album": "Das Hohelied Salomos",
       "owner": "Baxter",
       "enteredRound": 26,
-      "artUrl": null,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/db/54/bd/db54bdba-a434-e41b-218b-44dd96feda5f/885890728063.jpg/600x600bb.jpg",
       "sealed": true,
-      "canonicalArtist": null,
-      "canonicalAlbum": null
+      "canonicalArtist": "Popol Vuh",
+      "canonicalAlbum": "Das Hohelied Salomos"
     },
     {
       "artist": "Koko Taylor",
