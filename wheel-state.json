@@ -1,5 +1,5 @@
 {
-  "round": 26,
+  "round": 27,
   "nominees": [
     {
       "artist": "Popol Vuh",
@@ -52,12 +52,12 @@
       "canonicalAlbum": "Feed Me Weird Things"
     },
     {
-      "artist": "Oscillations",
-      "album": "I Can See it Coming",
+      "artist": "",
+      "album": "",
       "owner": "Erik",
-      "enteredRound": 22,
-      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/60/3e/7b/603e7bc0-5d6d-efd2-6a98-2857b322eca9/6283.jpg/600x600bb.jpg",
-      "sealed": true,
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
       "canonicalArtist": null,
       "canonicalAlbum": null
     }
