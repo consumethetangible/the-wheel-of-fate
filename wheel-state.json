@@ -3,11 +3,11 @@
   "nominees": [
     {
       "artist": "popol vuh",
-      "album": "das Hohelied salomos",
+      "album": "das Hohelied Salomes",
       "owner": "Baxter",
-      "enteredRound": null,
+      "enteredRound": 26,
       "artUrl": null,
-      "sealed": false,
+      "sealed": true,
       "canonicalArtist": null,
       "canonicalAlbum": null
     },
