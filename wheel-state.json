@@ -1,5 +1,5 @@
 {
-  "round": 27,
+  "round": 28,
   "nominees": [
     {
       "artist": "Popol Vuh",
@@ -22,14 +22,14 @@
       "canonicalAlbum": "Koko Taylor (Remastered)"
     },
     {
-      "artist": "New Kingdom",
-      "album": "Paradise Don't Come Cheap",
+      "artist": "",
+      "album": "",
       "owner": "Erik",
-      "enteredRound": 23,
-      "artUrl": "https://coverartarchive.org/release/c197ce2e-7c92-4108-af77-a73f43b0c8c6/23809536769-500.jpg",
-      "sealed": true,
-      "canonicalArtist": "New Kingdom",
-      "canonicalAlbum": "Paradise Don't Come Cheap"
+      "enteredRound": null,
+      "artUrl": null,
+      "sealed": false,
+      "canonicalArtist": null,
+      "canonicalAlbum": null
     },
     {
       "artist": "The Rolling Stones",
