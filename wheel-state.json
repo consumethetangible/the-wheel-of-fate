@@ -55,9 +55,9 @@
       "artist": "Jessi Colter",
       "album": "I'm Jessi Colter",
       "owner": "Erik",
-      "enteredRound": null,
-      "artUrl": null,
-      "sealed": false,
+      "enteredRound": 27,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/0d/06/5f/0d065fa0-66e0-df6c-1550-8181d2513e7e/20UMGIM03282.rgb.jpg/600x600bb.jpg",
+      "sealed": true,
       "canonicalArtist": "Jessi Colter",
       "canonicalAlbum": "I'm Jessi Colter"
     }
