@@ -64,6 +64,45 @@
   ],
   "chronicle": [
     {
+      "round": 27,
+      "album": "Paradise Don't Come Cheap",
+      "artist": "New Kingdom",
+      "owner": "Erik",
+      "rounds": 5,
+      "artUrl": "https://coverartarchive.org/release/c197ce2e-7c92-4108-af77-a73f43b0c8c6/23809536769-500.jpg",
+      "kind": "beloved",
+      "odds": 21.7,
+      "field": [
+        {
+          "o": "Baxter",
+          "a": "Das Hohelied Salomos",
+          "w": 2
+        },
+        {
+          "o": "Chris",
+          "a": "Koko Taylor (Remastered)",
+          "w": 4
+        },
+        {
+          "o": "Baxter",
+          "a": "Exile On Main Street (2010 Remaster)",
+          "w": 3
+        },
+        {
+          "o": "Chris",
+          "a": "Feed Me Weird Things",
+          "w": 8
+        },
+        {
+          "o": "Erik",
+          "a": "I'm Jessi Colter",
+          "w": 1
+        }
+      ],
+      "tale": "Year of the Wheel, round 27. The machines were winning until Erik's unit deployed “Paradise Don't Come Cheap” by New Kingdom. It had been held in reserve for four rounds. Casualties: Chris's “Feed Me Weird Things” and Chris's “Koko Taylor (Remastered)”. Erik's resistance has now taken nine outposts.",
+      "voice": "war"
+    },
+    {
       "round": 26,
       "album": "I Can See it Coming",
       "artist": "Oscillations",
