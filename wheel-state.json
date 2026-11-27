@@ -25,9 +25,9 @@
       "artist": "Midnight Oil",
       "album": "10,9,8,7,6,5,4,3,2,1 (Remastered)",
       "owner": "Erik",
-      "enteredRound": null,
-      "artUrl": null,
-      "sealed": false,
+      "enteredRound": 28,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/17/7b/ef/177bef40-beb6-c13e-4d94-721fb5d7e1c7/888880706669.jpg/600x600bb.jpg",
+      "sealed": true,
       "canonicalArtist": "Midnight Oil",
       "canonicalAlbum": "10,9,8,7,6,5,4,3,2,1 (Remastered)"
     },
