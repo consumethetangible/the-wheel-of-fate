@@ -64,6 +64,45 @@
   ],
   "chronicle": [
     {
+      "round": 28,
+      "album": "Exile On Main Street (2010 Remaster)",
+      "artist": "The Rolling Stones",
+      "owner": "Baxter",
+      "rounds": 4,
+      "artUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/b6/7b/df/b67bdff8-4e30-d46d-e869-fc0f38462f4c/08UMGIM15728.rgb.jpg/600x600bb.jpg",
+      "kind": "exploring",
+      "odds": 16.7,
+      "field": [
+        {
+          "o": "Baxter",
+          "a": "Das Hohelied Salomos",
+          "w": 3
+        },
+        {
+          "o": "Chris",
+          "a": "Koko Taylor (Remastered)",
+          "w": 5
+        },
+        {
+          "o": "Erik",
+          "a": "10,9,8,7,6,5,4,3,2,1 (Remastered)",
+          "w": 1
+        },
+        {
+          "o": "Chris",
+          "a": "Feed Me Weird Things",
+          "w": 9
+        },
+        {
+          "o": "Erik",
+          "a": "I'm Jessi Colter",
+          "w": 2
+        }
+      ],
+      "tale": "Round 28: “Exile On Main Street (2010 Remaster)” by The Rolling Stones. Baxter does not remember choosing it. The wheel remembers.",
+      "voice": "cosmic"
+    },
+    {
       "round": 27,
       "album": "Paradise Don't Come Cheap",
       "artist": "New Kingdom",
